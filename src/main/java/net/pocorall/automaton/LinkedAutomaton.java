@@ -779,12 +779,6 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 		return BasicAutomata.makeCharSet(set);
 	}
 
-	/**
-	 * See {@link BasicAutomata#makeInterval(int, int, int)}.
-	 */
-	public static LinkedAutomaton makeInterval(int min, int max, int digits) throws IllegalArgumentException {
-		return BasicAutomata.makeInterval(min, max, digits);
-	}
 
 	/**
 	 * See {@link BasicAutomata#makeString(String)}.
@@ -793,12 +787,6 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 		return BasicAutomata.makeString(s);
 	}
 
-	/**
-	 * See {@link BasicAutomata#makeStringUnion(CharSequence...)}.
-	 */
-	public static LinkedAutomaton makeStringUnion(CharSequence... strings) {
-		return BasicAutomata.makeStringUnion(strings);
-	}
 
 	/**
 	 * See {@link BasicAutomata#makeMaxInteger(String)}.
@@ -807,47 +795,6 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 		return BasicAutomata.makeMaxInteger(n);
 	}
 
-	/**
-	 * See {@link BasicAutomata#makeMinInteger(String)}.
-	 */
-	public static LinkedAutomaton makeMinInteger(String n) {
-		return BasicAutomata.makeMinInteger(n);
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeTotalDigits(int)}.
-	 */
-	public static LinkedAutomaton makeTotalDigits(int i) {
-		return BasicAutomata.makeTotalDigits(i);
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeFractionDigits(int)}.
-	 */
-	public static LinkedAutomaton makeFractionDigits(int i) {
-		return BasicAutomata.makeFractionDigits(i);
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeIntegerValue(String)}.
-	 */
-	public static LinkedAutomaton makeIntegerValue(String value) {
-		return BasicAutomata.makeIntegerValue(value);
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeDecimalValue(String)}.
-	 */
-	public static LinkedAutomaton makeDecimalValue(String value) {
-		return BasicAutomata.makeDecimalValue(value);
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeStringMatcher(String)}.
-	 */
-	public static LinkedAutomaton makeStringMatcher(String s) {
-		return BasicAutomata.makeStringMatcher(s);
-	}
 
 	/**
 	 * See {@link BasicOperations#concatenate(LinkedAutomaton, LinkedAutomaton)}.
@@ -856,12 +803,6 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 		return BasicOperations.concatenate(this, a);
 	}
 
-	/**
-	 * See {@link BasicOperations#concatenate(List)}.
-	 */
-	static public LinkedAutomaton concatenate(List<LinkedAutomaton> l) {
-		return BasicOperations.concatenate(l);
-	}
 
 	/**
 	 * See {@link BasicOperations#optional(LinkedAutomaton)}.

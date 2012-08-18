@@ -96,7 +96,6 @@ public class SpecialOperationsTest {
 	@Test
 	public void testGetFiniteStrings() throws Exception {
 		assertEquals(4, getFiniteStrings(makeStringUnion("hello * world", "abc", "defg", "def"), 5).size());
-
 	}
 
 
