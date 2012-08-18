@@ -31,6 +31,9 @@ package net.pocorall.automaton;
 
 import java.util.*;
 
+import static net.pocorall.automaton.BasicAutomata.*;
+import static net.pocorall.automaton.LinkedAutomaton.*;
+
 /**
  * Basic automata operations.
  */
@@ -47,9 +50,9 @@ final public class BasicOperations {
 	 */
 	static public SingletonAutomaton concatenate(SingletonAutomaton a1, SingletonAutomaton a2) {
 		if (a1.isSingleton() && a2.isSingleton())
-			return BasicAutomata.makeString(a1.singleton + a2.singleton);
+			return makeString(a1.singleton + a2.singleton);
 		if (a1.isEmpty() || a2.isEmpty())
-			return BasicAutomata.makeEmpty();
+			return makeEmpty();
 		boolean deterministic = a1.isSingleton() && a2.isDeterministic();
 		if (a1 == a2) {
 			a1 = a1.cloneExpanded();
@@ -76,7 +79,7 @@ final public class BasicOperations {
 	 */
 	static public SingletonAutomaton concatenate(List<SingletonAutomaton> l) {
 		if (l.isEmpty())
-			return BasicAutomata.makeEmptyString();
+			return makeEmptyString();
 		boolean all_singleton = true;
 		for (SingletonAutomaton a : l)
 			if (!a.isSingleton()) {
@@ -87,11 +90,11 @@ final public class BasicOperations {
 			StringBuilder b = new StringBuilder();
 			for (SingletonAutomaton a : l)
 				b.append(a.singleton);
-			return BasicAutomata.makeString(b.toString());
+			return makeString(b.toString());
 		} else {
 			for (SingletonAutomaton a : l)
 				if (a.isEmpty())
-					return BasicAutomata.makeEmpty();
+					return makeEmpty();
 			Set<Integer> ids = new HashSet<Integer>();
 			for (SingletonAutomaton a : l)
 				ids.add(System.identityHashCode(a));
@@ -178,12 +181,12 @@ final public class BasicOperations {
 	 */
 	static public SingletonAutomaton repeat(SingletonAutomaton a, int min, int max) {
 		if (min > max)
-			return BasicAutomata.makeEmpty();
+			return makeEmpty();
 		max -= min;
 		a.expandSingleton();
 		SingletonAutomaton b;
 		if (min == 0)
-			b = BasicAutomata.makeEmptyString();
+			b = makeEmptyString();
 		else if (min == 1)
 			b = a.clone();
 		else {
@@ -240,12 +243,12 @@ final public class BasicOperations {
 	 */
 	static public SingletonAutomaton minus(SingletonAutomaton a1, SingletonAutomaton a2) {
 		if (a1.isEmpty() || a1 == a2)
-			return BasicAutomata.makeEmpty();
+			return makeEmpty();
 		if (a2.isEmpty())
 			return a1.cloneIfRequired();
 		if (a1.isSingleton()) {
 			if (a2.run(a1.singleton) != null)
-				return BasicAutomata.makeEmpty();
+				return makeEmpty();
 			else
 				return a1.cloneIfRequired();
 		}
@@ -264,18 +267,18 @@ final public class BasicOperations {
 			if (a2.run(a1.singleton) != null)
 				return a1.cloneIfRequired();
 			else
-				return BasicAutomata.makeEmpty();
+				return makeEmpty();
 		}
 		if (a2.isSingleton()) {
 			if (a1.run(a2.singleton) != null)
 				return a2.cloneIfRequired();
 			else
-				return BasicAutomata.makeEmpty();
+				return makeEmpty();
 		}
 		if (a1 == a2)
 			return a1.cloneIfRequired();
-		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
+		Transition[][] transitions1 = getSortedTransitions(a1.getStates());
+		Transition[][] transitions2 = getSortedTransitions(a2.getStates());
 		SingletonAutomaton c = new SingletonAutomaton();
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
@@ -330,8 +333,8 @@ final public class BasicOperations {
 		}
 		BasicOperations.determinize(a2);
 
-		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
+		Transition[][] transitions1 = getSortedTransitions(a1.getStates());
+		Transition[][] transitions2 = getSortedTransitions(a2.getStates());
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashSet<StatePair> visited = new HashSet<StatePair>();
 		StatePair p = new StatePair(a1.initial, a2.initial);

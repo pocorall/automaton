@@ -34,6 +34,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import static net.pocorall.automaton.BasicOperations.*;
+import static net.pocorall.automaton.SpecialOperations.*;
+
 /**
  * Operations for minimizing automata.
  */
@@ -124,7 +127,7 @@ final public class MinimizationOperations {
 	 * Minimizes the given automaton using Huffman's algorithm.
 	 */
 	public static void minimizeHuffman(LinkedAutomaton a) {
-		BasicOperations.determinize(a);
+		determinize(a);
 		a.totalize();
 		Set<State> ss = a.getStates();
 		Transition[][] transitions = new Transition[ss.size()][];
@@ -190,15 +193,15 @@ final public class MinimizationOperations {
 	 * Minimizes the given automaton using Brzozowski's algorithm.
 	 */
 	public static void minimizeBrzozowski(LinkedAutomaton a) {
-		BasicOperations.determinize(a, SpecialOperations.reverse(a));
-		BasicOperations.determinize(a, SpecialOperations.reverse(a));
+		determinize(a, reverse(a));
+		determinize(a, reverse(a));
 	}
 
 	/**
 	 * Minimizes the given automaton using Hopcroft's algorithm.
 	 */
 	public static void minimizeHopcroft(LinkedAutomaton a) {
-		BasicOperations.determinize(a);
+		determinize(a);
 		Set<Transition> tr = a.initial.getTransitions();
 		if (tr.size() == 1) {
 			Transition t = tr.iterator().next();
