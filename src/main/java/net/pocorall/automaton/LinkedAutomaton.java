@@ -3,7 +3,7 @@ package net.pocorall.automaton;
 import java.io.Serializable;
 import java.util.*;
 
-abstract public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
+public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 
 	/**
 	 * Initial state of this automaton.

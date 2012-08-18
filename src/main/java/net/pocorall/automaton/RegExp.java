@@ -101,10 +101,10 @@ import java.util.Set;
  * points, and if <tt><i>n</i></tt> and <tt><i>m</i></tt> have the
  * same number of digits, then the conforming strings must have that
  * length (i.e. prefixed by 0's).
- * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt; 
+ * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
  * */
 public class RegExp {
-	
+
 	enum Kind {
 		REGEXP_UNION,
 		REGEXP_CONCATENATION,
@@ -123,64 +123,64 @@ public class RegExp {
 		REGEXP_AUTOMATON,
 		REGEXP_INTERVAL
 	}
-	
-	/** 
-	 * Syntax flag, enables intersection (<tt>&amp;</tt>). 
+
+	/**
+	 * Syntax flag, enables intersection (<tt>&amp;</tt>).
 	 */
 	public static final int INTERSECTION = 0x0001;
-	
-	/** 
-	 * Syntax flag, enables complement (<tt>~</tt>). 
+
+	/**
+	 * Syntax flag, enables complement (<tt>~</tt>).
 	 */
 	public static final int COMPLEMENT = 0x0002;
-	
-	/** 
-	 * Syntax flag, enables empty language (<tt>#</tt>). 
+
+	/**
+	 * Syntax flag, enables empty language (<tt>#</tt>).
 	 */
 	public static final int EMPTY = 0x0004;
-	
-	/** 
-	 * Syntax flag, enables anystring (<tt>@</tt>). 
+
+	/**
+	 * Syntax flag, enables anystring (<tt>@</tt>).
 	 */
 	public static final int ANYSTRING = 0x0008;
-	
-	/** 
-	 * Syntax flag, enables named automata (<tt>&lt;</tt>identifier<tt>&gt;</tt>). 
+
+	/**
+	 * Syntax flag, enables named automata (<tt>&lt;</tt>identifier<tt>&gt;</tt>).
 	 */
 	public static final int AUTOMATON = 0x0010;
-	
-	/** 
-	 * Syntax flag, enables numerical intervals (<tt>&lt;<i>n</i>-<i>m</i>&gt;</tt>). 
+
+	/**
+	 * Syntax flag, enables numerical intervals (<tt>&lt;<i>n</i>-<i>m</i>&gt;</tt>).
 	 */
 	public static final int INTERVAL = 0x0020;
-	
-	/** 
-	 * Syntax flag, enables all optional regexp syntax. 
+
+	/**
+	 * Syntax flag, enables all optional regexp syntax.
 	 */
 	public static final int ALL = 0xffff;
-	
-	/** 
-	 * Syntax flag, enables no optional regexp syntax. 
+
+	/**
+	 * Syntax flag, enables no optional regexp syntax.
 	 */
 	public static final int NONE = 0x0000;
-	
+
 	private static boolean allow_mutation = false;
-	
+
 	Kind kind;
 	RegExp exp1, exp2;
 	String s;
 	char c;
 	int min, max, digits;
 	char from, to;
-	
+
 	String b;
 	int flags;
 	int pos;
-	
+
 	RegExp() {}
-	
-	/** 
-	 * Constructs new <code>RegExp</code> from a string. 
+
+	/**
+	 * Constructs new <code>RegExp</code> from a string.
 	 * Same as <code>RegExp(s, ALL)</code>.
 	 * @param s regexp string
 	 * @exception IllegalArgumentException if an error occured while parsing the regular expression
@@ -188,9 +188,9 @@ public class RegExp {
 	public RegExp(String s) throws IllegalArgumentException {
 		this(s, ALL);
 	}
-	
-	/** 
-	 * Constructs new <code>RegExp</code> from a string. 
+
+	/**
+	 * Constructs new <code>RegExp</code> from a string.
 	 * @param s regexp string
 	 * @param syntax_flags boolean 'or' of optional syntax constructs to be enabled
 	 * @exception IllegalArgumentException if an error occured while parsing the regular expression
@@ -218,27 +218,27 @@ public class RegExp {
 		to = e.to;
 		b = null;
 	}
-	
-	/** 
+
+	/**
 	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
 	 * Same as <code>toAutomaton(null)</code> (empty automaton map).
 	 */
 	public SingletonAutomaton toAutomaton() {
 		return toAutomatonAllowMutate(null, null, true);
 	}
-	
-	/** 
+
+	/**
 	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
 	 * Same as <code>toAutomaton(null,minimize)</code> (empty automaton map).
 	 */
 	public SingletonAutomaton toAutomaton(boolean minimize) {
 		return toAutomatonAllowMutate(null, null, minimize);
 	}
-	
-	/** 
+
+	/**
 	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
-	 * The constructed automaton is minimal and deterministic and has no 
-	 * transitions to dead states. 
+	 * The constructed automaton is minimal and deterministic and has no
+	 * transitions to dead states.
 	 * @param automaton_provider provider of automata for named identifiers
 	 * @exception IllegalArgumentException if this regular expression uses
 	 *   a named identifier that is not available from the automaton provider
@@ -246,10 +246,10 @@ public class RegExp {
 	public SingletonAutomaton toAutomaton(AutomatonProvider automaton_provider) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(null, automaton_provider, true);
 	}
-		
-	/** 
+
+	/**
 	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
-	 * The constructed automaton has no transitions to dead states. 
+	 * The constructed automaton has no transitions to dead states.
 	 * @param automaton_provider provider of automata for named identifiers
 	 * @param minimize if set, the automaton is minimized and determinized
 	 * @exception IllegalArgumentException if this regular expression uses
@@ -258,12 +258,12 @@ public class RegExp {
 	public SingletonAutomaton toAutomaton(AutomatonProvider automaton_provider, boolean minimize) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(null, automaton_provider, minimize);
 	}
-		
-	/** 
+
+	/**
 	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
-	 * The constructed automaton is minimal and deterministic and has no 
-	 * transitions to dead states. 
-	 * @param automata a map from automaton identifiers to automata 
+	 * The constructed automaton is minimal and deterministic and has no
+	 * transitions to dead states.
+	 * @param automata a map from automaton identifiers to automata
 	 *   (of type <code>SingletonAutomaton</code>).
 	 * @exception IllegalArgumentException if this regular expression uses
 	 *   a named identifier that does not occur in the automaton map
@@ -271,11 +271,11 @@ public class RegExp {
 	public SingletonAutomaton toAutomaton(Map<String, SingletonAutomaton> automata) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(automata, null, true);
 	}
-	
-	/** 
+
+	/**
 	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
-	 * The constructed automaton has no transitions to dead states. 
-	 * @param automata a map from automaton identifiers to automata 
+	 * The constructed automaton has no transitions to dead states.
+	 * @param automata a map from automaton identifiers to automata
 	 *   (of type <code>SingletonAutomaton</code>).
 	 * @param minimize if set, the automaton is minimized and determinized
 	 * @exception IllegalArgumentException if this regular expression uses
@@ -284,11 +284,11 @@ public class RegExp {
 	public SingletonAutomaton toAutomaton(Map<String, SingletonAutomaton> automata, boolean minimize) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(automata, null, minimize);
 	}
-	
+
 	/**
 	 * Sets or resets allow mutate flag.
 	 * If this flag is set, then automata construction uses mutable automata,
-	 * which is slightly faster but not thread safe. 
+	 * which is slightly faster but not thread safe.
 	 * By default, the flag is not set.
 	 * @param flag if true, the flag is set
 	 * @return previous value of the flag
@@ -298,7 +298,7 @@ public class RegExp {
 		allow_mutation = flag;
 		return b;
 	}
-	
+
 	private SingletonAutomaton toAutomatonAllowMutate(Map<String, SingletonAutomaton> automata,
 			AutomatonProvider automaton_provider,
 			boolean minimize) throws IllegalArgumentException {
@@ -310,7 +310,7 @@ public class RegExp {
 			LinkedAutomaton.setAllowMutate(b);
 		return a;
 	}
-		
+
 	private SingletonAutomaton toAutomaton(Map<String, SingletonAutomaton> automata,
 			AutomatonProvider automaton_provider,
 			boolean minimize) throws IllegalArgumentException {
@@ -404,8 +404,8 @@ public class RegExp {
 			list.add(exp.toAutomaton(automata, automaton_provider, minimize));
 	}
 
-	/** 
-	 * Constructs string from parsed regular expression. 
+	/**
+	 * Constructs string from parsed regular expression.
 	 */
 	@Override
 	public String toString() {
@@ -495,8 +495,8 @@ public class RegExp {
 		return b;
 	}
 
-	/** 
-	 * Returns set of automaton identifiers that occur in this regular expression. 
+	/**
+	 * Returns set of automaton identifiers that occur in this regular expression.
 	 */
 	public Set<String> getIdentifiers() {
 		HashSet<String> set = new HashSet<String>();
@@ -535,18 +535,18 @@ public class RegExp {
 	}
 
 	static RegExp makeConcatenation(RegExp exp1, RegExp exp2) {
-		if ((exp1.kind == Kind.REGEXP_CHAR || exp1.kind == Kind.REGEXP_STRING) && 
+		if ((exp1.kind == Kind.REGEXP_CHAR || exp1.kind == Kind.REGEXP_STRING) &&
 			(exp2.kind == Kind.REGEXP_CHAR || exp2.kind == Kind.REGEXP_STRING))
 			return makeString(exp1, exp2);
 		RegExp r = new RegExp();
 		r.kind = Kind.REGEXP_CONCATENATION;
-		if (exp1.kind == Kind.REGEXP_CONCATENATION && 
-			(exp1.exp2.kind == Kind.REGEXP_CHAR || exp1.exp2.kind == Kind.REGEXP_STRING) && 
+		if (exp1.kind == Kind.REGEXP_CONCATENATION &&
+			(exp1.exp2.kind == Kind.REGEXP_CHAR || exp1.exp2.kind == Kind.REGEXP_STRING) &&
 			(exp2.kind == Kind.REGEXP_CHAR || exp2.kind == Kind.REGEXP_STRING)) {
 			r.exp1 = exp1.exp1;
 			r.exp2 = makeString(exp1.exp2, exp2);
-		} else if ((exp1.kind == Kind.REGEXP_CHAR || exp1.kind == Kind.REGEXP_STRING) && 
-				   exp2.kind == Kind.REGEXP_CONCATENATION && 
+		} else if ((exp1.kind == Kind.REGEXP_CHAR || exp1.kind == Kind.REGEXP_STRING) &&
+				   exp2.kind == Kind.REGEXP_CONCATENATION &&
 				   (exp2.exp1.kind == Kind.REGEXP_CHAR || exp2.exp1.kind == Kind.REGEXP_STRING)) {
 			r.exp1 = makeString(exp1, exp2.exp1);
 			r.exp2 = exp2.exp2;

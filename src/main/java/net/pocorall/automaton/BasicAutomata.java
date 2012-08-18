@@ -35,6 +35,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import static net.pocorall.automaton.BasicOperations.*;
+
 /**
  * Construction of basic automata.
  */
@@ -245,7 +247,7 @@ final public class BasicAutomata {
 			for (State p : initials)
 				if (a.initial != p)
 					pairs.add(new StatePair(a.initial, p));
-			a.addEpsilons(pairs);
+			addEpsilons(a, pairs);
 			a.initial.addTransition(new Transition('0', a.initial));
 			a.deterministic = false;
 		} else

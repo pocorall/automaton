@@ -31,6 +31,8 @@ package net.pocorall.automaton;
 
 import java.util.*;
 
+import static net.pocorall.automaton.BasicOperations.*;
+
 /**
  * Special automata operations.
  */
@@ -307,7 +309,7 @@ final public class SpecialOperations {
 					}
 				}
 		}
-		a.addEpsilons(epsilons);
+		addEpsilons(a, epsilons);
 		a.deterministic = false;
 		a.removeDeadTransitions();
 		a.checkMinimizeAlways();
@@ -416,7 +418,7 @@ final public class SpecialOperations {
 				s.transitions = new_transitions;
 			}
 			a.reduce();
-			a.addEpsilons(epsilons);
+			addEpsilons(a, epsilons);
 			a.removeDeadTransitions();
 			a.checkMinimizeAlways();
 			return a;

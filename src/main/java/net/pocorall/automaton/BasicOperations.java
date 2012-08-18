@@ -493,7 +493,7 @@ final public class BasicOperations {
 	 * @param pairs collection of {@link StatePair} objects representing pairs of source/destination states
 	 *              where epsilon transitions should be added
 	 */
-	public static void addEpsilons(SingletonAutomaton a, Collection<StatePair> pairs) {
+	public static void addEpsilons(LinkedAutomaton a, Collection<StatePair> pairs) {
 		a.expandSingleton();
 		HashMap<State, HashSet<State>> forward = new HashMap<State, HashSet<State>>();
 		HashMap<State, HashSet<State>> back = new HashMap<State, HashSet<State>>();
