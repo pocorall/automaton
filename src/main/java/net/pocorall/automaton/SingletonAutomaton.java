@@ -114,46 +114,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 		return initial;
 	}
 
-	/**
-	 * Returns deterministic flag for this automaton.
-	 *
-	 * @return true if the automaton is definitely deterministic, false if the automaton
-	 *         may be nondeterministic
-	 */
-	public boolean isDeterministic() {
-		return deterministic;
-	}
-
-	/**
-	 * Sets deterministic flag for this automaton.
-	 * This method should (only) be used if automata are constructed manually.
-	 *
-	 * @param deterministic true if the automaton is definitely deterministic, false if the automaton
-	 *                      may be nondeterministic
-	 */
-	public void setDeterministic(boolean deterministic) {
-		this.deterministic = deterministic;
-	}
-
-	/**
-	 * Associates extra information with this automaton.
-	 *
-	 * @param info extra information
-	 */
-	public void setInfo(Object info) {
-		this.info = info;
-	}
-
-	/**
-	 * Returns extra information associated with this automaton.
-	 *
-	 * @return extra information
-	 * @see #setInfo(Object)
-	 */
-	public Object getInfo() {
-		return info;
-	}
-
 
 	/**
 	 * Restores representation invariant.
@@ -467,13 +427,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	 */
 	static public SingletonAutomaton union(Collection<SingletonAutomaton> l) {
 		return BasicOperations.union(l);
-	}
-
-	/**
-	 * See {@link BasicOperations#determinize(SingletonAutomaton)}.
-	 */
-	public void determinize() {
-		BasicOperations.determinize(this);
 	}
 
 	/**

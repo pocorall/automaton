@@ -51,8 +51,9 @@ final public class ShuffleOperations {
 	 * &lt;<a href="mailto:ruby@daimi.au.dk">ruby@daimi.au.dk</a>&gt;</dd></dl>
 	 */
 	public static SingletonAutomaton shuffle(SingletonAutomaton a1, SingletonAutomaton a2) {
-		a1.determinize();
-		a2.determinize();
+		BasicOperations.determinize(a1);
+		BasicOperations.determinize(a2);
+
 		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
 		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
 		SingletonAutomaton c = new SingletonAutomaton();
@@ -122,7 +123,7 @@ final public class ShuffleOperations {
 			if (a1 == a)
 				return null;
 		}
-		a.determinize();
+		BasicOperations.determinize(a);
 		Transition[][][] ca_transitions = new Transition[ca.size()][][];
 		int i = 0;
 		for (SingletonAutomaton a1 : ca)

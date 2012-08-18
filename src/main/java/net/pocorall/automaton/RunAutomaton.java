@@ -151,10 +151,10 @@ public class RunAutomaton implements Serializable, Automaton {
 	 * Retrieves a serialized <code>RunAutomaton</code> located by a URL.
 	 *
 	 * @param url URL of serialized automaton
-	 * @throws IOException			if input/output related exception occurs
+	 * @throws IOException            if input/output related exception occurs
 	 * @throws OptionalDataException  if the data is not a serialized object
 	 * @throws InvalidClassException  if the class serial number does not match
-	 * @throws ClassCastException	 if the data is not a serialized <code>RunAutomaton</code>
+	 * @throws ClassCastException     if the data is not a serialized <code>RunAutomaton</code>
 	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
 	 */
 	public static RunAutomaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
@@ -166,10 +166,10 @@ public class RunAutomaton implements Serializable, Automaton {
 	 * Retrieves a serialized <code>RunAutomaton</code> from a stream.
 	 *
 	 * @param stream input stream with serialized automaton
-	 * @throws IOException			if input/output related exception occurs
+	 * @throws IOException            if input/output related exception occurs
 	 * @throws OptionalDataException  if the data is not a serialized object
 	 * @throws InvalidClassException  if the class serial number does not match
-	 * @throws ClassCastException	 if the data is not a serialized <code>RunAutomaton</code>
+	 * @throws ClassCastException     if the data is not a serialized <code>RunAutomaton</code>
 	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
 	 */
 	public static RunAutomaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
@@ -195,12 +195,12 @@ public class RunAutomaton implements Serializable, Automaton {
 	 * <code>SingletonAutomaton</code>. If the given automaton is not deterministic,
 	 * it is determinized first.
 	 *
-	 * @param a		an automaton
+	 * @param a        an automaton
 	 * @param tableize if true, a transition table is created which makes the <code>run</code>
 	 *                 method faster in return of a higher memory usage
 	 */
 	public RunAutomaton(SingletonAutomaton a, boolean tableize) {
-		a.determinize();
+		BasicOperations.determinize(a);
 		points = a.getStartPoints();
 		Set<State> states = a.getStates();
 		LinkedAutomaton.setStateNumbers(states);
@@ -255,7 +255,7 @@ public class RunAutomaton implements Serializable, Automaton {
 	 * Returns the length of the longest accepted run of the given string
 	 * starting at the given offset.
 	 *
-	 * @param s	  the string
+	 * @param s      the string
 	 * @param offset offset into <code>s</code> where the run starts
 	 * @return length of the longest accepted run, -1 if no run is accepted
 	 */
@@ -288,7 +288,7 @@ public class RunAutomaton implements Serializable, Automaton {
 	/**
 	 * Creates a new automaton matcher for the given input.
 	 *
-	 * @param s		   the CharSequence to search
+	 * @param s           the CharSequence to search
 	 * @param startOffset the starting offset of the given character sequence
 	 * @param endOffset   the ending offset of the given character sequence
 	 * @return A new automaton matcher for the given input

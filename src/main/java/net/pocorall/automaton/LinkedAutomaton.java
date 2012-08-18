@@ -17,11 +17,6 @@ abstract public class LinkedAutomaton implements Serializable, Cloneable, Automa
 	boolean deterministic;
 
 	/**
-	 * Extra data associated with this automaton.
-	 */
-	transient Object info;
-
-	/**
 	 * Hash code. Recomputed by {@link #minimize()}.
 	 */
 	int hash_code;
@@ -39,6 +34,27 @@ abstract public class LinkedAutomaton implements Serializable, Cloneable, Automa
 	public LinkedAutomaton() {
 		initial = new State();
 		deterministic = true;
+	}
+
+	/**
+	 * Returns deterministic flag for this automaton.
+	 *
+	 * @return true if the automaton is definitely deterministic, false if the automaton
+	 *         may be nondeterministic
+	 */
+	public boolean isDeterministic() {
+		return deterministic;
+	}
+
+	/**
+	 * Sets deterministic flag for this automaton.
+	 * This method should (only) be used if automata are constructed manually.
+	 *
+	 * @param deterministic true if the automaton is definitely deterministic, false if the automaton
+	 *                      may be nondeterministic
+	 */
+	public void setDeterministic(boolean deterministic) {
+		this.deterministic = deterministic;
 	}
 
 

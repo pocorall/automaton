@@ -217,7 +217,7 @@ final public class BasicOperations {
 	 */
 	static public SingletonAutomaton complement(SingletonAutomaton a) {
 		a = a.cloneExpandedIfRequired();
-		a.determinize();
+		BasicOperations.determinize(a);
 		a.totalize();
 		for (State p : a.getStates()) {
 			if (p.accept == null) {
@@ -328,7 +328,8 @@ final public class BasicOperations {
 				return a1.singleton.equals(a2.singleton);
 			return a2.run(a1.singleton) != null;
 		}
-		a2.determinize();
+		BasicOperations.determinize(a2);
+
 		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
 		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();

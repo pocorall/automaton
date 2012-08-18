@@ -73,14 +73,14 @@ final public class SpecialOperations {
 	 */
 	public static SingletonAutomaton overlap(SingletonAutomaton a1, SingletonAutomaton a2) {
 		SingletonAutomaton b1 = a1.cloneExpanded();
-		b1.determinize();
+		BasicOperations.determinize(b1);
 		acceptToAccept(b1);
 		SingletonAutomaton b2 = a2.cloneExpanded();
 		reverse(b2);
-		b2.determinize();
+		BasicOperations.determinize(b2);
 		acceptToAccept(b2);
 		reverse(b2);
-		b2.determinize();
+		BasicOperations.determinize(b2);
 		return b1.intersection(b2).minus(BasicAutomata.makeEmptyString());
 	}
 
