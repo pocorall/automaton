@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package dk.brics.automaton;
+package net.pocorall.automaton;
 
 import java.util.*;
 

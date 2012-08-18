@@ -27,41 +27,57 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package dk.brics.automaton;
+package net.pocorall.automaton;
 
-/**
- * LinkedAutomaton provider based on {@link Datatypes}.
- */
-public class DatatypesAutomatonProvider implements AutomatonProvider {
+import java.io.Serializable;
+import java.util.Comparator;
+
+class TransitionComparator implements Comparator<Transition>, Serializable {
+
+	static final long serialVersionUID = 10001;
+
+	boolean to_first;
 	
-	private boolean enable_unicodeblocks, enable_unicodecategories, enable_xml;
-	
-	/**
-	 * Constructs a new automaton provider that recognizes all names
-	 * from {@link Datatypes#get(String)}.
-	 */
-	public DatatypesAutomatonProvider() {
-		enable_unicodeblocks = enable_unicodecategories = enable_xml = true;
+	TransitionComparator(boolean to_first) {
+		this.to_first = to_first;
 	}
 	
-	/**
-	 * Constructs a new automaton provider that recognizes some of the names
-	 * from {@link Datatypes#get(String)}
-	 * @param enable_unicodeblocks if true, enable Unicode block names
-	 * @param enable_unicodecategories if true, enable Unicode category names
-	 * @param enable_xml if true, enable XML related names
+	/** 
+	 * Compares by (min, reverse max, to) or (to, min, reverse max). 
 	 */
-	public DatatypesAutomatonProvider(boolean enable_unicodeblocks, boolean enable_unicodecategories, boolean enable_xml) {
-		this.enable_unicodeblocks = enable_unicodeblocks; 
-		this.enable_unicodecategories = enable_unicodecategories;
-		this.enable_xml = enable_xml;
-	}
-	
-	public LinkedAutomaton getAutomaton(String name) {
-		if ((enable_unicodeblocks && Datatypes.isUnicodeBlockName(name))
-				|| (enable_unicodecategories && Datatypes.isUnicodeCategoryName(name))
-				|| (enable_xml && Datatypes.isXMLName(name)))
-				return Datatypes.get(name);
-		return null;
+	public int compare(Transition t1, Transition t2) {
+		if (to_first) {
+			if (t1.to != t2.to) {
+				if (t1.to == null)
+					return -1;
+				else if (t2.to == null)
+					return 1;
+				else if (t1.to.number < t2.to.number)
+					return -1;
+				else if (t1.to.number > t2.to.number)
+					return 1;
+			}
+		}
+		if (t1.min < t2.min)
+			return -1;
+		if (t1.min > t2.min)
+			return 1;
+		if (t1.max > t2.max)
+			return -1;
+		if (t1.max < t2.max)
+			return 1;
+		if (!to_first) {
+			if (t1.to != t2.to) {
+				if (t1.to == null)
+					return -1;
+				else if (t2.to == null)
+					return 1;
+				else if (t1.to.number < t2.to.number)
+					return -1;
+				else if (t1.to.number > t2.to.number)
+					return 1;
+			}
+		}
+		return 0;
 	}
 }

@@ -27,70 +27,20 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package dk.brics.automaton;
+package net.pocorall.automaton;
+
+import java.io.IOException;
 
 /**
- * Pair of states.
- * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
+ * LinkedAutomaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
  */
-public class StatePair {
-	State s;
-	State s1;
-	State s2;
-	
-	StatePair(State s, State s1, State s2) {
-		this.s = s;
-		this.s1 = s1;
-		this.s2 = s2;
-	}
+public interface AutomatonProvider {
 	
 	/**
-	 * Constructs a new state pair.
-	 * @param s1 first state
-	 * @param s2 second state
+	 * Returns automaton of the given name.
+	 * @param name automaton name
+	 * @return automaton
+	 * @throws IOException if errors occur
 	 */
-	public StatePair(State s1, State s2) {
-		this.s1 = s1;
-		this.s2 = s2;
-	}
-	
-	/**
-	 * Returns first component of this pair.
-	 * @return first state
-	 */
-	public State getFirstState() {
-		return s1;
-	}
-	
-	/**
-	 * Returns second component of this pair.
-	 * @return second state
-	 */
-	public State getSecondState() {
-		return s2;
-	}
-	
-	/** 
-	 * Checks for equality.
-	 * @param obj object to compare with
-	 * @return true if <tt>obj</tt> represents the same pair of states as this pair
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof StatePair) {
-			StatePair p = (StatePair)obj;
-			return p.s1 == s1 && p.s2 == s2;
-		}
-		else
-			return false;
-	}
-	
-	/** 
-	 * Returns hash code.
-	 * @return hash code
-	 */
-	@Override
-	public int hashCode() {
-		return s1.hashCode() + s2.hashCode();
-	}
+	public LinkedAutomaton getAutomaton(String name) throws IOException;
 }

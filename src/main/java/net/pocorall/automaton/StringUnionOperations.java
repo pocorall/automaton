@@ -1,4 +1,4 @@
-package dk.brics.automaton;
+package net.pocorall.automaton;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -289,13 +289,13 @@ final public class StringUnionOperations {
 	/**
 	 * Internal recursive traversal for conversion.
 	 */
-	public static dk.brics.automaton.State convert(State s,
-												   IdentityHashMap<State, dk.brics.automaton.State> visited) {
-		dk.brics.automaton.State converted = visited.get(s);
+	public static net.pocorall.automaton.State convert(State s,
+												   IdentityHashMap<State, net.pocorall.automaton.State> visited) {
+		net.pocorall.automaton.State converted = visited.get(s);
 		if (converted != null)
 			return converted;
 
-		converted = new dk.brics.automaton.State();
+		converted = new net.pocorall.automaton.State();
 		converted.setAccept(s.is_final);
 
 		visited.put(s, converted);
@@ -311,13 +311,13 @@ final public class StringUnionOperations {
 	/**
 	 * Build a minimal, deterministic automaton from a sorted list of strings.
 	 */
-	public static dk.brics.automaton.State build(CharSequence[] input) {
+	public static net.pocorall.automaton.State build(CharSequence[] input) {
 		final StringUnionOperations builder = new StringUnionOperations();
 
 		for (CharSequence chs : input)
 			builder.add(chs, true);
 
-		return convert(builder.complete(), new IdentityHashMap<State, dk.brics.automaton.State>());
+		return convert(builder.complete(), new IdentityHashMap<State, net.pocorall.automaton.State>());
 	}
 
 	/**

@@ -27,57 +27,70 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package dk.brics.automaton;
+package net.pocorall.automaton;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
-class TransitionComparator implements Comparator<Transition>, Serializable {
-
-	static final long serialVersionUID = 10001;
-
-	boolean to_first;
+/**
+ * Pair of states.
+ * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
+ */
+public class StatePair {
+	State s;
+	State s1;
+	State s2;
 	
-	TransitionComparator(boolean to_first) {
-		this.to_first = to_first;
+	StatePair(State s, State s1, State s2) {
+		this.s = s;
+		this.s1 = s1;
+		this.s2 = s2;
+	}
+	
+	/**
+	 * Constructs a new state pair.
+	 * @param s1 first state
+	 * @param s2 second state
+	 */
+	public StatePair(State s1, State s2) {
+		this.s1 = s1;
+		this.s2 = s2;
+	}
+	
+	/**
+	 * Returns first component of this pair.
+	 * @return first state
+	 */
+	public State getFirstState() {
+		return s1;
+	}
+	
+	/**
+	 * Returns second component of this pair.
+	 * @return second state
+	 */
+	public State getSecondState() {
+		return s2;
 	}
 	
 	/** 
-	 * Compares by (min, reverse max, to) or (to, min, reverse max). 
+	 * Checks for equality.
+	 * @param obj object to compare with
+	 * @return true if <tt>obj</tt> represents the same pair of states as this pair
 	 */
-	public int compare(Transition t1, Transition t2) {
-		if (to_first) {
-			if (t1.to != t2.to) {
-				if (t1.to == null)
-					return -1;
-				else if (t2.to == null)
-					return 1;
-				else if (t1.to.number < t2.to.number)
-					return -1;
-				else if (t1.to.number > t2.to.number)
-					return 1;
-			}
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof StatePair) {
+			StatePair p = (StatePair)obj;
+			return p.s1 == s1 && p.s2 == s2;
 		}
-		if (t1.min < t2.min)
-			return -1;
-		if (t1.min > t2.min)
-			return 1;
-		if (t1.max > t2.max)
-			return -1;
-		if (t1.max < t2.max)
-			return 1;
-		if (!to_first) {
-			if (t1.to != t2.to) {
-				if (t1.to == null)
-					return -1;
-				else if (t2.to == null)
-					return 1;
-				else if (t1.to.number < t2.to.number)
-					return -1;
-				else if (t1.to.number > t2.to.number)
-					return 1;
-			}
-		}
-		return 0;
+		else
+			return false;
+	}
+	
+	/** 
+	 * Returns hash code.
+	 * @return hash code
+	 */
+	@Override
+	public int hashCode() {
+		return s1.hashCode() + s2.hashCode();
 	}
 }
