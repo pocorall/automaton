@@ -574,49 +574,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	}
 
 	/**
-	 * Retrieves a serialized <code>SingletonAutomaton</code> located by a URL.
-	 *
-	 * @param url URL of serialized automaton
-	 * @throws IOException            if input/output related exception occurs
-	 * @throws OptionalDataException  if the data is not a serialized object
-	 * @throws InvalidClassException  if the class serial number does not match
-	 * @throws ClassCastException     if the data is not a serialized <code>SingletonAutomaton</code>
-	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
-	 */
-	public static SingletonAutomaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
-		ClassNotFoundException, InvalidClassException {
-		return load(url.openStream());
-	}
-
-	/**
-	 * Retrieves a serialized <code>SingletonAutomaton</code> from a stream.
-	 *
-	 * @param stream input stream with serialized automaton
-	 * @throws IOException            if input/output related exception occurs
-	 * @throws OptionalDataException  if the data is not a serialized object
-	 * @throws InvalidClassException  if the class serial number does not match
-	 * @throws ClassCastException     if the data is not a serialized <code>SingletonAutomaton</code>
-	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
-	 */
-	public static SingletonAutomaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
-		ClassNotFoundException, InvalidClassException {
-		ObjectInputStream s = new ObjectInputStream(stream);
-		return (SingletonAutomaton) s.readObject();
-	}
-
-	/**
-	 * Writes this <code>SingletonAutomaton</code> to the given stream.
-	 *
-	 * @param stream output stream for serialized automaton
-	 * @throws IOException if input/output related exception occurs
-	 */
-	public void store(OutputStream stream) throws IOException {
-		ObjectOutputStream s = new ObjectOutputStream(stream);
-		s.writeObject(this);
-		s.flush();
-	}
-
-	/**
 	 * See {@link BasicAutomata#makeChar(char)}.
 	 */
 	public static SingletonAutomaton makeChar(char c) {

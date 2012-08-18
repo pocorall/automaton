@@ -470,7 +470,7 @@ final public class Datatypes {
 	private static SingletonAutomaton load(String name) {
 		try {
 			URL url = Datatypes.class.getClassLoader().getResource(name + ".aut");
-			return SingletonAutomaton.load(url.openStream());
+			return (SingletonAutomaton) new ObjectInputStream(url.openStream()).readObject();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -485,7 +485,10 @@ final public class Datatypes {
 		if (dir == null)
 			dir = "build";
 		try {
-			a.store((new FileOutputStream(dir + "/" + name + ".aut")));
+			ObjectOutputStream o = new ObjectOutputStream((new FileOutputStream(dir + "/" + name + ".aut")));
+			o.writeObject(a);
+			o.flush();
+			o.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -688,114 +691,114 @@ final public class Datatypes {
 		putWith(xsdexps2, u);
 
 		System.out.println("Building Unicode block automata...");
-		put(automata, "BasicLatin", SingletonAutomaton.makeCharRange('\u0000', '\u007F'));
-		put(automata, "Latin-1Supplement", SingletonAutomaton.makeCharRange('\u0080', '\u00FF'));
-		put(automata, "LatinExtended-A", SingletonAutomaton.makeCharRange('\u0100', '\u017F'));
-		put(automata, "LatinExtended-B", SingletonAutomaton.makeCharRange('\u0180', '\u024F'));
-		put(automata, "IPAExtensions", SingletonAutomaton.makeCharRange('\u0250', '\u02AF'));
-		put(automata, "SpacingModifierLetters", SingletonAutomaton.makeCharRange('\u02B0', '\u02FF'));
-		put(automata, "CombiningDiacriticalMarks", SingletonAutomaton.makeCharRange('\u0300', '\u036F'));
-		put(automata, "Greek", SingletonAutomaton.makeCharRange('\u0370', '\u03FF'));
-		put(automata, "Cyrillic", SingletonAutomaton.makeCharRange('\u0400', '\u04FF'));
-		put(automata, "Armenian", SingletonAutomaton.makeCharRange('\u0530', '\u058F'));
-		put(automata, "Hebrew", SingletonAutomaton.makeCharRange('\u0590', '\u05FF'));
-		put(automata, "Arabic", SingletonAutomaton.makeCharRange('\u0600', '\u06FF'));
-		put(automata, "Syriac", SingletonAutomaton.makeCharRange('\u0700', '\u074F'));
-		put(automata, "Thaana", SingletonAutomaton.makeCharRange('\u0780', '\u07BF'));
-		put(automata, "Devanagari", SingletonAutomaton.makeCharRange('\u0900', '\u097F'));
-		put(automata, "Bengali", SingletonAutomaton.makeCharRange('\u0980', '\u09FF'));
-		put(automata, "Gurmukhi", SingletonAutomaton.makeCharRange('\u0A00', '\u0A7F'));
-		put(automata, "Gujarati", SingletonAutomaton.makeCharRange('\u0A80', '\u0AFF'));
-		put(automata, "Oriya", SingletonAutomaton.makeCharRange('\u0B00', '\u0B7F'));
-		put(automata, "Tamil", SingletonAutomaton.makeCharRange('\u0B80', '\u0BFF'));
-		put(automata, "Telugu", SingletonAutomaton.makeCharRange('\u0C00', '\u0C7F'));
-		put(automata, "Kannada", SingletonAutomaton.makeCharRange('\u0C80', '\u0CFF'));
-		put(automata, "Malayalam", SingletonAutomaton.makeCharRange('\u0D00', '\u0D7F'));
-		put(automata, "Sinhala", SingletonAutomaton.makeCharRange('\u0D80', '\u0DFF'));
-		put(automata, "Thai", SingletonAutomaton.makeCharRange('\u0E00', '\u0E7F'));
-		put(automata, "Lao", SingletonAutomaton.makeCharRange('\u0E80', '\u0EFF'));
-		put(automata, "Tibetan", SingletonAutomaton.makeCharRange('\u0F00', '\u0FFF'));
-		put(automata, "Myanmar", SingletonAutomaton.makeCharRange('\u1000', '\u109F'));
-		put(automata, "Georgian", SingletonAutomaton.makeCharRange('\u10A0', '\u10FF'));
-		put(automata, "HangulJamo", SingletonAutomaton.makeCharRange('\u1100', '\u11FF'));
-		put(automata, "Ethiopic", SingletonAutomaton.makeCharRange('\u1200', '\u137F'));
-		put(automata, "Cherokee", SingletonAutomaton.makeCharRange('\u13A0', '\u13FF'));
-		put(automata, "UnifiedCanadianAboriginalSyllabics", SingletonAutomaton.makeCharRange('\u1400', '\u167F'));
-		put(automata, "Ogham", SingletonAutomaton.makeCharRange('\u1680', '\u169F'));
-		put(automata, "Runic", SingletonAutomaton.makeCharRange('\u16A0', '\u16FF'));
-		put(automata, "Khmer", SingletonAutomaton.makeCharRange('\u1780', '\u17FF'));
-		put(automata, "Mongolian", SingletonAutomaton.makeCharRange('\u1800', '\u18AF'));
-		put(automata, "LatinExtendedAdditional", SingletonAutomaton.makeCharRange('\u1E00', '\u1EFF'));
-		put(automata, "GreekExtended", SingletonAutomaton.makeCharRange('\u1F00', '\u1FFF'));
-		put(automata, "GeneralPunctuation", SingletonAutomaton.makeCharRange('\u2000', '\u206F'));
-		put(automata, "SuperscriptsandSubscripts", SingletonAutomaton.makeCharRange('\u2070', '\u209F'));
-		put(automata, "CurrencySymbols", SingletonAutomaton.makeCharRange('\u20A0', '\u20CF'));
-		put(automata, "CombiningMarksforSymbols", SingletonAutomaton.makeCharRange('\u20D0', '\u20FF'));
-		put(automata, "LetterlikeSymbols", SingletonAutomaton.makeCharRange('\u2100', '\u214F'));
-		put(automata, "NumberForms", SingletonAutomaton.makeCharRange('\u2150', '\u218F'));
-		put(automata, "Arrows", SingletonAutomaton.makeCharRange('\u2190', '\u21FF'));
-		put(automata, "MathematicalOperators", SingletonAutomaton.makeCharRange('\u2200', '\u22FF'));
-		put(automata, "MiscellaneousTechnical", SingletonAutomaton.makeCharRange('\u2300', '\u23FF'));
-		put(automata, "ControlPictures", SingletonAutomaton.makeCharRange('\u2400', '\u243F'));
-		put(automata, "OpticalCharacterRecognition", SingletonAutomaton.makeCharRange('\u2440', '\u245F'));
-		put(automata, "EnclosedAlphanumerics", SingletonAutomaton.makeCharRange('\u2460', '\u24FF'));
-		put(automata, "BoxDrawing", SingletonAutomaton.makeCharRange('\u2500', '\u257F'));
-		put(automata, "BlockElements", SingletonAutomaton.makeCharRange('\u2580', '\u259F'));
-		put(automata, "GeometricShapes", SingletonAutomaton.makeCharRange('\u25A0', '\u25FF'));
-		put(automata, "MiscellaneousSymbols", SingletonAutomaton.makeCharRange('\u2600', '\u26FF'));
-		put(automata, "Dingbats", SingletonAutomaton.makeCharRange('\u2700', '\u27BF'));
-		put(automata, "BraillePatterns", SingletonAutomaton.makeCharRange('\u2800', '\u28FF'));
-		put(automata, "CJKRadicalsSupplement", SingletonAutomaton.makeCharRange('\u2E80', '\u2EFF'));
-		put(automata, "KangxiRadicals", SingletonAutomaton.makeCharRange('\u2F00', '\u2FDF'));
-		put(automata, "IdeographicDescriptionCharacters", SingletonAutomaton.makeCharRange('\u2FF0', '\u2FFF'));
-		put(automata, "CJKSymbolsandPunctuation", SingletonAutomaton.makeCharRange('\u3000', '\u303F'));
-		put(automata, "Hiragana", SingletonAutomaton.makeCharRange('\u3040', '\u309F'));
-		put(automata, "Katakana", SingletonAutomaton.makeCharRange('\u30A0', '\u30FF'));
-		put(automata, "Bopomofo", SingletonAutomaton.makeCharRange('\u3100', '\u312F'));
-		put(automata, "HangulCompatibilityJamo", SingletonAutomaton.makeCharRange('\u3130', '\u318F'));
-		put(automata, "Kanbun", SingletonAutomaton.makeCharRange('\u3190', '\u319F'));
-		put(automata, "BopomofoExtended", SingletonAutomaton.makeCharRange('\u31A0', '\u31BF'));
-		put(automata, "EnclosedCJKLettersandMonths", SingletonAutomaton.makeCharRange('\u3200', '\u32FF'));
-		put(automata, "CJKCompatibility", SingletonAutomaton.makeCharRange('\u3300', '\u33FF'));
-		put(automata, "CJKUnifiedIdeographsExtensionA", SingletonAutomaton.makeCharRange('\u3400', '\u4DB5'));
-		put(automata, "CJKUnifiedIdeographs", SingletonAutomaton.makeCharRange('\u4E00', '\u9FFF'));
-		put(automata, "YiSyllables", SingletonAutomaton.makeCharRange('\uA000', '\uA48F'));
-		put(automata, "YiRadicals", SingletonAutomaton.makeCharRange('\uA490', '\uA4CF'));
-		put(automata, "HangulSyllables", SingletonAutomaton.makeCharRange('\uAC00', '\uD7A3'));
-		put(automata, "CJKCompatibilityIdeographs", SingletonAutomaton.makeCharRange('\uF900', '\uFAFF'));
-		put(automata, "AlphabeticPresentationForms", SingletonAutomaton.makeCharRange('\uFB00', '\uFB4F'));
-		put(automata, "ArabicPresentationForms-A", SingletonAutomaton.makeCharRange('\uFB50', '\uFDFF'));
-		put(automata, "CombiningHalfMarks", SingletonAutomaton.makeCharRange('\uFE20', '\uFE2F'));
-		put(automata, "CJKCompatibilityForms", SingletonAutomaton.makeCharRange('\uFE30', '\uFE4F'));
-		put(automata, "SmallFormVariants", SingletonAutomaton.makeCharRange('\uFE50', '\uFE6F'));
-		put(automata, "ArabicPresentationForms-B", SingletonAutomaton.makeCharRange('\uFE70', '\uFEFE'));
-		put(automata, "Specials", SingletonAutomaton.makeCharRange('\uFEFF', '\uFEFF'));
-		put(automata, "HalfwidthandFullwidthForms", SingletonAutomaton.makeCharRange('\uFF00', '\uFFEF'));
-		put(automata, "Specials", SingletonAutomaton.makeCharRange('\uFFF0', '\uFFFD'));
+		put(automata, "BasicLatin", BasicAutomata.makeCharRange('\u0000', '\u007F'));
+		put(automata, "Latin-1Supplement", BasicAutomata.makeCharRange('\u0080', '\u00FF'));
+		put(automata, "LatinExtended-A", BasicAutomata.makeCharRange('\u0100', '\u017F'));
+		put(automata, "LatinExtended-B", BasicAutomata.makeCharRange('\u0180', '\u024F'));
+		put(automata, "IPAExtensions", BasicAutomata.makeCharRange('\u0250', '\u02AF'));
+		put(automata, "SpacingModifierLetters", BasicAutomata.makeCharRange('\u02B0', '\u02FF'));
+		put(automata, "CombiningDiacriticalMarks", BasicAutomata.makeCharRange('\u0300', '\u036F'));
+		put(automata, "Greek", BasicAutomata.makeCharRange('\u0370', '\u03FF'));
+		put(automata, "Cyrillic", BasicAutomata.makeCharRange('\u0400', '\u04FF'));
+		put(automata, "Armenian", BasicAutomata.makeCharRange('\u0530', '\u058F'));
+		put(automata, "Hebrew", BasicAutomata.makeCharRange('\u0590', '\u05FF'));
+		put(automata, "Arabic", BasicAutomata.makeCharRange('\u0600', '\u06FF'));
+		put(automata, "Syriac", BasicAutomata.makeCharRange('\u0700', '\u074F'));
+		put(automata, "Thaana", BasicAutomata.makeCharRange('\u0780', '\u07BF'));
+		put(automata, "Devanagari", BasicAutomata.makeCharRange('\u0900', '\u097F'));
+		put(automata, "Bengali", BasicAutomata.makeCharRange('\u0980', '\u09FF'));
+		put(automata, "Gurmukhi", BasicAutomata.makeCharRange('\u0A00', '\u0A7F'));
+		put(automata, "Gujarati", BasicAutomata.makeCharRange('\u0A80', '\u0AFF'));
+		put(automata, "Oriya", BasicAutomata.makeCharRange('\u0B00', '\u0B7F'));
+		put(automata, "Tamil", BasicAutomata.makeCharRange('\u0B80', '\u0BFF'));
+		put(automata, "Telugu", BasicAutomata.makeCharRange('\u0C00', '\u0C7F'));
+		put(automata, "Kannada", BasicAutomata.makeCharRange('\u0C80', '\u0CFF'));
+		put(automata, "Malayalam", BasicAutomata.makeCharRange('\u0D00', '\u0D7F'));
+		put(automata, "Sinhala", BasicAutomata.makeCharRange('\u0D80', '\u0DFF'));
+		put(automata, "Thai", BasicAutomata.makeCharRange('\u0E00', '\u0E7F'));
+		put(automata, "Lao", BasicAutomata.makeCharRange('\u0E80', '\u0EFF'));
+		put(automata, "Tibetan", BasicAutomata.makeCharRange('\u0F00', '\u0FFF'));
+		put(automata, "Myanmar", BasicAutomata.makeCharRange('\u1000', '\u109F'));
+		put(automata, "Georgian", BasicAutomata.makeCharRange('\u10A0', '\u10FF'));
+		put(automata, "HangulJamo", BasicAutomata.makeCharRange('\u1100', '\u11FF'));
+		put(automata, "Ethiopic", BasicAutomata.makeCharRange('\u1200', '\u137F'));
+		put(automata, "Cherokee", BasicAutomata.makeCharRange('\u13A0', '\u13FF'));
+		put(automata, "UnifiedCanadianAboriginalSyllabics", BasicAutomata.makeCharRange('\u1400', '\u167F'));
+		put(automata, "Ogham", BasicAutomata.makeCharRange('\u1680', '\u169F'));
+		put(automata, "Runic", BasicAutomata.makeCharRange('\u16A0', '\u16FF'));
+		put(automata, "Khmer", BasicAutomata.makeCharRange('\u1780', '\u17FF'));
+		put(automata, "Mongolian", BasicAutomata.makeCharRange('\u1800', '\u18AF'));
+		put(automata, "LatinExtendedAdditional", BasicAutomata.makeCharRange('\u1E00', '\u1EFF'));
+		put(automata, "GreekExtended", BasicAutomata.makeCharRange('\u1F00', '\u1FFF'));
+		put(automata, "GeneralPunctuation", BasicAutomata.makeCharRange('\u2000', '\u206F'));
+		put(automata, "SuperscriptsandSubscripts", BasicAutomata.makeCharRange('\u2070', '\u209F'));
+		put(automata, "CurrencySymbols", BasicAutomata.makeCharRange('\u20A0', '\u20CF'));
+		put(automata, "CombiningMarksforSymbols", BasicAutomata.makeCharRange('\u20D0', '\u20FF'));
+		put(automata, "LetterlikeSymbols", BasicAutomata.makeCharRange('\u2100', '\u214F'));
+		put(automata, "NumberForms", BasicAutomata.makeCharRange('\u2150', '\u218F'));
+		put(automata, "Arrows", BasicAutomata.makeCharRange('\u2190', '\u21FF'));
+		put(automata, "MathematicalOperators", BasicAutomata.makeCharRange('\u2200', '\u22FF'));
+		put(automata, "MiscellaneousTechnical", BasicAutomata.makeCharRange('\u2300', '\u23FF'));
+		put(automata, "ControlPictures", BasicAutomata.makeCharRange('\u2400', '\u243F'));
+		put(automata, "OpticalCharacterRecognition", BasicAutomata.makeCharRange('\u2440', '\u245F'));
+		put(automata, "EnclosedAlphanumerics", BasicAutomata.makeCharRange('\u2460', '\u24FF'));
+		put(automata, "BoxDrawing", BasicAutomata.makeCharRange('\u2500', '\u257F'));
+		put(automata, "BlockElements", BasicAutomata.makeCharRange('\u2580', '\u259F'));
+		put(automata, "GeometricShapes", BasicAutomata.makeCharRange('\u25A0', '\u25FF'));
+		put(automata, "MiscellaneousSymbols", BasicAutomata.makeCharRange('\u2600', '\u26FF'));
+		put(automata, "Dingbats", BasicAutomata.makeCharRange('\u2700', '\u27BF'));
+		put(automata, "BraillePatterns", BasicAutomata.makeCharRange('\u2800', '\u28FF'));
+		put(automata, "CJKRadicalsSupplement", BasicAutomata.makeCharRange('\u2E80', '\u2EFF'));
+		put(automata, "KangxiRadicals", BasicAutomata.makeCharRange('\u2F00', '\u2FDF'));
+		put(automata, "IdeographicDescriptionCharacters", BasicAutomata.makeCharRange('\u2FF0', '\u2FFF'));
+		put(automata, "CJKSymbolsandPunctuation", BasicAutomata.makeCharRange('\u3000', '\u303F'));
+		put(automata, "Hiragana", BasicAutomata.makeCharRange('\u3040', '\u309F'));
+		put(automata, "Katakana", BasicAutomata.makeCharRange('\u30A0', '\u30FF'));
+		put(automata, "Bopomofo", BasicAutomata.makeCharRange('\u3100', '\u312F'));
+		put(automata, "HangulCompatibilityJamo", BasicAutomata.makeCharRange('\u3130', '\u318F'));
+		put(automata, "Kanbun", BasicAutomata.makeCharRange('\u3190', '\u319F'));
+		put(automata, "BopomofoExtended", BasicAutomata.makeCharRange('\u31A0', '\u31BF'));
+		put(automata, "EnclosedCJKLettersandMonths", BasicAutomata.makeCharRange('\u3200', '\u32FF'));
+		put(automata, "CJKCompatibility", BasicAutomata.makeCharRange('\u3300', '\u33FF'));
+		put(automata, "CJKUnifiedIdeographsExtensionA", BasicAutomata.makeCharRange('\u3400', '\u4DB5'));
+		put(automata, "CJKUnifiedIdeographs", BasicAutomata.makeCharRange('\u4E00', '\u9FFF'));
+		put(automata, "YiSyllables", BasicAutomata.makeCharRange('\uA000', '\uA48F'));
+		put(automata, "YiRadicals", BasicAutomata.makeCharRange('\uA490', '\uA4CF'));
+		put(automata, "HangulSyllables", BasicAutomata.makeCharRange('\uAC00', '\uD7A3'));
+		put(automata, "CJKCompatibilityIdeographs", BasicAutomata.makeCharRange('\uF900', '\uFAFF'));
+		put(automata, "AlphabeticPresentationForms", BasicAutomata.makeCharRange('\uFB00', '\uFB4F'));
+		put(automata, "ArabicPresentationForms-A", BasicAutomata.makeCharRange('\uFB50', '\uFDFF'));
+		put(automata, "CombiningHalfMarks", BasicAutomata.makeCharRange('\uFE20', '\uFE2F'));
+		put(automata, "CJKCompatibilityForms", BasicAutomata.makeCharRange('\uFE30', '\uFE4F'));
+		put(automata, "SmallFormVariants", BasicAutomata.makeCharRange('\uFE50', '\uFE6F'));
+		put(automata, "ArabicPresentationForms-B", BasicAutomata.makeCharRange('\uFE70', '\uFEFE'));
+		put(automata, "Specials", BasicAutomata.makeCharRange('\uFEFF', '\uFEFF'));
+		put(automata, "HalfwidthandFullwidthForms", BasicAutomata.makeCharRange('\uFF00', '\uFFEF'));
+		put(automata, "Specials", BasicAutomata.makeCharRange('\uFFF0', '\uFFFD'));
 
-		put(automata, "OldItalic", SingletonAutomaton.makeChar('\ud800').concatenate(SingletonAutomaton.makeCharRange('\udf00', '\udf2f')));
-		put(automata, "Gothic", SingletonAutomaton.makeChar('\ud800').concatenate(SingletonAutomaton.makeCharRange('\udf30', '\udf4f')));
-		put(automata, "Deseret", SingletonAutomaton.makeChar('\ud801').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udc4f')));
-		put(automata, "ByzantineMusicalSymbols", SingletonAutomaton.makeChar('\ud834').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udcff')));
-		put(automata, "MusicalSymbols", SingletonAutomaton.makeChar('\ud834').concatenate(SingletonAutomaton.makeCharRange('\udd00', '\uddff')));
-		put(automata, "MathematicalAlphanumericSymbols", SingletonAutomaton.makeChar('\ud835').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udfff')));
+		put(automata, "OldItalic", SingletonAutomaton.makeChar('\ud800').concatenate(BasicAutomata.makeCharRange('\udf00', '\udf2f')));
+		put(automata, "Gothic", SingletonAutomaton.makeChar('\ud800').concatenate(BasicAutomata.makeCharRange('\udf30', '\udf4f')));
+		put(automata, "Deseret", SingletonAutomaton.makeChar('\ud801').concatenate(BasicAutomata.makeCharRange('\udc00', '\udc4f')));
+		put(automata, "ByzantineMusicalSymbols", SingletonAutomaton.makeChar('\ud834').concatenate(BasicAutomata.makeCharRange('\udc00', '\udcff')));
+		put(automata, "MusicalSymbols", SingletonAutomaton.makeChar('\ud834').concatenate(BasicAutomata.makeCharRange('\udd00', '\uddff')));
+		put(automata, "MathematicalAlphanumericSymbols", SingletonAutomaton.makeChar('\ud835').concatenate(BasicAutomata.makeCharRange('\udc00', '\udfff')));
 
-		put(automata, "CJKUnifiedIdeographsExtensionB", SingletonAutomaton.makeCharRange('\ud840', '\ud868').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udfff'))
-			.union(SingletonAutomaton.makeChar('\ud869').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\uded6'))));
+		put(automata, "CJKUnifiedIdeographsExtensionB", BasicAutomata.makeCharRange('\ud840', '\ud868').concatenate(BasicAutomata.makeCharRange('\udc00', '\udfff'))
+			.union(SingletonAutomaton.makeChar('\ud869').concatenate(BasicAutomata.makeCharRange('\udc00', '\uded6'))));
 
-		put(automata, "CJKCompatibilityIdeographsSupplement", SingletonAutomaton.makeChar('\ud87e').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\ude1f')));
-		put(automata, "Tags", SingletonAutomaton.makeChar('\udb40').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udc7f')));
+		put(automata, "CJKCompatibilityIdeographsSupplement", SingletonAutomaton.makeChar('\ud87e').concatenate(BasicAutomata.makeCharRange('\udc00', '\ude1f')));
+		put(automata, "Tags", SingletonAutomaton.makeChar('\udb40').concatenate(BasicAutomata.makeCharRange('\udc00', '\udc7f')));
 
-		put(automata, "PrivateUse", SingletonAutomaton.makeCharRange('\uE000', '\uF8FF')
-			.union(SingletonAutomaton.makeCharRange('\udb80', '\udbbe').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udfff'))
-				.union(SingletonAutomaton.makeChar('\udbbf').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udffd'))))
-			.union(SingletonAutomaton.makeCharRange('\udbc0', '\udbfe').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udfff'))
-				.union(SingletonAutomaton.makeChar('\udbff').concatenate(SingletonAutomaton.makeCharRange('\udc00', '\udffd')))));
+		put(automata, "PrivateUse", BasicAutomata.makeCharRange('\uE000', '\uF8FF')
+			.union(BasicAutomata.makeCharRange('\udb80', '\udbbe').concatenate(BasicAutomata.makeCharRange('\udc00', '\udfff'))
+				.union(SingletonAutomaton.makeChar('\udbbf').concatenate(BasicAutomata.makeCharRange('\udc00', '\udffd'))))
+			.union(BasicAutomata.makeCharRange('\udbc0', '\udbfe').concatenate(BasicAutomata.makeCharRange('\udc00', '\udfff'))
+				.union(SingletonAutomaton.makeChar('\udbff').concatenate(BasicAutomata.makeCharRange('\udc00', '\udffd')))));
 
 		System.out.println("Building Unicode category automata...");
 		Map<String, Set<Integer>> categories = new HashMap<String, Set<Integer>>();
 		try {
-			StreamTokenizer st = new StreamTokenizer(new BufferedReader(new FileReader("src/Unicode.txt")));
+			StreamTokenizer st = new StreamTokenizer(new BufferedReader(new FileReader("src/main/java/Unicode.txt")));
 			st.resetSyntax();
 			st.whitespaceChars(';', ';');
 			st.whitespaceChars('\n', ' ');
