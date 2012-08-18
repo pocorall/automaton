@@ -35,7 +35,7 @@ final public class StringUnionOperations {
 	/**
 	 * State with <code>char</code> labels on transitions.
 	 */
-	public final static class State {
+	public final static class CharState {
 
 		/**
 		 * An empty set of labels.
@@ -45,10 +45,10 @@ final public class StringUnionOperations {
 		/**
 		 * An empty set of states.
 		 */
-		private final static State[] NO_STATES = new State[0];
+		private final static CharState[] NO_STATES = new CharState[0];
 
 		/**
-		 * Labels of outgoing transitions. Indexed identically to {@link #states}.
+		 * Labels of outgoing transitions. Indexed identically to {@link #charStates}.
 		 * Labels must be sorted lexicographically.
 		 */
 		char[] labels = NO_LABELS;
@@ -57,7 +57,7 @@ final public class StringUnionOperations {
 		 * States reachable from outgoing transitions. Indexed identically to
 		 * {@link #labels}.
 		 */
-		State[] states = NO_STATES;
+		CharState[] charStates = NO_STATES;
 
 		/**
 		 * <code>true</code> if this state corresponds to the end of at least one
@@ -70,15 +70,15 @@ final public class StringUnionOperations {
 		 * with <code>label</code>. If no such transition exists, returns
 		 * <code>null</code>.
 		 */
-		public State getState(char label) {
+		public CharState getState(char label) {
 			final int index = Arrays.binarySearch(labels, label);
-			return index >= 0 ? states[index] : null;
+			return index >= 0 ? charStates[index] : null;
 		}
 
 		/**
 		 * Returns an array of outgoing transition labels. The array is sorted in
 		 * lexicographic order and indexes correspond to states returned from
-		 * {@link #getStates()}.
+		 * {@link #getCharStates()}.
 		 */
 		public char[] getTransitionLabels() {
 			return this.labels;
@@ -88,8 +88,8 @@ final public class StringUnionOperations {
 		 * Returns an array of outgoing transitions from this state. The returned
 		 * array must not be changed.
 		 */
-		public State[] getStates() {
-			return this.states;
+		public CharState[] getCharStates() {
+			return this.charStates;
 		}
 
 		/**
@@ -103,10 +103,10 @@ final public class StringUnionOperations {
 		 */
 		@Override
 		public boolean equals(Object obj) {
-			final State other = (State) obj;
+			final CharState other = (CharState) obj;
 			return is_final == other.is_final
 				&& Arrays.equals(this.labels, other.labels)
-				&& referenceEquals(this.states, other.states);
+				&& referenceEquals(this.charStates, other.charStates);
 		}
 
 		/**
@@ -141,7 +141,7 @@ final public class StringUnionOperations {
 			 * in registry) and traversed in post-order, so any outgoing transitions
 			 * are already interned.
 			 */
-			for (State s : this.states) {
+			for (CharState s : this.charStates) {
 				hash ^= System.identityHashCode(s);
 			}
 
@@ -152,34 +152,34 @@ final public class StringUnionOperations {
 		 * Create a new outgoing transition labeled <code>label</code> and return
 		 * the newly created target state for this transition.
 		 */
-		State newState(char label) {
+		CharState newState(char label) {
 			assert Arrays.binarySearch(labels, label) < 0 : "State already has transition labeled: "
 				+ label;
 
 			labels = copyOf(labels, labels.length + 1);
-			states = copyOf(states, states.length + 1);
+			charStates = copyOf(charStates, charStates.length + 1);
 
 			labels[labels.length - 1] = label;
-			return states[states.length - 1] = new State();
+			return charStates[charStates.length - 1] = new CharState();
 		}
 
 		/**
 		 * Return the most recent transitions's target state.
 		 */
-		State lastChild() {
+		CharState lastChild() {
 			assert hasChildren() : "No outgoing transitions.";
-			return states[states.length - 1];
+			return charStates[charStates.length - 1];
 		}
 
 		/**
 		 * Return the associated state if the most recent transition
 		 * is labeled with <code>label</code>.
 		 */
-		State lastChild(char label) {
+		CharState lastChild(char label) {
 			final int index = labels.length - 1;
-			State s = null;
+			CharState s = null;
 			if (index >= 0 && labels[index] == label) {
-				s = states[index];
+				s = charStates[index];
 			}
 			assert s == getState(label);
 			return s;
@@ -189,9 +189,14 @@ final public class StringUnionOperations {
 		 * Replace the last added outgoing transition's target state with the given
 		 * state.
 		 */
-		void replaceLastChild(State state) {
+		void replaceLastChild(CharState charState) {
 			assert hasChildren() : "No outgoing transitions.";
-			states[states.length - 1] = state;
+			charStates[charStates.length - 1] = charState;
+		}
+
+
+		public net.pocorall.automaton.State toState() {
+			return convert(this);
 		}
 
 		/**
@@ -207,8 +212,8 @@ final public class StringUnionOperations {
 		/**
 		 * JDK1.5-replacement of {@link Arrays#copyOf(char[], int)}
 		 */
-		public static State[] copyOf(State[] original, int newLength) {
-			State[] copy = new State[newLength];
+		public static CharState[] copyOf(CharState[] original, int newLength) {
+			CharState[] copy = new CharState[newLength];
 			System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
 			return copy;
 		}
@@ -231,15 +236,15 @@ final public class StringUnionOperations {
 	/**
 	 * "register" for state interning.
 	 */
-	private HashMap<State, State> register = new HashMap<State, State>();
+	private HashMap<CharState, CharState> register = new HashMap<CharState, CharState>();
 
 	/**
 	 * Root automaton state.
 	 */
-	private State root = new State();
+	private CharState root = new CharState();
 
 	/**
-	 * Previous sequence added to the automaton in {@link #add(CharSequence, Object)}.
+	 * Previous sequence added to the automaton in {@link #add(Object, CharSequence)}.
 	 */
 	private StringBuilder previous;
 
@@ -248,7 +253,7 @@ final public class StringUnionOperations {
 	 * lexicographically larger or equal compared to any previous sequences
 	 * added to this automaton (the input must be sorted).
 	 */
-	public void add(CharSequence current, Object acceptObj) {
+	public void add(Object acceptObj, CharSequence current) {
 		assert register != null : "LinkedAutomaton already built.";
 		assert current.length() > 0 : "Input sequences must not be empty.";
 		assert previous == null || LEXICOGRAPHIC_ORDER.compare(previous, current) <= 0 :
@@ -257,16 +262,16 @@ final public class StringUnionOperations {
 
 		// Descend in the automaton (find matching prefix). 
 		int pos = 0, max = current.length();
-		State next, state = root;
-		while (pos < max && (next = state.lastChild(current.charAt(pos))) != null) {
-			state = next;
+		CharState next, charState = root;
+		while (pos < max && (next = charState.lastChild(current.charAt(pos))) != null) {
+			charState = next;
 			pos++;
 		}
 
-		if (state.hasChildren())
-			replaceOrRegister(state);
+		if (charState.hasChildren())
+			replaceOrRegister(charState);
 
-		addSuffix(state, current, pos, acceptObj);
+		addSuffix(charState, current, pos, acceptObj);
 	}
 
 	/**
@@ -275,7 +280,7 @@ final public class StringUnionOperations {
 	 *
 	 * @return Root automaton state.
 	 */
-	public State complete() {
+	public CharState complete() {
 		if (this.register == null)
 			throw new IllegalStateException();
 
@@ -286,11 +291,15 @@ final public class StringUnionOperations {
 		return root;
 	}
 
+	public static net.pocorall.automaton.State convert(CharState s) {
+		return convert(s, new IdentityHashMap<CharState, net.pocorall.automaton.State>());
+	}
+
 	/**
 	 * Internal recursive traversal for conversion.
 	 */
-	public static net.pocorall.automaton.State convert(State s,
-												   IdentityHashMap<State, net.pocorall.automaton.State> visited) {
+	public static net.pocorall.automaton.State convert(CharState s,
+													   IdentityHashMap<CharState, net.pocorall.automaton.State> visited) {
 		net.pocorall.automaton.State converted = visited.get(s);
 		if (converted != null)
 			return converted;
@@ -301,7 +310,7 @@ final public class StringUnionOperations {
 		visited.put(s, converted);
 		int i = 0;
 		char[] labels = s.labels;
-		for (StringUnionOperations.State target : s.states) {
+		for (CharState target : s.charStates) {
 			converted.addTransition(new Transition(labels[i++], convert(target, visited)));
 		}
 
@@ -315,9 +324,9 @@ final public class StringUnionOperations {
 		final StringUnionOperations builder = new StringUnionOperations();
 
 		for (CharSequence chs : input)
-			builder.add(chs, true);
+			builder.add(Boolean.TRUE, chs);
 
-		return convert(builder.complete(), new IdentityHashMap<State, net.pocorall.automaton.State>());
+		return builder.complete().toState();
 	}
 
 	/**
@@ -337,15 +346,15 @@ final public class StringUnionOperations {
 	 * Replace last child of <code>state</code> with an already registered
 	 * state or register the last child state.
 	 */
-	private void replaceOrRegister(State state) {
-		final State child = state.lastChild();
+	private void replaceOrRegister(CharState charState) {
+		final CharState child = charState.lastChild();
 
 		if (child.hasChildren())
 			replaceOrRegister(child);
 
-		final State registered = register.get(child);
+		final CharState registered = register.get(child);
 		if (registered != null) {
-			state.replaceLastChild(registered);
+			charState.replaceLastChild(registered);
 		} else {
 			register.put(child, child);
 		}
@@ -355,11 +364,11 @@ final public class StringUnionOperations {
 	 * Add a suffix of <code>current</code> starting at <code>fromIndex</code>
 	 * (inclusive) to state <code>state</code>.
 	 */
-	private void addSuffix(State state, CharSequence current, int fromIndex, Object acceptObj) {
+	private void addSuffix(CharState charState, CharSequence current, int fromIndex, Object acceptObj) {
 		final int len = current.length();
 		for (int i = fromIndex; i < len; i++) {
-			state = state.newState(current.charAt(i));
+			charState = charState.newState(current.charAt(i));
 		}
-		state.is_final = acceptObj;
+		charState.is_final = acceptObj;
 	}
 }

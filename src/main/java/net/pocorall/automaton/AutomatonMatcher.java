@@ -60,7 +60,7 @@ public class AutomatonMatcher implements MatchResult {
 	 * This also updates the values for the {@code start}, {@code end}, and
 	 * {@code group} methods.
 	 *
-	 * @return {@code true} if there is a matching subsequence.
+	 * @return {@code not null} if there is a matching subsequence, null if there is no matching.
 	 */
 	public Object find() {
 		int begin;
@@ -168,7 +168,7 @@ public class AutomatonMatcher implements MatchResult {
 	 * @param group the desired capturing group.
 	 * @return The offset after the last character matched of the specified
 	 *         capturing group.
-	 * @throws IllegalStateException	 if there has not been a match attempt or
+	 * @throws IllegalStateException     if there has not been a match attempt or
 	 *                                   if the last attempt yielded no results.
 	 * @throws IndexOutOfBoundsException if the specified capturing group does
 	 *                                   not exist in the underlying automaton.
@@ -209,7 +209,7 @@ public class AutomatonMatcher implements MatchResult {
 	 * @return The subsequence of the input found by the specified capturing
 	 *         group during the previous match operation the previous match. Or
 	 *         {@code null} if the given group did match.
-	 * @throws IllegalStateException	 if there has not been a match attempt or
+	 * @throws IllegalStateException     if there has not been a match attempt or
 	 *                                   if the last attempt yielded no results.
 	 * @throws IndexOutOfBoundsException if the specified capturing group does
 	 *                                   not exist in the underlying automaton.
@@ -253,7 +253,7 @@ public class AutomatonMatcher implements MatchResult {
 	 * @param group the desired capturing group.
 	 * @return The offset of the first character matched of the specified
 	 *         capturing group.
-	 * @throws IllegalStateException	 if there has not been a match attempt or
+	 * @throws IllegalStateException     if there has not been a match attempt or
 	 *                                   if the last attempt yielded no results.
 	 * @throws IndexOutOfBoundsException if the specified capturing group does
 	 *                                   not exist in the underlying automaton.
