@@ -9,7 +9,7 @@ import java.util.IdentityHashMap;
  * Operations for building minimal deterministic automata from sets of strings.
  * The algorithm requires sorted input data, but is very fast (nearly linear with the input size).
  *
- * @author Dawid Weiss
+ * @author Dawid Weiss and Sung-Ho Lee
  */
 final public class StringUnionOperations {
 
@@ -35,7 +35,7 @@ final public class StringUnionOperations {
 	/**
 	 * State with <code>char</code> labels on transitions.
 	 */
-	public final static class CharState {
+	private final static class CharState {
 
 		/**
 		 * An empty set of labels.
@@ -196,7 +196,29 @@ final public class StringUnionOperations {
 
 
 		public net.pocorall.automaton.State toState() {
-			return convert(this);
+			return convert(this, new IdentityHashMap<CharState, net.pocorall.automaton.State>());
+		}
+
+		/**
+		 * Internal recursive traversal for conversion.
+		 */
+		private static net.pocorall.automaton.State convert(CharState s,
+															IdentityHashMap<CharState, net.pocorall.automaton.State> visited) {
+			net.pocorall.automaton.State converted = visited.get(s);
+			if (converted != null)
+				return converted;
+
+			converted = new net.pocorall.automaton.State();
+			converted.setAccept(s.is_final);
+
+			visited.put(s, converted);
+			int i = 0;
+			char[] labels = s.labels;
+			for (CharState target : s.charStates) {
+				converted.addTransition(new Transition(labels[i++], convert(target, visited)));
+			}
+
+			return converted;
 		}
 
 		/**
@@ -280,7 +302,7 @@ final public class StringUnionOperations {
 	 *
 	 * @return Root automaton state.
 	 */
-	public CharState complete() {
+	public State complete() {
 		if (this.register == null)
 			throw new IllegalStateException();
 
@@ -288,34 +310,9 @@ final public class StringUnionOperations {
 			replaceOrRegister(root);
 
 		register = null;
-		return root;
+		return root.toState();
 	}
 
-	public static net.pocorall.automaton.State convert(CharState s) {
-		return convert(s, new IdentityHashMap<CharState, net.pocorall.automaton.State>());
-	}
-
-	/**
-	 * Internal recursive traversal for conversion.
-	 */
-	public static net.pocorall.automaton.State convert(CharState s,
-													   IdentityHashMap<CharState, net.pocorall.automaton.State> visited) {
-		net.pocorall.automaton.State converted = visited.get(s);
-		if (converted != null)
-			return converted;
-
-		converted = new net.pocorall.automaton.State();
-		converted.setAccept(s.is_final);
-
-		visited.put(s, converted);
-		int i = 0;
-		char[] labels = s.labels;
-		for (CharState target : s.charStates) {
-			converted.addTransition(new Transition(labels[i++], convert(target, visited)));
-		}
-
-		return converted;
-	}
 
 	/**
 	 * Build a minimal, deterministic automaton from a sorted list of strings.
@@ -326,7 +323,7 @@ final public class StringUnionOperations {
 		for (CharSequence chs : input)
 			builder.add(Boolean.TRUE, chs);
 
-		return builder.complete().toState();
+		return builder.complete();
 	}
 
 	/**

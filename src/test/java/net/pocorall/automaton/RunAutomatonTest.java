@@ -15,7 +15,7 @@ public class RunAutomatonTest {
 				builder.add(i, (CharSequence) i);
 			}
 
-			return builder.complete().toState();
+			return builder.complete();
 		}
 
 		public static LinkedAutomaton makeStringUnion(String... strings) {
