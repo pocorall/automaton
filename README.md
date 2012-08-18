@@ -10,6 +10,7 @@ pocorall.automaton is forked from <a href="http://www.brics.dk/automaton" target
 * [Allows state object](#state-object)
 * [Downloadable from maven repository](#maven-artifact)
 * Test cases
+* Better design
 * Hosted on github :-D
 
 ### State object
