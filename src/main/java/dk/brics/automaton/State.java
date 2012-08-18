@@ -30,78 +30,80 @@
 package dk.brics.automaton;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-/** 
- * <tt>Automaton</tt> state. 
+/**
+ * <tt>LinkedAutomaton</tt> state.
+ *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
  */
 public class State implements Serializable, Comparable<State> {
-	
+
 	static final long serialVersionUID = 30001;
-	
-	boolean accept;
+
+	Object accept;
 	Set<Transition> transitions;
-	
+
 	int number;
-	
+
 	int id;
 	static int next_id;
-	
-	/** 
-	 * Constructs a new state. Initially, the new state is a reject state. 
+
+	/**
+	 * Constructs a new state. Initially, the new state is a reject state.
 	 */
 	public State() {
 		resetTransitions();
 		id = next_id++;
 	}
-	
-	/** 
-	 * Resets transition set. 
+
+	/**
+	 * Resets transition set.
 	 */
 	final void resetTransitions() {
 		transitions = new HashSet<Transition>();
 	}
-	
-	/** 
-	 * Returns the set of outgoing transitions. 
+
+	/**
+	 * Returns the set of outgoing transitions.
 	 * Subsequent changes are reflected in the automaton.
+	 *
 	 * @return transition set
 	 */
-	public Set<Transition> getTransitions()	{
+	public Set<Transition> getTransitions() {
 		return transitions;
 	}
-	
+
 	/**
 	 * Adds an outgoing transition.
+	 *
 	 * @param t transition
 	 */
-	public void addTransition(Transition t)	{
+	public void addTransition(Transition t) {
 		transitions.add(t);
 	}
-	
-	/** 
+
+	/**
 	 * Sets acceptance for this state.
+	 *
 	 * @param accept if true, this state is an accept state
 	 */
-	public void setAccept(boolean accept) {
+	public void setAccept(Object accept) {
 		this.accept = accept;
 	}
-	
+
 	/**
 	 * Returns acceptance status.
+	 *
 	 * @return true is this is an accept state
 	 */
-	public boolean isAccept() {
+	public Object isAccept() {
 		return accept;
 	}
-	
-	/** 
-	 * Performs lookup in transitions, assuming determinism. 
+
+	/**
+	 * Performs lookup in transitions, assuming determinism.
+	 *
 	 * @param c character to look up
 	 * @return destination state, null if no matching outgoing transition
 	 * @see #step(char, Collection)
@@ -113,9 +115,10 @@ public class State implements Serializable, Comparable<State> {
 		return null;
 	}
 
-	/** 
+	/**
 	 * Performs lookup in transitions, allowing nondeterminism.
-	 * @param c character to look up
+	 *
+	 * @param c	character to look up
 	 * @param dest collection where destination states are stored
 	 * @see #step(char)
 	 */
@@ -126,38 +129,41 @@ public class State implements Serializable, Comparable<State> {
 	}
 
 	void addEpsilon(State to) {
-		if (to.accept)
-			accept = true;
+		if (to.accept != null)
+			accept = to.accept;
 		for (Transition t : to.transitions)
 			transitions.add(t);
 	}
-	
-	/** Returns transitions sorted by (min, reverse max, to) or (to, min, reverse max) */
+
+	/**
+	 * Returns transitions sorted by (min, reverse max, to) or (to, min, reverse max)
+	 */
 	Transition[] getSortedTransitionArray(boolean to_first) {
 		Transition[] e = transitions.toArray(new Transition[transitions.size()]);
 		Arrays.sort(e, new TransitionComparator(to_first));
 		return e;
 	}
-	
+
 	/**
 	 * Returns sorted list of outgoing transitions.
+	 *
 	 * @param to_first if true, order by (to, min, reverse max); otherwise (min, reverse max, to)
 	 * @return transition list
 	 */
-	public List<Transition> getSortedTransitions(boolean to_first)	{
+	public List<Transition> getSortedTransitions(boolean to_first) {
 		return Arrays.asList(getSortedTransitionArray(to_first));
 	}
-	
-	/** 
-	 * Returns string describing this state. Normally invoked via 
-	 * {@link Automaton#toString()}. 
+
+	/**
+	 * Returns string describing this state. Normally invoked via
+	 * {@link LinkedAutomaton#toString()}.
 	 */
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		b.append("state ").append(number);
-		if (accept)
-			b.append(" [accept]");
+		if (accept != null)
+			b.append(" [accept] " + accept);
 		else
 			b.append(" [reject]");
 		b.append(":\n");
@@ -165,7 +171,7 @@ public class State implements Serializable, Comparable<State> {
 			b.append("  ").append(t.toString()).append("\n");
 		return b.toString();
 	}
-	
+
 	/**
 	 * Compares this object with the specified object for order.
 	 * States are ordered by the time of construction.

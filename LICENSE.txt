@@ -1,4 +1,3 @@
 pocorall multipattern library may be used under BSD license.
 
 This library contains dk.brics.automaton library which is authored by Anders Moeller (http://www.brics.dk/automaton).
-I will exclude it from this library distribution and declare it as dependency when it become a citizen of maven repository.

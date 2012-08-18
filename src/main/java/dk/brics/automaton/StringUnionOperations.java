@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 
 /**
- * Operations for building minimal deterministic automata from sets of strings. 
+ * Operations for building minimal deterministic automata from sets of strings.
  * The algorithm requires sorted input data, but is very fast (nearly linear with the input size).
- * 
+ *
  * @author Dawid Weiss
  */
 final public class StringUnionOperations {
@@ -35,12 +35,16 @@ final public class StringUnionOperations {
 	/**
 	 * State with <code>char</code> labels on transitions.
 	 */
-	final static class State {
+	public final static class State {
 
-		/** An empty set of labels. */
+		/**
+		 * An empty set of labels.
+		 */
 		private final static char[] NO_LABELS = new char[0];
 
-		/** An empty set of states. */
+		/**
+		 * An empty set of states.
+		 */
 		private final static State[] NO_STATES = new State[0];
 
 		/**
@@ -59,7 +63,7 @@ final public class StringUnionOperations {
 		 * <code>true</code> if this state corresponds to the end of at least one
 		 * input sequence.
 		 */
-		boolean is_final;
+		Object is_final;
 
 		/**
 		 * Returns the target state of a transition leaving this state and labeled
@@ -68,15 +72,15 @@ final public class StringUnionOperations {
 		 */
 		public State getState(char label) {
 			final int index = Arrays.binarySearch(labels, label);
-			return index >= 0 ? states[index] : null; 
+			return index >= 0 ? states[index] : null;
 		}
 
 		/**
-		 * Returns an array of outgoing transition labels. The array is sorted in 
-		 * lexicographic order and indexes correspond to states returned from 
+		 * Returns an array of outgoing transition labels. The array is sorted in
+		 * lexicographic order and indexes correspond to states returned from
 		 * {@link #getStates()}.
 		 */
-		public char [] getTransitionLabels() {
+		public char[] getTransitionLabels() {
 			return this.labels;
 		}
 
@@ -101,8 +105,8 @@ final public class StringUnionOperations {
 		public boolean equals(Object obj) {
 			final State other = (State) obj;
 			return is_final == other.is_final
-			&& Arrays.equals(this.labels, other.labels)
-			&& referenceEquals(this.states, other.states);
+				&& Arrays.equals(this.labels, other.labels)
+				&& referenceEquals(this.states, other.states);
 		}
 
 		/**
@@ -116,7 +120,7 @@ final public class StringUnionOperations {
 		/**
 		 * Is this state a final state in the automaton?
 		 */
-		public boolean isFinal() {
+		public Object isFinal() {
 			return is_final;
 		}
 
@@ -125,7 +129,7 @@ final public class StringUnionOperations {
 		 */
 		@Override
 		public int hashCode() {
-			int hash = is_final ? 1 : 0;
+			int hash = is_final != null ? 1 : 0;
 
 			hash ^= hash * 31 + this.labels.length;
 			for (char c : this.labels)
@@ -196,7 +200,7 @@ final public class StringUnionOperations {
 		private static char[] copyOf(char[] original, int newLength) {
 			char[] copy = new char[newLength];
 			System.arraycopy(original, 0, copy, 0, Math.min(original.length,
-					newLength));
+				newLength));
 			return copy;
 		}
 
@@ -235,7 +239,7 @@ final public class StringUnionOperations {
 	private State root = new State();
 
 	/**
-	 * Previous sequence added to the automaton in {@link #add(CharSequence)}.
+	 * Previous sequence added to the automaton in {@link #add(CharSequence, Object)}.
 	 */
 	private StringBuilder previous;
 
@@ -244,10 +248,10 @@ final public class StringUnionOperations {
 	 * lexicographically larger or equal compared to any previous sequences
 	 * added to this automaton (the input must be sorted).
 	 */
-	public void add(CharSequence current) {
-		assert register != null : "Automaton already built.";
+	public void add(CharSequence current, Object acceptObj) {
+		assert register != null : "LinkedAutomaton already built.";
 		assert current.length() > 0 : "Input sequences must not be empty.";
-		assert previous == null || LEXICOGRAPHIC_ORDER.compare(previous, current) <= 0 : 
+		assert previous == null || LEXICOGRAPHIC_ORDER.compare(previous, current) <= 0 :
 			"Input must be sorted: " + previous + " >= " + current;
 		assert setPrevious(current);
 
@@ -262,13 +266,13 @@ final public class StringUnionOperations {
 		if (state.hasChildren())
 			replaceOrRegister(state);
 
-		addSuffix(state, current, pos);
+		addSuffix(state, current, pos, acceptObj);
 	}
 
 	/**
 	 * Finalize the automaton and return the root state. No more strings can be
 	 * added to the builder after this call.
-	 * 
+	 *
 	 * @return Root automaton state.
 	 */
 	public State complete() {
@@ -285,8 +289,8 @@ final public class StringUnionOperations {
 	/**
 	 * Internal recursive traversal for conversion.
 	 */
-	private static dk.brics.automaton.State convert(State s, 
-			IdentityHashMap<State, dk.brics.automaton.State> visited) {
+	public static dk.brics.automaton.State convert(State s,
+												   IdentityHashMap<State, dk.brics.automaton.State> visited) {
 		dk.brics.automaton.State converted = visited.get(s);
 		if (converted != null)
 			return converted;
@@ -296,7 +300,7 @@ final public class StringUnionOperations {
 
 		visited.put(s, converted);
 		int i = 0;
-		char [] labels = s.labels;
+		char[] labels = s.labels;
 		for (StringUnionOperations.State target : s.states) {
 			converted.addTransition(new Transition(labels[i++], convert(target, visited)));
 		}
@@ -308,10 +312,10 @@ final public class StringUnionOperations {
 	 * Build a minimal, deterministic automaton from a sorted list of strings.
 	 */
 	public static dk.brics.automaton.State build(CharSequence[] input) {
-		final StringUnionOperations builder = new StringUnionOperations(); 
+		final StringUnionOperations builder = new StringUnionOperations();
 
 		for (CharSequence chs : input)
-			builder.add(chs);
+			builder.add(chs, true);
 
 		return convert(builder.complete(), new IdentityHashMap<State, dk.brics.automaton.State>());
 	}
@@ -320,7 +324,7 @@ final public class StringUnionOperations {
 	 * Copy <code>current</code> into an internal buffer.
 	 */
 	private boolean setPrevious(CharSequence current) {
-		if (previous == null) 
+		if (previous == null)
 			previous = new StringBuilder();
 
 		previous.setLength(0);
@@ -351,11 +355,11 @@ final public class StringUnionOperations {
 	 * Add a suffix of <code>current</code> starting at <code>fromIndex</code>
 	 * (inclusive) to state <code>state</code>.
 	 */
-	private void addSuffix(State state, CharSequence current, int fromIndex) {
+	private void addSuffix(State state, CharSequence current, int fromIndex, Object acceptObj) {
 		final int len = current.length();
 		for (int i = fromIndex; i < len; i++) {
 			state = state.newState(current.charAt(i));
 		}
-		state.is_final = true;
+		state.is_final = acceptObj;
 	}
 }

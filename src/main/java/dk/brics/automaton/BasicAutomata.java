@@ -45,8 +45,8 @@ final public class BasicAutomata {
 	/** 
 	 * Returns a new (deterministic) automaton with the empty language. 
 	 */
-	public static Automaton makeEmpty() {
-		Automaton a = new Automaton();
+	public static LinkedAutomaton makeEmpty() {
+		LinkedAutomaton a = new LinkedAutomaton();
 		State s = new State();
 		a.initial = s;
 		a.deterministic = true;
@@ -56,8 +56,8 @@ final public class BasicAutomata {
 	/** 
 	 * Returns a new (deterministic) automaton that accepts only the empty string. 
 	 */
-	public static Automaton makeEmptyString() {
-		Automaton a = new Automaton();
+	public static LinkedAutomaton makeEmptyString() {
+		LinkedAutomaton a = new LinkedAutomaton();
 		a.singleton = "";
 		a.deterministic = true;
 		return a;
@@ -66,8 +66,8 @@ final public class BasicAutomata {
 	/** 
 	 * Returns a new (deterministic) automaton that accepts all strings. 
 	 */
-	public static Automaton makeAnyString()	{
-		Automaton a = new Automaton();
+	public static LinkedAutomaton makeAnyString()	{
+		LinkedAutomaton a = new LinkedAutomaton();
 		State s = new State();
 		a.initial = s;
 		s.accept = true;
@@ -79,15 +79,15 @@ final public class BasicAutomata {
 	/** 
 	 * Returns a new (deterministic) automaton that accepts any single character. 
 	 */
-	public static Automaton makeAnyChar() {
+	public static LinkedAutomaton makeAnyChar() {
 		return makeCharRange(Character.MIN_VALUE, Character.MAX_VALUE);
 	}
 	
 	/** 
 	 * Returns a new (deterministic) automaton that accepts a single character of the given value. 
 	 */
-	public static Automaton makeChar(char c) {
-		Automaton a = new Automaton();
+	public static LinkedAutomaton makeChar(char c) {
+		LinkedAutomaton a = new LinkedAutomaton();
 		a.singleton = Character.toString(c);
 		a.deterministic = true;
 		return a;
@@ -97,10 +97,10 @@ final public class BasicAutomata {
 	 * Returns a new (deterministic) automaton that accepts a single char 
 	 * whose value is in the given interval (including both end points). 
 	 */
-	public static Automaton makeCharRange(char min, char max) {
+	public static LinkedAutomaton makeCharRange(char min, char max) {
 		if (min == max)
 			return makeChar(min);
-		Automaton a = new Automaton();
+		LinkedAutomaton a = new LinkedAutomaton();
 		State s1 = new State();
 		State s2 = new State();
 		a.initial = s1;
@@ -114,10 +114,10 @@ final public class BasicAutomata {
 	/** 
 	 * Returns a new (deterministic) automaton that accepts a single character in the given set. 
 	 */
-	public static Automaton makeCharSet(String set) {
+	public static LinkedAutomaton makeCharSet(String set) {
 		if (set.length() == 1)
 			return makeChar(set.charAt(0));
-		Automaton a = new Automaton();
+		LinkedAutomaton a = new LinkedAutomaton();
 		State s1 = new State();
 		State s2 = new State();
 		a.initial = s1;
@@ -215,8 +215,8 @@ final public class BasicAutomata {
 	 * @exception IllegalArgumentException if min>max or if numbers in the interval cannot be expressed
 	 *                                     with the given fixed number of digits
 	 */
-	public static Automaton makeInterval(int min, int max, int digits) throws IllegalArgumentException {
-		Automaton a = new Automaton();
+	public static LinkedAutomaton makeInterval(int min, int max, int digits) throws IllegalArgumentException {
+		LinkedAutomaton a = new LinkedAutomaton();
 		String x = Integer.toString(min);
 		String y = Integer.toString(max);
 		if (min > max || (digits > 0 && y.length() > digits))
@@ -255,8 +255,8 @@ final public class BasicAutomata {
 	/** 
 	 * Returns a new (deterministic) automaton that accepts the single given string.
 	 */
-	public static Automaton makeString(String s) {
-		Automaton a = new Automaton();
+	public static LinkedAutomaton makeString(String s) {
+		LinkedAutomaton a = new LinkedAutomaton();
 		a.singleton = s;
 		a.deterministic = true;
 		return a;
@@ -268,11 +268,11 @@ final public class BasicAutomata {
      * so the input array is modified. 
      * @see StringUnionOperations
      */
-    public static Automaton makeStringUnion(CharSequence... strings) {
+    public static LinkedAutomaton makeStringUnion(CharSequence... strings) {
         if (strings.length == 0)
             return makeEmpty();
         Arrays.sort(strings, StringUnionOperations.LEXICOGRAPHIC_ORDER);
-        Automaton a = new Automaton();
+        LinkedAutomaton a = new LinkedAutomaton();
         a.setInitialState(StringUnionOperations.build(strings));
         a.setDeterministic(true);
         a.reduce();
@@ -285,7 +285,7 @@ final public class BasicAutomata {
 	 * that are not larger than the given value.
 	 * @param n string representation of maximum value
 	 */
-	public static Automaton makeMaxInteger(String n) {
+	public static LinkedAutomaton makeMaxInteger(String n) {
 		int i = 0;
 		while (i < n.length() && n.charAt(i) == '0')
 			i++;
@@ -295,7 +295,7 @@ final public class BasicAutomata {
 			b.append("[0-9]{1," + (n.length() - i - 1) + "}|");
 		maxInteger(n.substring(i), 0, b);
 		b.append(")");
-		return Automaton.minimize((new RegExp(b.toString())).toAutomaton());
+		return LinkedAutomaton.minimize((new RegExp(b.toString())).toAutomaton());
 	}
 
 	private static void maxInteger(String n, int i, StringBuilder b) {
@@ -315,7 +315,7 @@ final public class BasicAutomata {
 	 * that are not less that the given value.
 	 * @param n string representation of minimum value
 	 */
-	public static Automaton makeMinInteger(String n) {
+	public static LinkedAutomaton makeMinInteger(String n) {
 		int i = 0;
 		while (i + 1 < n.length() && n.charAt(i) == '0')
 			i++;
@@ -323,7 +323,7 @@ final public class BasicAutomata {
 		b.append("0*");
 		minInteger(n.substring(i), 0, b);
 		b.append("[0-9]*");
-		return Automaton.minimize((new RegExp(b.toString())).toAutomaton());
+		return LinkedAutomaton.minimize((new RegExp(b.toString())).toAutomaton());
 	}
 	
 	private static void minInteger(String n, int i, StringBuilder b) {
@@ -344,8 +344,8 @@ final public class BasicAutomata {
 	 * Surrounding whitespace is permitted.
 	 * @param i max number of necessary digits
 	 */
-	public static Automaton makeTotalDigits(int i) {
-		return Automaton.minimize((new RegExp("[ \t\n\r]*[-+]?0*([0-9]{0," + i + "}|((([0-9]\\.*){0," + i + "})&@\\.@)0*)[ \t\n\r]*")).toAutomaton());
+	public static LinkedAutomaton makeTotalDigits(int i) {
+		return LinkedAutomaton.minimize((new RegExp("[ \t\n\r]*[-+]?0*([0-9]{0," + i + "}|((([0-9]\\.*){0," + i + "})&@\\.@)0*)[ \t\n\r]*")).toAutomaton());
 	}
 	
 	/**
@@ -354,8 +354,8 @@ final public class BasicAutomata {
 	 * Surrounding whitespace is permitted.
 	 * @param i max number of necessary fraction digits
 	 */
-	public static Automaton makeFractionDigits(int i) {
-		return Automaton.minimize((new RegExp("[ \t\n\r]*[-+]?[0-9]+(\\.[0-9]{0," + i + "}0*)?[ \t\n\r]*")).toAutomaton());
+	public static LinkedAutomaton makeFractionDigits(int i) {
+		return LinkedAutomaton.minimize((new RegExp("[ \t\n\r]*[-+]?[0-9]+(\\.[0-9]{0," + i + "}0*)?[ \t\n\r]*")).toAutomaton());
 	}
 	
 	/**
@@ -363,7 +363,7 @@ final public class BasicAutomata {
 	 * Surrounding whitespace is permitted.
 	 * @param value string representation of integer
 	 */
-	public static Automaton makeIntegerValue(String value) {
+	public static LinkedAutomaton makeIntegerValue(String value) {
 		boolean minus = false;
     	int i = 0;
     	while (i < value.length()) {
@@ -378,13 +378,13 @@ final public class BasicAutomata {
 		b.append(value.substring(i));
 		if (b.length() == 0)
 			b.append("0");
-		Automaton s;
+		LinkedAutomaton s;
 		if (minus)
-			s = Automaton.makeChar('-');
+			s = LinkedAutomaton.makeChar('-');
 		else
-			s = Automaton.makeChar('+').optional();
-		Automaton ws = Datatypes.getWhitespaceAutomaton();
-		return Automaton.minimize(ws.concatenate(s.concatenate(Automaton.makeChar('0').repeat()).concatenate(Automaton.makeString(b.toString()))).concatenate(ws));		
+			s = LinkedAutomaton.makeChar('+').optional();
+		LinkedAutomaton ws = Datatypes.getWhitespaceAutomaton();
+		return LinkedAutomaton.minimize(ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(LinkedAutomaton.makeString(b.toString()))).concatenate(ws));
 	}
 	
 	/**
@@ -392,7 +392,7 @@ final public class BasicAutomata {
 	 * Surrounding whitespace is permitted.
 	 * @param value string representation of decimal number
 	 */
-	public static Automaton makeDecimalValue(String value) {
+	public static LinkedAutomaton makeDecimalValue(String value) {
 		boolean minus = false;
     	int i = 0;
     	while (i < value.length()) {
@@ -421,25 +421,25 @@ final public class BasicAutomata {
     	}
 		if (b1.length() == 0)
 			b1.append("0");
-		Automaton s;
+		LinkedAutomaton s;
 		if (minus)
-			s = Automaton.makeChar('-');
+			s = LinkedAutomaton.makeChar('-');
 		else
-			s = Automaton.makeChar('+').optional();
-		Automaton d;
+			s = LinkedAutomaton.makeChar('+').optional();
+		LinkedAutomaton d;
 		if (b2.length() == 0)
-			d = Automaton.makeChar('.').concatenate(Automaton.makeChar('0').repeat(1)).optional();
+			d = LinkedAutomaton.makeChar('.').concatenate(LinkedAutomaton.makeChar('0').repeat(1)).optional();
 		else
-			d = Automaton.makeChar('.').concatenate(Automaton.makeString(b2.toString())).concatenate(Automaton.makeChar('0').repeat());
-		Automaton ws = Datatypes.getWhitespaceAutomaton();
-		return Automaton.minimize(ws.concatenate(s.concatenate(Automaton.makeChar('0').repeat()).concatenate(Automaton.makeString(b1.toString())).concatenate(d)).concatenate(ws));
+			d = LinkedAutomaton.makeChar('.').concatenate(LinkedAutomaton.makeString(b2.toString())).concatenate(LinkedAutomaton.makeChar('0').repeat());
+		LinkedAutomaton ws = Datatypes.getWhitespaceAutomaton();
+		return LinkedAutomaton.minimize(ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(LinkedAutomaton.makeString(b1.toString())).concatenate(d)).concatenate(ws));
 	}
 	
 	/**
 	 * Constructs deterministic automaton that matches strings that contain the given substring.
 	 */
-	public static Automaton makeStringMatcher(String s) {
-		Automaton a = new Automaton();
+	public static LinkedAutomaton makeStringMatcher(String s) {
+		LinkedAutomaton a = new LinkedAutomaton();
 		State[] states = new State[s.length() + 1];
 		states[0] = a.initial;
 		for (int i = 0; i < s.length(); i++)

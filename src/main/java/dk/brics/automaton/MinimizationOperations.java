@@ -39,32 +39,34 @@ import java.util.Set;
  */
 final public class MinimizationOperations {
 
-	private MinimizationOperations() {}
+	private MinimizationOperations() {
+	}
 
 	/**
 	 * Minimizes (and determinizes if not already deterministic) the given automaton.
-	 * @see Automaton#setMinimization(int)
+	 *
+	 * @see LinkedAutomaton#setMinimization(int)
 	 */
-	public static void minimize(Automaton a) {
+	public static void minimize(LinkedAutomaton a) {
 		if (!a.isSingleton()) {
-			switch (Automaton.minimization) {
-			case Automaton.MINIMIZE_HUFFMAN:
-				minimizeHuffman(a);
-				break;
-			case Automaton.MINIMIZE_BRZOZOWSKI:
-				minimizeBrzozowski(a);
-				break;
-			default:
-				minimizeHopcroft(a);
+			switch (LinkedAutomaton.minimization) {
+				case LinkedAutomaton.MINIMIZE_HUFFMAN:
+					minimizeHuffman(a);
+					break;
+				case LinkedAutomaton.MINIMIZE_BRZOZOWSKI:
+					minimizeBrzozowski(a);
+					break;
+				default:
+					minimizeHopcroft(a);
 			}
 		}
 		a.recomputeHashCode();
 	}
-	
+
 	private static boolean statesAgree(Transition[][] transitions, boolean[][] mark, int n1, int n2) {
 		Transition[] t1 = transitions[n1];
 		Transition[] t2 = transitions[n2];
-		for (int k1 = 0, k2 = 0; k1 < t1.length && k2 < t2.length;) {
+		for (int k1 = 0, k2 = 0; k1 < t1.length && k2 < t2.length; ) {
 			if (t1[k1].max < t2[k2].min)
 				k1++;
 			else if (t2[k2].max < t1[k1].min)
@@ -91,7 +93,7 @@ final public class MinimizationOperations {
 	private static void addTriggers(Transition[][] transitions, ArrayList<ArrayList<HashSet<IntPair>>> triggers, int n1, int n2) {
 		Transition[] t1 = transitions[n1];
 		Transition[] t2 = transitions[n2];
-		for (int k1 = 0, k2 = 0; k1 < t1.length && k2 < t2.length;) {
+		for (int k1 = 0, k2 = 0; k1 < t1.length && k2 < t2.length; ) {
 			if (t1[k1].max < t2[k2].min)
 				k1++;
 			else if (t2[k2].max < t1[k1].min)
@@ -138,11 +140,11 @@ final public class MinimizationOperations {
 		for (int i = 0; i < size; i++)
 			list.add(null);
 	}
-	
-	/** 
-	 * Minimizes the given automaton using Huffman's algorithm. 
+
+	/**
+	 * Minimizes the given automaton using Huffman's algorithm.
 	 */
-	public static void minimizeHuffman(Automaton a) {
+	public static void minimizeHuffman(LinkedAutomaton a) {
 		a.determinize();
 		a.totalize();
 		Set<State> ss = a.getStates();
@@ -204,21 +206,21 @@ final public class MinimizationOperations {
 		}
 		a.removeDeadTransitions();
 	}
-	
-	/** 
-	 * Minimizes the given automaton using Brzozowski's algorithm. 
+
+	/**
+	 * Minimizes the given automaton using Brzozowski's algorithm.
 	 */
-	public static void minimizeBrzozowski(Automaton a) {
+	public static void minimizeBrzozowski(LinkedAutomaton a) {
 		if (a.isSingleton())
 			return;
 		BasicOperations.determinize(a, SpecialOperations.reverse(a));
 		BasicOperations.determinize(a, SpecialOperations.reverse(a));
 	}
-	
-	/** 
-	 * Minimizes the given automaton using Hopcroft's algorithm. 
+
+	/**
+	 * Minimizes the given automaton using Hopcroft's algorithm.
 	 */
-	public static void minimizeHopcroft(Automaton a) {
+	public static void minimizeHopcroft(LinkedAutomaton a) {
 		a.determinize();
 		Set<Transition> tr = a.initial.getTransitions();
 		if (tr.size() == 1) {
@@ -269,7 +271,7 @@ final public class MinimizationOperations {
 		for (int q = 0; q < states.length; q++) {
 			State qq = states[q];
 			int j;
-			if (qq.accept)
+			if (qq.accept != null)
 				j = 0;
 			else
 				j = 1;
@@ -381,7 +383,7 @@ final public class MinimizationOperations {
 		}
 		a.removeDeadTransitions();
 	}
-	
+
 	static class IntPair {
 
 		int n1, n2;
@@ -393,7 +395,7 @@ final public class MinimizationOperations {
 	}
 
 	static class StateList {
-		
+
 		int size;
 
 		StateListNode first, last;
@@ -404,7 +406,7 @@ final public class MinimizationOperations {
 	}
 
 	static class StateListNode {
-		
+
 		State q;
 
 		StateListNode next, prev;

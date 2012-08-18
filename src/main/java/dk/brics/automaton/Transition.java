@@ -32,7 +32,7 @@ package dk.brics.automaton;
 import java.io.Serializable;
 
 /** 
- * <tt>Automaton</tt> transition. 
+ * <tt>LinkedAutomaton</tt> transition.
  * <p>
  * A transition, which belongs to a source state, consists of a Unicode character interval
  * and a destination state.
@@ -151,7 +151,7 @@ public class Transition implements Serializable, Cloneable {
 	
 	/** 
 	 * Returns a string describing this state. Normally invoked via 
-	 * {@link Automaton#toString()}. 
+	 * {@link LinkedAutomaton#toString()}.
 	 */
 	@Override
 	public String toString() {

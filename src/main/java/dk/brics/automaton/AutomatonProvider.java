@@ -32,7 +32,7 @@ package dk.brics.automaton;
 import java.io.IOException;
 
 /**
- * Automaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
+ * LinkedAutomaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
  */
 public interface AutomatonProvider {
 	
@@ -42,5 +42,5 @@ public interface AutomatonProvider {
 	 * @return automaton
 	 * @throws IOException if errors occur
 	 */
-	public Automaton getAutomaton(String name) throws IOException;
+	public LinkedAutomaton getAutomaton(String name) throws IOException;
 }

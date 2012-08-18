@@ -49,6 +49,7 @@ public class AutomatonMatcher implements MatchResult {
 	private final RunAutomaton automaton;
 	private final CharSequence chars;
 
+	private int previousStart = -1;
 	private int matchStart = -1;
 
 	private int matchEnd = -1;
@@ -61,29 +62,30 @@ public class AutomatonMatcher implements MatchResult {
 	 *
 	 * @return {@code true} if there is a matching subsequence.
 	 */
-	public boolean find() {
+	public Object find() {
 		int begin;
-		switch(getMatchStart()) {
+		switch (getMatchStart()) {
 			case -2:
-			return false;
+				return null;
 			case -1:
-			begin = 0;
+				begin = 0;
 				break;
 			default:
-			begin = getMatchEnd();
+				begin = getMatchEnd();
 				// This occurs when a previous find() call matched the empty string. This can happen when the pattern is a* for example.
-				if(begin == getMatchStart()) {
+				if (begin == getMatchStart()) {
 					begin += 1;
-					if(begin > getChars().length()) {
+					if (begin > getChars().length()) {
 						setMatch(-2, -2);
-						return false;
+						return null;
 					}
 				}
 		}
 
 		int match_start;
 		int match_end;
-		if (automaton.isAccept(automaton.getInitialState())) {
+		Object acceptObj = automaton.isAccept(automaton.getInitialState());
+		if (acceptObj != null) {
 			match_start = begin;
 			match_end = begin;
 		} else {
@@ -96,32 +98,37 @@ public class AutomatonMatcher implements MatchResult {
 			for (int i = begin; i < l; i++) {
 				final int new_state = automaton.step(p, getChars().charAt(i));
 				if (new_state == -1) {
-				    break;
-				} else if (automaton.isAccept(new_state)) {
-				    // found a match from begin to (i+1)
-				    match_start = begin;
-				    match_end=(i+1);
+					break;
+				} else if (automaton.isAccept(new_state) != null) {
+					// found a match from begin to (i+1)
+					acceptObj = automaton.isAccept(new_state);
+					match_start = begin;
+					match_end = (i + 1);
 				}
 				p = new_state;
 			}
 			if (match_start != -1) {
 				setMatch(match_start, match_end);
-				return true;
+				return acceptObj;
 			}
 			begin += 1;
 		}
 		if (match_start != -1) {
 			setMatch(match_start, match_end);
-			return true;
+			return acceptObj;
 		} else {
 			setMatch(-2, -2);
-			return false;
+			return null;
 		}
 	}
 
 	private void setMatch(final int matchStart, final int matchEnd) throws IllegalArgumentException {
 		if (matchStart > matchEnd) {
 			throw new IllegalArgumentException("Start must be less than or equal to end: " + matchStart + ", " + matchEnd);
+		}
+		previousStart = this.matchEnd;
+		if (previousStart < 0) {
+			previousStart = 0;
 		}
 		this.matchStart = matchStart;
 		this.matchEnd = matchEnd;
@@ -144,7 +151,7 @@ public class AutomatonMatcher implements MatchResult {
 	 *
 	 * @return The offset after the last character matched.
 	 * @throws IllegalStateException if there has not been a match attempt or
-	 *  if the last attempt yielded no results.
+	 *                               if the last attempt yielded no results.
 	 */
 	public int end() throws IllegalStateException {
 		matchGood();
@@ -160,11 +167,11 @@ public class AutomatonMatcher implements MatchResult {
 	 *
 	 * @param group the desired capturing group.
 	 * @return The offset after the last character matched of the specified
-	 *  capturing group.
-	 * @throws IllegalStateException if there has not been a match attempt or
-	 *  if the last attempt yielded no results.
+	 *         capturing group.
+	 * @throws IllegalStateException	 if there has not been a match attempt or
+	 *                                   if the last attempt yielded no results.
 	 * @throws IndexOutOfBoundsException if the specified capturing group does
-	 *  not exist in the underlying automaton.
+	 *                                   not exist in the underlying automaton.
 	 */
 	public int end(final int group) throws IndexOutOfBoundsException, IllegalStateException {
 		onlyZero(group);
@@ -176,11 +183,19 @@ public class AutomatonMatcher implements MatchResult {
 	 *
 	 * @return The subsequence of the input found by the previous match.
 	 * @throws IllegalStateException if there has not been a match attempt or
-	 *  if the last attempt yielded no results.
+	 *                               if the last attempt yielded no results.
 	 */
 	public String group() throws IllegalStateException {
 		matchGood();
 		return chars.subSequence(matchStart, matchEnd).toString();
+	}
+
+	public String token() {
+		int subEnd = matchStart;
+		if (subEnd == -2) {
+			subEnd = chars.length();
+		}
+		return chars.subSequence(previousStart, subEnd).toString();
 	}
 
 	/**
@@ -192,12 +207,12 @@ public class AutomatonMatcher implements MatchResult {
 	 *
 	 * @param group the desired capturing group.
 	 * @return The subsequence of the input found by the specified capturing
-	 *  group during the previous match operation the previous match. Or
-	 *  {@code null} if the given group did match.
-	 * @throws IllegalStateException if there has not been a match attempt or
-	 *  if the last attempt yielded no results.
+	 *         group during the previous match operation the previous match. Or
+	 *         {@code null} if the given group did match.
+	 * @throws IllegalStateException	 if there has not been a match attempt or
+	 *                                   if the last attempt yielded no results.
 	 * @throws IndexOutOfBoundsException if the specified capturing group does
-	 *  not exist in the underlying automaton.
+	 *                                   not exist in the underlying automaton.
 	 */
 	public String group(final int group) throws IndexOutOfBoundsException, IllegalStateException {
 		onlyZero(group);
@@ -221,7 +236,7 @@ public class AutomatonMatcher implements MatchResult {
 	 *
 	 * @return The offset of the first character matched.
 	 * @throws IllegalStateException if there has not been a match attempt or
-	 *  if the last attempt yielded no results.
+	 *                               if the last attempt yielded no results.
 	 */
 	public int start() throws IllegalStateException {
 		matchGood();
@@ -237,11 +252,11 @@ public class AutomatonMatcher implements MatchResult {
 	 *
 	 * @param group the desired capturing group.
 	 * @return The offset of the first character matched of the specified
-	 *  capturing group.
-	 * @throws IllegalStateException if there has not been a match attempt or
-	 *  if the last attempt yielded no results.
+	 *         capturing group.
+	 * @throws IllegalStateException	 if there has not been a match attempt or
+	 *                                   if the last attempt yielded no results.
 	 * @throws IndexOutOfBoundsException if the specified capturing group does
-	 *  not exist in the underlying automaton.
+	 *                                   not exist in the underlying automaton.
 	 */
 	public int start(int group) throws IndexOutOfBoundsException, IllegalStateException {
 		onlyZero(group);
@@ -254,23 +269,28 @@ public class AutomatonMatcher implements MatchResult {
 	 * The result is unaffected by subsequent operations on this object.
 	 *
 	 * @return a {@code MatchResult} with the state of this
-	 *  {@code AutomatonMatcher}.
+	 *         {@code AutomatonMatcher}.
 	 */
 	public MatchResult toMatchResult() {
 		final AutomatonMatcher match = new AutomatonMatcher(chars, automaton);
+		match.previousStart = this.previousStart;
 		match.matchStart = this.matchStart;
 		match.matchEnd = this.matchEnd;
 		return match;
 	}
 
-	/** Helper method that requires the group argument to be 0. */
+	/**
+	 * Helper method that requires the group argument to be 0.
+	 */
 	private static void onlyZero(final int group) throws IndexOutOfBoundsException {
 		if (group != 0) {
 			throw new IndexOutOfBoundsException("The only group supported is 0.");
 		}
 	}
 
-	/** Helper method to check that the last match attempt was valid. */
+	/**
+	 * Helper method to check that the last match attempt was valid.
+	 */
 	private void matchGood() throws IllegalStateException {
 		if ((matchStart < 0) || (matchEnd < 0)) {
 			throw new IllegalStateException("There was no available match.");
