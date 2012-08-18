@@ -731,34 +731,6 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	}
 
 	/**
-	 * See {@link BasicAutomata#makeEmpty()}.
-	 */
-	public static LinkedAutomaton makeEmpty() {
-		return BasicAutomata.makeEmpty();
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeEmptyString()}.
-	 */
-	public static LinkedAutomaton makeEmptyString() {
-		return BasicAutomata.makeEmptyString();
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeAnyString()}.
-	 */
-	public static LinkedAutomaton makeAnyString() {
-		return BasicAutomata.makeAnyString();
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeAnyChar()}.
-	 */
-	public static LinkedAutomaton makeAnyChar() {
-		return BasicAutomata.makeAnyChar();
-	}
-
-	/**
 	 * See {@link BasicAutomata#makeChar(char)}.
 	 */
 	public static LinkedAutomaton makeChar(char c) {
@@ -771,14 +743,6 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	public static LinkedAutomaton makeCharRange(char min, char max) {
 		return BasicAutomata.makeCharRange(min, max);
 	}
-
-	/**
-	 * See {@link BasicAutomata#makeCharSet(String)}.
-	 */
-	public static LinkedAutomaton makeCharSet(String set) {
-		return BasicAutomata.makeCharSet(set);
-	}
-
 
 	/**
 	 * See {@link BasicAutomata#makeString(String)}.
@@ -905,21 +869,6 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	}
 
 	/**
-	 * See {@link BasicOperations#isTotal(LinkedAutomaton)}.
-	 */
-	public boolean isTotal() {
-		return BasicOperations.isTotal(this);
-	}
-
-	/**
-	 * See {@link BasicOperations#getShortestExample(LinkedAutomaton, boolean)}.
-	 */
-	public String getShortestExample(boolean accepted) {
-		return BasicOperations.getShortestExample(this, accepted);
-	}
-
-
-	/**
 	 * Returns true if the given string is accepted by the automaton.
 	 * <p/>
 	 * Complexity: linear in the length of the string.
@@ -998,130 +947,10 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 		return this;
 	}
 
-
-	/**
-	 * See {@link SpecialOperations#overlap(LinkedAutomaton, LinkedAutomaton)}.
-	 */
-	public LinkedAutomaton overlap(LinkedAutomaton a) {
-		return SpecialOperations.overlap(this, a);
-	}
-
-	/**
-	 * See {@link SpecialOperations#singleChars(LinkedAutomaton)}.
-	 */
-	public LinkedAutomaton singleChars() {
-		return SpecialOperations.singleChars(this);
-	}
-
-	/**
-	 * See {@link SpecialOperations#trim(LinkedAutomaton, String, char)}.
-	 */
-	public LinkedAutomaton trim(String set, char c) {
-		return SpecialOperations.trim(this, set, c);
-	}
-
-	/**
-	 * See {@link SpecialOperations#compress(LinkedAutomaton, String, char)}.
-	 */
-	public LinkedAutomaton compress(String set, char c) {
-		return SpecialOperations.compress(this, set, c);
-	}
-
 	/**
 	 * See {@link SpecialOperations#subst(LinkedAutomaton, Map)}.
 	 */
 	public LinkedAutomaton subst(Map<Character, Set<Character>> map) {
 		return SpecialOperations.subst(this, map);
-	}
-
-	/**
-	 * See {@link SpecialOperations#subst(LinkedAutomaton, char, String)}.
-	 */
-	public LinkedAutomaton subst(char c, String s) {
-		return SpecialOperations.subst(this, c, s);
-	}
-
-	/**
-	 * See {@link SpecialOperations#homomorph(LinkedAutomaton, char[], char[])}.
-	 */
-	public LinkedAutomaton homomorph(char[] source, char[] dest) {
-		return SpecialOperations.homomorph(this, source, dest);
-	}
-
-	/**
-	 * See {@link SpecialOperations#projectChars(LinkedAutomaton, Set)}.
-	 */
-	public LinkedAutomaton projectChars(Set<Character> chars) {
-		return SpecialOperations.projectChars(this, chars);
-	}
-
-	/**
-	 * See {@link SpecialOperations#isFinite(LinkedAutomaton)}.
-	 */
-	public boolean isFinite() {
-		return SpecialOperations.isFinite(this);
-	}
-
-	/**
-	 * See {@link SpecialOperations#getStrings(LinkedAutomaton, int)}.
-	 */
-	public Set<String> getStrings(int length) {
-		return SpecialOperations.getStrings(this, length);
-	}
-
-	/**
-	 * See {@link SpecialOperations#getFiniteStrings(LinkedAutomaton)}.
-	 */
-	public Set<String> getFiniteStrings() {
-		return SpecialOperations.getFiniteStrings(this);
-	}
-
-	/**
-	 * See {@link SpecialOperations#getFiniteStrings(LinkedAutomaton, int)}.
-	 */
-	public Set<String> getFiniteStrings(int limit) {
-		return SpecialOperations.getFiniteStrings(this, limit);
-	}
-
-	/**
-	 * See {@link SpecialOperations#getCommonPrefix(LinkedAutomaton)}.
-	 */
-	public String getCommonPrefix() {
-		return SpecialOperations.getCommonPrefix(this);
-	}
-
-	/**
-	 * See {@link SpecialOperations#prefixClose(LinkedAutomaton)}.
-	 */
-	public void prefixClose() {
-		SpecialOperations.prefixClose(this);
-	}
-
-	/**
-	 * See {@link SpecialOperations#hexCases(LinkedAutomaton)}.
-	 */
-	public static LinkedAutomaton hexCases(LinkedAutomaton a) {
-		return SpecialOperations.hexCases(a);
-	}
-
-	/**
-	 * See {@link SpecialOperations#replaceWhitespace(LinkedAutomaton)}.
-	 */
-	public static LinkedAutomaton replaceWhitespace(LinkedAutomaton a) {
-		return SpecialOperations.replaceWhitespace(a);
-	}
-
-	/**
-	 * See {@link ShuffleOperations#shuffleSubsetOf(Collection, LinkedAutomaton, Character, Character)}.
-	 */
-	public static String shuffleSubsetOf(Collection<LinkedAutomaton> ca, LinkedAutomaton a, Character suspend_shuffle, Character resume_shuffle) {
-		return ShuffleOperations.shuffleSubsetOf(ca, a, suspend_shuffle, resume_shuffle);
-	}
-
-	/**
-	 * See {@link ShuffleOperations#shuffle(LinkedAutomaton, LinkedAutomaton)}.
-	 */
-	public LinkedAutomaton shuffle(LinkedAutomaton a) {
-		return ShuffleOperations.shuffle(this, a);
 	}
 }

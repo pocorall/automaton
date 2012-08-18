@@ -221,7 +221,7 @@ final public class Datatypes {
 
 	static {
 		automata = new HashMap<String, LinkedAutomaton>();
-		ws = LinkedAutomaton.makeCharSet(" \t\n\r").repeat().minimize();
+		ws = BasicAutomata.makeCharSet(" \t\n\r").repeat().minimize();
 		unicodeblock_names = new HashSet<String>(Arrays.asList(unicodeblock_names_array));
 		unicodecategory_names = new HashSet<String>(Arrays.asList(unicodecategory_names_array));
 		xml_names = new HashSet<String>(Arrays.asList(xml_names_array));
@@ -849,9 +849,9 @@ final public class Datatypes {
 		if (cp >= 0x10000) {
 			cp -= 0x10000;
 			char[] cu = {(char) (0xd800 + (cp >> 10)), (char) (0xdc00 + (cp & 0x3ff))};
-			return LinkedAutomaton.makeString(new String(cu));
+			return BasicAutomata.makeString(new String(cu));
 		} else
-			return LinkedAutomaton.makeChar((char) cp);
+			return BasicAutomata.makeChar((char) cp);
 	}
 
 	private static Map<String, LinkedAutomaton> buildMap(String[] exps) {

@@ -439,11 +439,11 @@ final public class BasicAutomata {
 			s = LinkedAutomaton.makeChar('+').optional();
 		LinkedAutomaton d;
 		if (b2.length() == 0)
-			d = LinkedAutomaton.makeChar('.').concatenate(LinkedAutomaton.makeChar('0').repeat(1)).optional();
+			d = LinkedAutomaton.makeChar('.').concatenate(BasicAutomata.makeChar('0').repeat(1)).optional();
 		else
-			d = LinkedAutomaton.makeChar('.').concatenate(LinkedAutomaton.makeString(b2.toString())).concatenate(LinkedAutomaton.makeChar('0').repeat());
+			d = LinkedAutomaton.makeChar('.').concatenate(BasicAutomata.makeString(b2.toString())).concatenate(BasicAutomata.makeChar('0').repeat());
 		LinkedAutomaton ws = Datatypes.getWhitespaceAutomaton();
-		return (ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(LinkedAutomaton.makeString(b1.toString())).concatenate(d)).concatenate(ws)).minimize();
+		return (ws.concatenate(s.concatenate(BasicAutomata.makeChar('0').repeat()).concatenate(BasicAutomata.makeString(b1.toString())).concatenate(d)).concatenate(ws)).minimize();
 	}
 
 	/**
