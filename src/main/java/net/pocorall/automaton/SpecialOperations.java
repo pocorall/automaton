@@ -43,7 +43,7 @@ final public class SpecialOperations {
 	 * Reverses the language of the given (non-singleton) automaton while returning
 	 * the set of new initial states.
 	 */
-	public static Set<State> reverse(SingletonAutomaton a) {
+	public static Set<State> reverse(LinkedAutomaton a) {
 		// reverse all edges
 		HashMap<State, HashSet<Transition>> m = new HashMap<State, HashSet<Transition>>();
 		Set<State> states = a.getStates();

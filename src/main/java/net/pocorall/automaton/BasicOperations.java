@@ -131,7 +131,6 @@ final public class BasicOperations {
 	}
 
 
-
 	/**
 	 * Returns an automaton that accepts the Kleene star (zero or more
 	 * concatenated repetitions) of the language of the given automaton.
@@ -428,8 +427,8 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: exponential in number of states.
 	 */
-	public static void determinize(SingletonAutomaton a) {
-		if (a.deterministic || a.isSingleton())
+	public static void determinize(LinkedAutomaton a) {
+		if (a.deterministic)
 			return;
 		Set<State> initialset = new HashSet<State>();
 		initialset.add(a.initial);
@@ -439,7 +438,7 @@ final public class BasicOperations {
 	/**
 	 * Determinizes the given automaton using the given set of initial states.
 	 */
-	static void determinize(SingletonAutomaton a, Set<State> initialset) {
+	static void determinize(LinkedAutomaton a, Set<State> initialset) {
 		char[] points = a.getStartPoints();
 		// subset construction
 		Map<Set<State>, Set<State>> sets = new HashMap<Set<State>, Set<State>>();

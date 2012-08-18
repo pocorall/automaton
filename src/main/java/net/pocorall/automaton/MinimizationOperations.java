@@ -123,8 +123,8 @@ final public class MinimizationOperations {
 	/**
 	 * Minimizes the given automaton using Huffman's algorithm.
 	 */
-	public static void minimizeHuffman(SingletonAutomaton a) {
-		a.determinize();
+	public static void minimizeHuffman(LinkedAutomaton a) {
+		BasicOperations.determinize(a);
 		a.totalize();
 		Set<State> ss = a.getStates();
 		Transition[][] transitions = new Transition[ss.size()][];
@@ -189,9 +189,7 @@ final public class MinimizationOperations {
 	/**
 	 * Minimizes the given automaton using Brzozowski's algorithm.
 	 */
-	public static void minimizeBrzozowski(SingletonAutomaton a) {
-		if (a.isSingleton())
-			return;
+	public static void minimizeBrzozowski(LinkedAutomaton a) {
 		BasicOperations.determinize(a, SpecialOperations.reverse(a));
 		BasicOperations.determinize(a, SpecialOperations.reverse(a));
 	}
@@ -199,8 +197,8 @@ final public class MinimizationOperations {
 	/**
 	 * Minimizes the given automaton using Hopcroft's algorithm.
 	 */
-	public static void minimizeHopcroft(SingletonAutomaton a) {
-		a.determinize();
+	public static void minimizeHopcroft(LinkedAutomaton a) {
+		BasicOperations.determinize(a);
 		Set<Transition> tr = a.initial.getTransitions();
 		if (tr.size() == 1) {
 			Transition t = tr.iterator().next();

@@ -58,26 +58,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 
 	static final long serialVersionUID = 10001;
 
-	/**
-	 * Initial state of this automaton.
-	 */
-	State initial;
-
-	/**
-	 * If true, then this automaton is definitely deterministic
-	 * (i.e., there are no choices for any run, but a run may crash).
-	 */
-	boolean deterministic;
-
-	/**
-	 * Extra data associated with this automaton.
-	 */
-	transient Object info;
-
-	/**
-	 * Hash code. Recomputed by {@link #minimize()}.
-	 */
-	int hash_code;
 
 	/**
 	 * Singleton string. Null if not applicable.
@@ -94,21 +74,10 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	 * @see Transition
 	 */
 	public SingletonAutomaton() {
-		initial = new State();
-		deterministic = true;
+		super();
 		singleton = null;
 	}
 
-	boolean isDebug() {
-		if (is_debug == null)
-			is_debug = Boolean.valueOf(System.getProperty("dk.brics.automaton.debug") != null);
-		return is_debug.booleanValue();
-	}
-
-	void checkMinimizeAlways() {
-		if (minimize_always)
-			minimize();
-	}
 
 	boolean isSingleton() {
 		return singleton != null;
@@ -185,80 +154,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 		return info;
 	}
 
-	/**
-	 * Returns the set of states that are reachable from the initial state.
-	 *
-	 * @return set of {@link State} objects
-	 */
-	public Set<State> getStates() {
-		expandSingleton();
-		Set<State> visited;
-		if (isDebug())
-			visited = new LinkedHashSet<State>();
-		else
-			visited = new HashSet<State>();
-		LinkedList<State> worklist = new LinkedList<State>();
-		worklist.add(initial);
-		visited.add(initial);
-		while (worklist.size() > 0) {
-			State s = worklist.removeFirst();
-			Collection<Transition> tr;
-			if (isDebug())
-				tr = s.getSortedTransitions(false);
-			else
-				tr = s.transitions;
-			for (Transition t : tr)
-				if (!visited.contains(t.to)) {
-					visited.add(t.to);
-					worklist.add(t.to);
-				}
-		}
-		return visited;
-	}
-
-	/**
-	 * Returns the set of reachable accept states.
-	 *
-	 * @return set of {@link State} objects
-	 */
-	public Set<State> getAcceptStates() {
-		expandSingleton();
-		HashSet<State> accepts = new HashSet<State>();
-		HashSet<State> visited = new HashSet<State>();
-		LinkedList<State> worklist = new LinkedList<State>();
-		worklist.add(initial);
-		visited.add(initial);
-		while (worklist.size() > 0) {
-			State s = worklist.removeFirst();
-			if (s.accept != null)
-				accepts.add(s);
-			for (Transition t : s.transitions)
-				if (!visited.contains(t.to)) {
-					visited.add(t.to);
-					worklist.add(t.to);
-				}
-		}
-		return accepts;
-	}
-
-	/**
-	 * Adds transitions to explicit crash state to ensure that transition function is total.
-	 */
-	void totalize() {
-		State s = new State();
-		s.transitions.add(new Transition(Character.MIN_VALUE, Character.MAX_VALUE, s));
-		for (State p : getStates()) {
-			int maxi = Character.MIN_VALUE;
-			for (Transition t : p.getSortedTransitions(false)) {
-				if (t.min > maxi)
-					p.transitions.add(new Transition((char) maxi, (char) (t.min - 1), s));
-				if (t.max + 1 > maxi)
-					maxi = t.max + 1;
-			}
-			if (maxi <= Character.MAX_VALUE)
-				p.transitions.add(new Transition((char) maxi, Character.MAX_VALUE, s));
-		}
-	}
 
 	/**
 	 * Restores representation invariant.
@@ -278,58 +173,9 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	public void reduce() {
 		if (isSingleton())
 			return;
-		Set<State> states = getStates();
-		setStateNumbers(states);
-		for (State s : states) {
-			List<Transition> st = s.getSortedTransitions(true);
-			s.resetTransitions();
-			State p = null;
-			int min = -1, max = -1;
-			for (Transition t : st) {
-				if (p == t.to) {
-					if (t.min <= max + 1) {
-						if (t.max > max)
-							max = t.max;
-					} else {
-						if (p != null)
-							s.transitions.add(new Transition((char) min, (char) max, p));
-						min = t.min;
-						max = t.max;
-					}
-				} else {
-					if (p != null)
-						s.transitions.add(new Transition((char) min, (char) max, p));
-					p = t.to;
-					min = t.min;
-					max = t.max;
-				}
-			}
-			if (p != null)
-				s.transitions.add(new Transition((char) min, (char) max, p));
-		}
-		clearHashCode();
+		super.reduce();
 	}
 
-	/**
-	 * Returns sorted array of all interval start points.
-	 */
-	char[] getStartPoints() {
-		Set<Character> pointset = new HashSet<Character>();
-		for (State s : getStates()) {
-			pointset.add(Character.MIN_VALUE);
-			for (Transition t : s.transitions) {
-				pointset.add(t.min);
-				if (t.max < Character.MAX_VALUE)
-					pointset.add((char) (t.max + 1));
-			}
-		}
-		char[] points = new char[pointset.size()];
-		int n = 0;
-		for (Character m : pointset)
-			points[n++] = m;
-		Arrays.sort(points);
-		return points;
-	}
 
 	/**
 	 * Returns the set of live states. A state is "live" if an accept state is reachable from it.
@@ -341,25 +187,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 		return getLiveStates(getStates());
 	}
 
-	private Set<State> getLiveStates(Set<State> states) {
-		HashMap<State, Set<State>> map = new HashMap<State, Set<State>>();
-		for (State s : states)
-			map.put(s, new HashSet<State>());
-		for (State s : states)
-			for (Transition t : s.transitions)
-				map.get(t.to).add(s);
-		Set<State> live = new HashSet<State>(getAcceptStates());
-		LinkedList<State> worklist = new LinkedList<State>(live);
-		while (worklist.size() > 0) {
-			State s = worklist.removeFirst();
-			for (State p : map.get(s))
-				if (!live.contains(p)) {
-					live.add(p);
-					worklist.add(p);
-				}
-		}
-		return live;
-	}
 
 	/**
 	 * Removes transitions to dead states and calls {@link #reduce()} and {@link #clearHashCode()}.
@@ -369,16 +196,7 @@ public class SingletonAutomaton extends LinkedAutomaton {
 		clearHashCode();
 		if (isSingleton())
 			return;
-		Set<State> states = getStates();
-		Set<State> live = getLiveStates(states);
-		for (State s : states) {
-			Set<Transition> st = s.transitions;
-			s.resetTransitions();
-			for (Transition t : st)
-				if (live.contains(t.to))
-					s.transitions.add(t);
-		}
-		reduce();
+		super.removeDeadTransitions();
 	}
 
 	/**
@@ -406,7 +224,7 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	public int getNumberOfStates() {
 		if (isSingleton())
 			return singleton.length() + 1;
-		return getStates().size();
+		return super.getNumberOfStates();
 	}
 
 	/**
@@ -416,10 +234,7 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	public int getNumberOfTransitions() {
 		if (isSingleton())
 			return singleton.length();
-		int c = 0;
-		for (State s : getStates())
-			c += s.transitions.size();
-		return c;
+		return super.getNumberOfTransitions();
 	}
 
 	/**
@@ -451,22 +266,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 		return hash_code;
 	}
 
-	/**
-	 * Recomputes the hash code.
-	 * The automaton must be minimal when this operation is performed.
-	 */
-	public void recomputeHashCode() {
-		hash_code = getNumberOfStates() * 3 + getNumberOfTransitions() * 2;
-		if (hash_code == 0)
-			hash_code = 1;
-	}
-
-	/**
-	 * Must be invoked when the stored hash code may no longer be valid.
-	 */
-	void clearHashCode() {
-		hash_code = 0;
-	}
 
 	/**
 	 * Returns a string representation of this automaton.
@@ -578,13 +377,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	 */
 	public static SingletonAutomaton makeChar(char c) {
 		return BasicAutomata.makeChar(c);
-	}
-
-	/**
-	 * See {@link BasicAutomata#makeCharRange(char, char)}.
-	 */
-	public static SingletonAutomaton makeCharRange(char min, char max) {
-		return BasicAutomata.makeCharRange(min, max);
 	}
 
 
@@ -771,16 +563,7 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	 */
 	public SingletonAutomaton minimize() {
 		if (!isSingleton()) {
-			switch (minimization) {
-				case MINIMIZE_HUFFMAN:
-					MinimizationOperations.minimizeHuffman(this);
-					break;
-				case MINIMIZE_BRZOZOWSKI:
-					MinimizationOperations.minimizeBrzozowski(this);
-					break;
-				default:
-					MinimizationOperations.minimizeHopcroft(this);
-			}
+			super.minimize();
 		}
 		recomputeHashCode();
 		return this;
