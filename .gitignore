@@ -3,6 +3,7 @@ target/
 .*/
 *.iml
 overlays/
+build/
 gen/
 Debug/
 Release/

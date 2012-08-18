@@ -130,23 +130,7 @@ final public class BasicOperations {
 		}
 	}
 
-	/**
-	 * Returns an automaton that accepts the union of the empty string and the
-	 * language of the given automaton.
-	 * <p/>
-	 * Complexity: linear in number of states.
-	 */
-	static public SingletonAutomaton optional(SingletonAutomaton a) {
-		a = a.cloneExpandedIfRequired();
-		State s = new State();
-		s.addEpsilon(a.initial);
-		s.accept = true;
-		a.initial = s;
-		a.deterministic = false;
-		a.clearHashCode();
-		a.checkMinimizeAlways();
-		return a;
-	}
+
 
 	/**
 	 * Returns an automaton that accepts the Kleene star (zero or more

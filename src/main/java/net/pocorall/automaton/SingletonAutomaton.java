@@ -597,10 +597,21 @@ public class SingletonAutomaton extends LinkedAutomaton {
 
 
 	/**
-	 * See {@link BasicOperations#optional(SingletonAutomaton)}.
+	 * Returns an automaton that accepts the union of the empty string and the
+	 * language of the given automaton.
+	 * <p/>
+	 * Complexity: linear in number of states.
 	 */
 	public SingletonAutomaton optional() {
-		return BasicOperations.optional(this);
+		SingletonAutomaton a = cloneExpandedIfRequired();
+		State s = new State();
+		s.addEpsilon(a.initial);
+		s.accept = true;
+		a.initial = s;
+		a.deterministic = false;
+		a.clearHashCode();
+		a.checkMinimizeAlways();
+		return a;
 	}
 
 	/**
