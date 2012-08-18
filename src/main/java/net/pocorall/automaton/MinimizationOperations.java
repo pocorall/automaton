@@ -42,27 +42,6 @@ final public class MinimizationOperations {
 	private MinimizationOperations() {
 	}
 
-	/**
-	 * Minimizes (and determinizes if not already deterministic) the given automaton.
-	 *
-	 * @see LinkedAutomaton#setMinimization(int)
-	 */
-	public static void minimize(LinkedAutomaton a) {
-		if (!a.isSingleton()) {
-			switch (LinkedAutomaton.minimization) {
-				case LinkedAutomaton.MINIMIZE_HUFFMAN:
-					minimizeHuffman(a);
-					break;
-				case LinkedAutomaton.MINIMIZE_BRZOZOWSKI:
-					minimizeBrzozowski(a);
-					break;
-				default:
-					minimizeHopcroft(a);
-			}
-		}
-		a.recomputeHashCode();
-	}
-
 	private static boolean statesAgree(Transition[][] transitions, boolean[][] mark, int n1, int n2) {
 		Transition[] t1 = transitions[n1];
 		Transition[] t2 = transitions[n2];

@@ -299,7 +299,7 @@ final public class BasicAutomata {
 			b.append("[0-9]{1," + (n.length() - i - 1) + "}|");
 		maxInteger(n.substring(i), 0, b);
 		b.append(")");
-		return LinkedAutomaton.minimize((new RegExp(b.toString())).toAutomaton());
+		return ((new RegExp(b.toString())).toAutomaton()).minimize();
 	}
 
 	private static void maxInteger(String n, int i, StringBuilder b) {
@@ -330,7 +330,7 @@ final public class BasicAutomata {
 		b.append("0*");
 		minInteger(n.substring(i), 0, b);
 		b.append("[0-9]*");
-		return LinkedAutomaton.minimize((new RegExp(b.toString())).toAutomaton());
+		return ((new RegExp(b.toString())).toAutomaton()).minimize();
 	}
 
 	private static void minInteger(String n, int i, StringBuilder b) {
@@ -353,7 +353,7 @@ final public class BasicAutomata {
 	 * @param i max number of necessary digits
 	 */
 	public static LinkedAutomaton makeTotalDigits(int i) {
-		return LinkedAutomaton.minimize((new RegExp("[ \t\n\r]*[-+]?0*([0-9]{0," + i + "}|((([0-9]\\.*){0," + i + "})&@\\.@)0*)[ \t\n\r]*")).toAutomaton());
+		return ((new RegExp("[ \t\n\r]*[-+]?0*([0-9]{0," + i + "}|((([0-9]\\.*){0," + i + "})&@\\.@)0*)[ \t\n\r]*")).toAutomaton()).minimize();
 	}
 
 	/**
@@ -364,7 +364,7 @@ final public class BasicAutomata {
 	 * @param i max number of necessary fraction digits
 	 */
 	public static LinkedAutomaton makeFractionDigits(int i) {
-		return LinkedAutomaton.minimize((new RegExp("[ \t\n\r]*[-+]?[0-9]+(\\.[0-9]{0," + i + "}0*)?[ \t\n\r]*")).toAutomaton());
+		return ((new RegExp("[ \t\n\r]*[-+]?[0-9]+(\\.[0-9]{0," + i + "}0*)?[ \t\n\r]*")).toAutomaton()).minimize();
 	}
 
 	/**
@@ -394,7 +394,7 @@ final public class BasicAutomata {
 		else
 			s = LinkedAutomaton.makeChar('+').optional();
 		LinkedAutomaton ws = Datatypes.getWhitespaceAutomaton();
-		return LinkedAutomaton.minimize(ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(LinkedAutomaton.makeString(b.toString()))).concatenate(ws));
+		return (ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(LinkedAutomaton.makeString(b.toString()))).concatenate(ws)).minimize();
 	}
 
 	/**
@@ -443,7 +443,7 @@ final public class BasicAutomata {
 		else
 			d = LinkedAutomaton.makeChar('.').concatenate(LinkedAutomaton.makeString(b2.toString())).concatenate(LinkedAutomaton.makeChar('0').repeat());
 		LinkedAutomaton ws = Datatypes.getWhitespaceAutomaton();
-		return LinkedAutomaton.minimize(ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(LinkedAutomaton.makeString(b1.toString())).concatenate(d)).concatenate(ws));
+		return (ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(LinkedAutomaton.makeString(b1.toString())).concatenate(d)).concatenate(ws)).minimize();
 	}
 
 	/**

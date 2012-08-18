@@ -977,20 +977,27 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	}
 
 	/**
-	 * See {@link MinimizationOperations#minimize(LinkedAutomaton)}.
+	 * Minimizes (and determinizes if not already deterministic) the given automaton.
+	 *
+	 * @see LinkedAutomaton#setMinimization(int)
 	 */
-	public void minimize() {
-		MinimizationOperations.minimize(this);
+	public LinkedAutomaton minimize() {
+		if (!isSingleton()) {
+			switch (LinkedAutomaton.minimization) {
+				case LinkedAutomaton.MINIMIZE_HUFFMAN:
+					MinimizationOperations.minimizeHuffman(this);
+					break;
+				case LinkedAutomaton.MINIMIZE_BRZOZOWSKI:
+					MinimizationOperations.minimizeBrzozowski(this);
+					break;
+				default:
+					MinimizationOperations.minimizeHopcroft(this);
+			}
+		}
+		recomputeHashCode();
+		return this;
 	}
 
-	/**
-	 * See {@link MinimizationOperations#minimize(LinkedAutomaton)}.
-	 * Returns the automaton being given as argument.
-	 */
-	public static LinkedAutomaton minimize(LinkedAutomaton a) {
-		a.minimize();
-		return a;
-	}
 
 	/**
 	 * See {@link SpecialOperations#overlap(LinkedAutomaton, LinkedAutomaton)}.

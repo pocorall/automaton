@@ -38,11 +38,11 @@ import java.util.*;
  * related to Unicode, XML, and XML Schema.
  */
 final public class Datatypes {
-	
-	private static final Map<String,LinkedAutomaton> automata;
-	
+
+	private static final Map<String, LinkedAutomaton> automata;
+
 	private static final LinkedAutomaton ws;
-	
+
 	private static final Set<String> unicodeblock_names;
 
 	private static final Set<String> unicodecategory_names;
@@ -144,7 +144,7 @@ final public class Datatypes {
 		"CJKCompatibilityIdeographsSupplement",
 		"Tags"
 	};
-	
+
 	private static final String[] unicodecategory_names_array = {
 		"Lu",
 		"Ll",
@@ -183,7 +183,7 @@ final public class Datatypes {
 		"Cn",
 		"C"
 	};
-	
+
 	private static final String[] xml_names_array = {
 		"NCName",
 		"QName",
@@ -218,17 +218,18 @@ final public class Datatypes {
 		"Names",
 		"language"
 	};
-	
+
 	static {
-		automata = new HashMap<String,LinkedAutomaton>();
-		ws = LinkedAutomaton.minimize(LinkedAutomaton.makeCharSet(" \t\n\r").repeat());
+		automata = new HashMap<String, LinkedAutomaton>();
+		ws = LinkedAutomaton.makeCharSet(" \t\n\r").repeat().minimize();
 		unicodeblock_names = new HashSet<String>(Arrays.asList(unicodeblock_names_array));
 		unicodecategory_names = new HashSet<String>(Arrays.asList(unicodecategory_names_array));
 		xml_names = new HashSet<String>(Arrays.asList(xml_names_array));
 	}
-	
-	private Datatypes() {}
-	
+
+	private Datatypes() {
+	}
+
 	/**
 	 * Invoke during compilation to pre-build automata.
 	 * Automata are stored in the directory specified by the system property <tt>dk.brics.automaton.datatypes</tt>.
@@ -240,16 +241,16 @@ final public class Datatypes {
 		buildAll();
 		LinkedAutomaton.setAllowMutate(b);
 		System.out.println("Storing automata...");
-		for (Map.Entry<String,LinkedAutomaton> e : automata.entrySet())
+		for (Map.Entry<String, LinkedAutomaton> e : automata.entrySet())
 			store(e.getKey(), e.getValue());
 		System.out.println("Time for building automata: " + (System.currentTimeMillis() - t) + "ms");
 	}
-	
+
 	/**
 	 * Returns pre-built automaton.
- 	 * Automata are loaded as resources from the class loader of the <tt>Datatypes</tt> class.
- 	 * (Typically, the pre-built automata are stored in the same jar as this class.)
- 	 * <p>
+	 * Automata are loaded as resources from the class loader of the <tt>Datatypes</tt> class.
+	 * (Typically, the pre-built automata are stored in the same jar as this class.)
+	 * <p/>
 	 * The following automata are available:
 	 * <table border=1>
 	 * <tr><th>Name</th><th>Description</th></tr>
@@ -417,6 +418,7 @@ final public class Datatypes {
 	 * <tr><td><tt>C</tt></td><td><a target="_top" href="http://www.unicode.org/Public/3.1-Update/UnicodeData-3.1.0.txt">C</a> category from Unicode 3.1</td></tr>
 	 * </table>
 	 * <p>Loaded automata are cached in memory.
+	 *
 	 * @param name name of automaton
 	 * @return automaton
 	 */
@@ -428,30 +430,31 @@ final public class Datatypes {
 		}
 		return a;
 	}
-	
+
 	/**
 	 * Checks whether the given string is the name of a Unicode block (see {@link #get(String)}).
 	 */
 	public static boolean isUnicodeBlockName(String name) {
 		return unicodeblock_names.contains(name);
 	}
-	
+
 	/**
 	 * Checks whether the given string is the name of a Unicode category (see {@link #get(String)}).
 	 */
 	public static boolean isUnicodeCategoryName(String name) {
 		return unicodecategory_names.contains(name);
 	}
-	
+
 	/**
 	 * Checks whether the given string is the name of an XML / XML Schema automaton (see {@link #get(String)}).
 	 */
 	public static boolean isXMLName(String name) {
 		return xml_names.contains(name);
 	}
-	
+
 	/**
 	 * Checks whether a given automaton is available.
+	 *
 	 * @param name automaton name
 	 * @return true if the automaton is available
 	 */
@@ -476,7 +479,7 @@ final public class Datatypes {
 			return null;
 		}
 	}
-	
+
 	private static void store(String name, LinkedAutomaton a) {
 		String dir = System.getProperty("dk.brics.automaton.datatypes");
 		if (dir == null)
@@ -487,13 +490,13 @@ final public class Datatypes {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void buildAll() {
 		String[] xmlexps = {
-				"Extender",  
-				"[\u3031-\u3035\u309D-\u309E\u30FC-\u30FE\u00B7\u02D0\u02D1\u0387\u0640\u0E46\u0EC6\u3005]",
-				"CombiningChar",
-				"[\u0300-\u0345\u0360-\u0361\u0483-\u0486\u0591-\u05A1\u05A3-\u05B9\u05BB-\u05BD\u05C1-\u05C2\u064B-\u0652" +
+			"Extender",
+			"[\u3031-\u3035\u309D-\u309E\u30FC-\u30FE\u00B7\u02D0\u02D1\u0387\u0640\u0E46\u0EC6\u3005]",
+			"CombiningChar",
+			"[\u0300-\u0345\u0360-\u0361\u0483-\u0486\u0591-\u05A1\u05A3-\u05B9\u05BB-\u05BD\u05C1-\u05C2\u064B-\u0652" +
 				"\u06D6-\u06DC\u06DD-\u06DF\u06E0-\u06E4\u06E7-\u06E8\u06EA-\u06ED\u0901-\u0903\u093E-\u094C\u0951-\u0954" +
 				"\u0962-\u0963\u0981-\u0983\u09C0-\u09C4\u09C7-\u09C8\u09CB-\u09CD\u09E2-\u09E3\u0A40-\u0A42\u0A47-\u0A48" +
 				"\u0A4B-\u0A4D\u0A70-\u0A71\u0A81-\u0A83\u0ABE-\u0AC5\u0AC7-\u0AC9\u0ACB-\u0ACD\u0B01-\u0B03\u0B3E-\u0B43" +
@@ -503,13 +506,13 @@ final public class Datatypes {
 				"\u0EBB-\u0EBC\u0EC8-\u0ECD\u0F18-\u0F19\u0F71-\u0F84\u0F86-\u0F8B\u0F90-\u0F95\u0F99-\u0FAD\u0FB1-\u0FB7" +
 				"\u20D0-\u20DC\u302A-\u302F\u05BF\u05C4\u0670\u093C\u094D\u09BC\u09BE\u09BF\u09D7\u0A02\u0A3C\u0A3E\u0A3F" +
 				"\u0ABC\u0B3C\u0BD7\u0D57\u0E31\u0EB1\u0F35\u0F37\u0F39\u0F3E\u0F3F\u0F97\u0FB9\u20E1\u3099\u309A]",
-				"Digit",
-				"[\u0030-\u0039\u0660-\u0669\u06F0-\u06F9\u0966-\u096F\u09E6-\u09EF\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F" + 
+			"Digit",
+			"[\u0030-\u0039\u0660-\u0669\u06F0-\u06F9\u0966-\u096F\u09E6-\u09EF\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F" +
 				"\u0BE7-\u0BEF\u0C66-\u0C6F\u0CE6-\u0CEF\u0D66-\u0D6F\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F29]",
-				"Ideographic", 
-				"[\u4E00-\u9FA5\u3021-\u3029\u3007]",
-				"BaseChar",
-				"[\u0041-\u005A\u0061-\u007A\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\u0100-\u0131\u0134-\u013E\u0141-\u0148" + 
+			"Ideographic",
+			"[\u4E00-\u9FA5\u3021-\u3029\u3007]",
+			"BaseChar",
+			"[\u0041-\u005A\u0061-\u007A\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\u0100-\u0131\u0134-\u013E\u0141-\u0148" +
 				"\u014A-\u017E\u0180-\u01C3\u01CD-\u01F0\u01F4-\u01F5\u01FA-\u0217\u0250-\u02A8\u02BB-\u02C1\u0388-\u038A" +
 				"\u038E-\u03A1\u03A3-\u03CE\u03D0-\u03D6\u03E2-\u03F3\u0401-\u040C\u040E-\u044F\u0451-\u045C\u045E-\u0481" +
 				"\u0490-\u04C4\u04C7-\u04C8\u04CB-\u04CC\u04D0-\u04EB\u04EE-\u04F5\u04F8-\u04F9\u0531-\u0556\u0561-\u0586" +
@@ -531,123 +534,123 @@ final public class Datatypes {
 				"\u0386\u038C\u03DA\u03DC\u03DE\u03E0\u0559\u06D5\u093D\u09B2\u0A5E\u0A8D\u0ABD\u0AE0\u0B3D\u0B9C\u0CDE\u0E30\u0E84\u0E8A" +
 				"\u0E8D\u0EA5\u0EA7\u0EB0\u0EBD\u1100\u1109\u113C\u113E\u1140\u114C\u114E\u1150\u1159\u1163\u1165\u1167\u1169\u1175\u119E" +
 				"\u11A8\u11AB\u11BA\u11EB\u11F0\u11F9\u1F59\u1F5B\u1F5D\u1FBE\u2126\u212E]",
-				"Letter", "<BaseChar>|<Ideographic>",
-				"NCNameChar", "<Letter>|<Digit>|[-._]|<CombiningChar>|<Extender>",
-				"NameChar", "<NCNameChar>|:",
-				"Nmtoken", "<NameChar>+",
-				"NCName", "(<Letter>|_)<NCNameChar>*",
-				"Name", "(<Letter>|[_:])<NameChar>*",
-				"QName", "(<NCName>:)?<NCName>",
-				"Char", "[\t\n\r\u0020-\uD7FF\ue000-\ufffd]|[\uD800-\uDBFF][\uDC00-\uDFFF]",
-				"whitespacechar", "[ \t\n\r]"
+			"Letter", "<BaseChar>|<Ideographic>",
+			"NCNameChar", "<Letter>|<Digit>|[-._]|<CombiningChar>|<Extender>",
+			"NameChar", "<NCNameChar>|:",
+			"Nmtoken", "<NameChar>+",
+			"NCName", "(<Letter>|_)<NCNameChar>*",
+			"Name", "(<Letter>|[_:])<NameChar>*",
+			"QName", "(<NCName>:)?<NCName>",
+			"Char", "[\t\n\r\u0020-\uD7FF\ue000-\ufffd]|[\uD800-\uDBFF][\uDC00-\uDFFF]",
+			"whitespacechar", "[ \t\n\r]"
 		};
-		
+
 		System.out.println("Building XML automata...");
-		Map<String,LinkedAutomaton> t = buildMap(xmlexps);
+		Map<String, LinkedAutomaton> t = buildMap(xmlexps);
 		putFrom("NCName", t);
 		putFrom("QName", t);
 		putFrom("Char", t);
 		putFrom("NameChar", t);
 		putFrom("Letter", t);
 		putFrom("whitespacechar", t);
-		
+
 		put(automata, "whitespace", ws);
 
 		String[] uriexps = {
-				"digit", "[0-9]",
-				"upalpha", "[A-Z]",
-				"lowalpha", "[a-z]",
-				"alpha", "<lowalpha>|<upalpha>",
-				"alphanum", "<alpha>|<digit>",
-				"hex", "<digit>|[a-f]|[A-F]",
-				"escaped", "%<hex><hex>",
-				"mark", "[-_.!~*'()]",
-				"unreserved", "<alphanum>|<mark>",
-				// "reserved", "[;/?:@&=+$,]",
-				"reserved", "[;/?:@&=+$,\\[\\]]",// RFC 2732
-				"uric", "<reserved>|<unreserved>|<escaped>",
-				"fragment", "<uric>*",
-				"query", "<uric>*",
-				"pchar", "<unreserved>|<escaped>|[:@&=+$,]",
-				"param", "<pchar>*",
-				"segment", "<pchar>*(;<param>)*",
-				"path_segments", "<segment>(/<segment>)*",
-				"abs_path", "/<path_segments>",
-				"uric_no_slash", "<unreserved>|<escaped>|[;?:@&=+$,]",
-				"opaque_part", "<uric_no_slash><uric>*",
-				//"path", "(<abs_path>|<opaque_part>)?",  // not used
-				"port", "<digit>*",
-				// "IPv4address", "(<digit>{1,}\\.){3}<digit>{1,}",
-				"IPv4address", "(<digit>{1,3}\\.){3}<digit>{1,3}", // RFC 2732 / 2373
-				"hexseq", "<hex>{1,4}(:<hex>{1,4})*", // RFC 2373
-				"hexpart", "<hexseq>|<hexseq>::<hexseq>?|::<hexseq>", // RFC 2373
-				"IPv6address", "<hexpart>(:<IPv4address>)?", // RFC 2373
-				"toplabel", "<alpha>|(<alpha>(<alphanum>|-)*<alphanum>)",
-				"domainlabel", "<alphanum>|(<alphanum>(<alphanum>|-)*<alphanum>)",
-				"hostname", "(<domainlabel>\\.)*<toplabel>\\.?",
-				// "host", "<hostname>|<IPv4address>", 
-				"host", "<hostname>|<IPv4address>|\\[<IPv6address>\\]", // RFC 2732
-				"hostport", "<host>(:<port>)?",
-				"userinfo", "(<unreserved>|<escaped>|[;:&=+$,])*",
-				"server", "((<userinfo>\\@)?<hostport>)?",
-				"reg_name", "(<unreserved>|<escaped>|[$,;:@&=+])+",
-				"authority", "<server>|<reg_name>",
-				"scheme", "<alpha>(<alpha>|<digit>|[-+.])*",
-				"rel_segment", "(<unreserved>|<escaped>|[;@&=+$,])+",
-				"rel_path", "<rel_segment><abs_path>?",
-				"net_path", "//<authority><abs_path>?",
-				"hier_part", "(<net_path>|<abs_path>)(\\?<query>)?",
-				"relativeURI", "(<net_path>|<abs_path>|<rel_path>)(\\?<query>)?",
-				"absoluteURI", "<scheme>:(<hier_part>|<opaque_part>)",
-				"URI", "(<absoluteURI>|<relativeURI>)?(\\#<fragment>)?"
+			"digit", "[0-9]",
+			"upalpha", "[A-Z]",
+			"lowalpha", "[a-z]",
+			"alpha", "<lowalpha>|<upalpha>",
+			"alphanum", "<alpha>|<digit>",
+			"hex", "<digit>|[a-f]|[A-F]",
+			"escaped", "%<hex><hex>",
+			"mark", "[-_.!~*'()]",
+			"unreserved", "<alphanum>|<mark>",
+			// "reserved", "[;/?:@&=+$,]",
+			"reserved", "[;/?:@&=+$,\\[\\]]",// RFC 2732
+			"uric", "<reserved>|<unreserved>|<escaped>",
+			"fragment", "<uric>*",
+			"query", "<uric>*",
+			"pchar", "<unreserved>|<escaped>|[:@&=+$,]",
+			"param", "<pchar>*",
+			"segment", "<pchar>*(;<param>)*",
+			"path_segments", "<segment>(/<segment>)*",
+			"abs_path", "/<path_segments>",
+			"uric_no_slash", "<unreserved>|<escaped>|[;?:@&=+$,]",
+			"opaque_part", "<uric_no_slash><uric>*",
+			//"path", "(<abs_path>|<opaque_part>)?",  // not used
+			"port", "<digit>*",
+			// "IPv4address", "(<digit>{1,}\\.){3}<digit>{1,}",
+			"IPv4address", "(<digit>{1,3}\\.){3}<digit>{1,3}", // RFC 2732 / 2373
+			"hexseq", "<hex>{1,4}(:<hex>{1,4})*", // RFC 2373
+			"hexpart", "<hexseq>|<hexseq>::<hexseq>?|::<hexseq>", // RFC 2373
+			"IPv6address", "<hexpart>(:<IPv4address>)?", // RFC 2373
+			"toplabel", "<alpha>|(<alpha>(<alphanum>|-)*<alphanum>)",
+			"domainlabel", "<alphanum>|(<alphanum>(<alphanum>|-)*<alphanum>)",
+			"hostname", "(<domainlabel>\\.)*<toplabel>\\.?",
+			// "host", "<hostname>|<IPv4address>",
+			"host", "<hostname>|<IPv4address>|\\[<IPv6address>\\]", // RFC 2732
+			"hostport", "<host>(:<port>)?",
+			"userinfo", "(<unreserved>|<escaped>|[;:&=+$,])*",
+			"server", "((<userinfo>\\@)?<hostport>)?",
+			"reg_name", "(<unreserved>|<escaped>|[$,;:@&=+])+",
+			"authority", "<server>|<reg_name>",
+			"scheme", "<alpha>(<alpha>|<digit>|[-+.])*",
+			"rel_segment", "(<unreserved>|<escaped>|[;@&=+$,])+",
+			"rel_path", "<rel_segment><abs_path>?",
+			"net_path", "//<authority><abs_path>?",
+			"hier_part", "(<net_path>|<abs_path>)(\\?<query>)?",
+			"relativeURI", "(<net_path>|<abs_path>|<rel_path>)(\\?<query>)?",
+			"absoluteURI", "<scheme>:(<hier_part>|<opaque_part>)",
+			"URI", "(<absoluteURI>|<relativeURI>)?(\\#<fragment>)?"
 		};
 		System.out.println("Building URI automaton...");
 		putFrom("URI", buildMap(uriexps));
-		put(automata, "anyname", LinkedAutomaton.minimize(LinkedAutomaton.makeChar('{').concatenate(automata.get("URI").clone()).concatenate(LinkedAutomaton.makeChar('}')).optional().concatenate(automata.get("NCName").clone())));
+		put(automata, "anyname", (LinkedAutomaton.makeChar('{').concatenate(automata.get("URI").clone()).concatenate(LinkedAutomaton.makeChar('}')).optional().concatenate(automata.get("NCName").clone())).minimize());
 
 		put(automata, "noap", new RegExp("~(@[@%]@)").toAutomaton());
-		
+
 		String[] xsdmisc = {
-				"_", "[ \t\n\r]*",
-				"d", "[0-9]",
-				"Z", "[-+](<00-13>:<00-59>|14:00)|Z",
-				"Y", "(<d>{4,})&~(0000)",
-				"M", "<01-12>",
-				"D", "<01-31>",
-				"T", "<00-23>:<00-59>:<00-59>|24:00:00",
-				"B64", "[A-Za-z0-9+/]",
-				"B16", "[AEIMQUYcgkosw048]",
-				"B04", "[AQgw]",
-				"B04S", "<B04> ?",
-				"B16S", "<B16> ?",
-				"B64S", "<B64> ?",
+			"_", "[ \t\n\r]*",
+			"d", "[0-9]",
+			"Z", "[-+](<00-13>:<00-59>|14:00)|Z",
+			"Y", "(<d>{4,})&~(0000)",
+			"M", "<01-12>",
+			"D", "<01-31>",
+			"T", "<00-23>:<00-59>:<00-59>|24:00:00",
+			"B64", "[A-Za-z0-9+/]",
+			"B16", "[AEIMQUYcgkosw048]",
+			"B04", "[AQgw]",
+			"B04S", "<B04> ?",
+			"B16S", "<B16> ?",
+			"B64S", "<B64> ?",
 		};
 		String[] xsdexps = {
-				"boolean", "<_>(true|false|1|0)<_>",
-				"decimal", "<_>([-+]?<d>+(\\.<d>+)?)<_>",
-				"float", "<_>([-+]?<d>+(\\.<d>+)?([Ee][-+]?<d>+)?|INF|-INF|NaN)<_>",
-				"integer", "<_>[-+]?[0-9]+<_>",
-				"duration", "<_>(-?P(((<d>+Y)?(<d>+M)?(<d>+D)?(T(((<d>+H)?(<d>+M)?(<d>+(\\.<d>+)?S)?)&~()))?)&~()))<_>",
-				"dateTime", "<_>(-?<Y>-<M>-<D>T<T>(\\.<d>+)?<Z>?)<_>",
-				"time", "<_>(<T>(\\.<d>+)?<Z>?)<_>",
-				"date", "<_>(-?<Y>-<M>-<D><Z>?)<_>",
-				"gYearMonth", "<_>(-?<Y>-<M><Z>?)<_>",
-				"gYear", "<_>(-?<Y><Z>?)<_>",
-				"gMonthDay", "<_>(--<M>-<D><Z>?)<_>",
-				"gDay", "<_>(--<D><Z>?)<_>",
-				"gMonth", "<_>(--<M><Z>?)<_>",
-				"hexBinary", "<_>([0-9a-fA-F]{2}*)<_>",
-				"base64Binary",	"<_>(((<B64S><B64S><B64S><B64S>)*((<B64S><B64S><B64S><B64>)|(<B64S><B64S><B16S>=)|(<B64S><B04S>= ?=)))?)<_>",
-				"language", "<_>[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*<_>",
-				"nonPositiveInteger", "<_>(0+|-<d>+)<_>",
-				"negativeInteger", "<_>(-[1-9]<d>*)<_>",
-				"nonNegativeInteger", "<_>(<d>+)<_>",
-				"positiveInteger", "<_>([1-9]<d>*)<_>",
+			"boolean", "<_>(true|false|1|0)<_>",
+			"decimal", "<_>([-+]?<d>+(\\.<d>+)?)<_>",
+			"float", "<_>([-+]?<d>+(\\.<d>+)?([Ee][-+]?<d>+)?|INF|-INF|NaN)<_>",
+			"integer", "<_>[-+]?[0-9]+<_>",
+			"duration", "<_>(-?P(((<d>+Y)?(<d>+M)?(<d>+D)?(T(((<d>+H)?(<d>+M)?(<d>+(\\.<d>+)?S)?)&~()))?)&~()))<_>",
+			"dateTime", "<_>(-?<Y>-<M>-<D>T<T>(\\.<d>+)?<Z>?)<_>",
+			"time", "<_>(<T>(\\.<d>+)?<Z>?)<_>",
+			"date", "<_>(-?<Y>-<M>-<D><Z>?)<_>",
+			"gYearMonth", "<_>(-?<Y>-<M><Z>?)<_>",
+			"gYear", "<_>(-?<Y><Z>?)<_>",
+			"gMonthDay", "<_>(--<M>-<D><Z>?)<_>",
+			"gDay", "<_>(--<D><Z>?)<_>",
+			"gMonth", "<_>(--<M><Z>?)<_>",
+			"hexBinary", "<_>([0-9a-fA-F]{2}*)<_>",
+			"base64Binary", "<_>(((<B64S><B64S><B64S><B64S>)*((<B64S><B64S><B64S><B64>)|(<B64S><B64S><B16S>=)|(<B64S><B04S>= ?=)))?)<_>",
+			"language", "<_>[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*<_>",
+			"nonPositiveInteger", "<_>(0+|-<d>+)<_>",
+			"negativeInteger", "<_>(-[1-9]<d>*)<_>",
+			"nonNegativeInteger", "<_>(<d>+)<_>",
+			"positiveInteger", "<_>([1-9]<d>*)<_>",
 		};
 		System.out.println("Building XML Schema automata...");
-		Map<String,LinkedAutomaton> m = buildMap(xsdmisc);
+		Map<String, LinkedAutomaton> m = buildMap(xsdmisc);
 		putWith(xsdexps, m);
-		
+
 		put(m, "UNSIGNEDLONG", LinkedAutomaton.makeMaxInteger("18446744073709551615"));
 		put(m, "UNSIGNEDINT", LinkedAutomaton.makeMaxInteger("4294967295"));
 		put(m, "UNSIGNEDSHORT", LinkedAutomaton.makeMaxInteger("65535"));
@@ -660,27 +663,27 @@ final public class Datatypes {
 		put(m, "SHORT_NEG", LinkedAutomaton.makeMaxInteger("32768"));
 		put(m, "BYTE", LinkedAutomaton.makeMaxInteger("127"));
 		put(m, "BYTE_NEG", LinkedAutomaton.makeMaxInteger("128"));
-		
-		Map<String,LinkedAutomaton> u = new HashMap<String,LinkedAutomaton>();
+
+		Map<String, LinkedAutomaton> u = new HashMap<String, LinkedAutomaton>();
 		u.putAll(t);
 		u.putAll(m);
 		String[] xsdexps2 = {
-				"Nmtoken2", "<_><Nmtoken><_>",
-				"Name2", "<_><Name><_>",
-				"NCName2", "<_><NCName><_>",
-				"QName2", "<_><QName><_>",
-				"Nmtokens", "<_>(<Nmtoken><_>)+",
-				"NCNames", "<_>(<NCName><_>)+",
-				"Names", "<_>(<Name><_>)+",
-				"unsignedLong", "<_><UNSIGNEDLONG><_>",
-				"unsignedInt", "<_><UNSIGNEDINT><_>",
-				"unsignedShort", "<_><UNSIGNEDSHORT><_>",
-				"unsignedByte", "<_><UNSIGNEDBYTE><_>",
-				"long", "<_>(<LONG>|-<LONG_NEG>)<_>",
-				"int", "<_>(<INT>|-<INT_NEG>)<_>",
-				"short", "<_>(<SHORT>|-<SHORT_NEG>)<_>",
-				"byte", "<_>(<BYTE>|-<BYTE_NEG>)<_>",
-				"string", "<Char>*"
+			"Nmtoken2", "<_><Nmtoken><_>",
+			"Name2", "<_><Name><_>",
+			"NCName2", "<_><NCName><_>",
+			"QName2", "<_><QName><_>",
+			"Nmtokens", "<_>(<Nmtoken><_>)+",
+			"NCNames", "<_>(<NCName><_>)+",
+			"Names", "<_>(<Name><_>)+",
+			"unsignedLong", "<_><UNSIGNEDLONG><_>",
+			"unsignedInt", "<_><UNSIGNEDINT><_>",
+			"unsignedShort", "<_><UNSIGNEDSHORT><_>",
+			"unsignedByte", "<_><UNSIGNEDBYTE><_>",
+			"long", "<_>(<LONG>|-<LONG_NEG>)<_>",
+			"int", "<_>(<INT>|-<INT_NEG>)<_>",
+			"short", "<_>(<SHORT>|-<SHORT_NEG>)<_>",
+			"byte", "<_>(<BYTE>|-<BYTE_NEG>)<_>",
+			"string", "<Char>*"
 		};
 		putWith(xsdexps2, u);
 
@@ -776,21 +779,21 @@ final public class Datatypes {
 		put(automata, "ByzantineMusicalSymbols", LinkedAutomaton.makeChar('\ud834').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udcff')));
 		put(automata, "MusicalSymbols", LinkedAutomaton.makeChar('\ud834').concatenate(LinkedAutomaton.makeCharRange('\udd00', '\uddff')));
 		put(automata, "MathematicalAlphanumericSymbols", LinkedAutomaton.makeChar('\ud835').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udfff')));
-		
+
 		put(automata, "CJKUnifiedIdeographsExtensionB", LinkedAutomaton.makeCharRange('\ud840', '\ud868').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udfff'))
-				                                       .union(LinkedAutomaton.makeChar('\ud869').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\uded6'))));
-		
+			.union(LinkedAutomaton.makeChar('\ud869').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\uded6'))));
+
 		put(automata, "CJKCompatibilityIdeographsSupplement", LinkedAutomaton.makeChar('\ud87e').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\ude1f')));
 		put(automata, "Tags", LinkedAutomaton.makeChar('\udb40').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udc7f')));
-		
+
 		put(automata, "PrivateUse", LinkedAutomaton.makeCharRange('\uE000', '\uF8FF')
-				                   .union(LinkedAutomaton.makeCharRange('\udb80', '\udbbe').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udfff'))
-	                                      .union(LinkedAutomaton.makeChar('\udbbf').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udffd'))))
-				                   .union(LinkedAutomaton.makeCharRange('\udbc0', '\udbfe').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udfff'))
-	                                      .union(LinkedAutomaton.makeChar('\udbff').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udffd')))));
+			.union(LinkedAutomaton.makeCharRange('\udb80', '\udbbe').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udfff'))
+				.union(LinkedAutomaton.makeChar('\udbbf').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udffd'))))
+			.union(LinkedAutomaton.makeCharRange('\udbc0', '\udbfe').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udfff'))
+				.union(LinkedAutomaton.makeChar('\udbff').concatenate(LinkedAutomaton.makeCharRange('\udc00', '\udffd')))));
 
 		System.out.println("Building Unicode category automata...");
-		Map<String,Set<Integer>> categories = new HashMap<String,Set<Integer>>();
+		Map<String, Set<Integer>> categories = new HashMap<String, Set<Integer>>();
 		try {
 			StreamTokenizer st = new StreamTokenizer(new BufferedReader(new FileReader("src/Unicode.txt")));
 			st.resetSyntax();
@@ -822,58 +825,58 @@ final public class Datatypes {
 			System.exit(-1);
 		}
 		List<LinkedAutomaton> assigned = new ArrayList<LinkedAutomaton>();
-		for (Map.Entry<String,Set<Integer>> me : categories.entrySet()) {
+		for (Map.Entry<String, Set<Integer>> me : categories.entrySet()) {
 			List<LinkedAutomaton> la1 = new ArrayList<LinkedAutomaton>();
 			List<LinkedAutomaton> la2 = new ArrayList<LinkedAutomaton>();
 			for (Integer cp : me.getValue()) {
 				la1.add(makeCodePoint(cp));
 				if (la1.size() == 50) {
-					la2.add(LinkedAutomaton.minimize(LinkedAutomaton.union(la1)));
+					la2.add((LinkedAutomaton.union(la1)).minimize());
 					la1.clear();
 				}
 			}
 			la2.add(LinkedAutomaton.union(la1));
-			LinkedAutomaton a = LinkedAutomaton.minimize(LinkedAutomaton.union(la2));
+			LinkedAutomaton a = (LinkedAutomaton.union(la2)).minimize();
 			put(automata, me.getKey(), a);
 			assigned.add(a);
 		}
-		LinkedAutomaton cn = LinkedAutomaton.minimize(automata.get("Char").clone().intersection(LinkedAutomaton.union(assigned).complement()));
+		LinkedAutomaton cn = (automata.get("Char").clone().intersection(LinkedAutomaton.union(assigned).complement())).minimize();
 		put(automata, "Cn", cn);
 		put(automata, "C", automata.get("C").clone().union(cn));
 	}
-	
+
 	private static LinkedAutomaton makeCodePoint(int cp) {
 		if (cp >= 0x10000) {
 			cp -= 0x10000;
-			char[] cu = { (char)(0xd800 + (cp >> 10)), (char)(0xdc00 + (cp & 0x3ff)) };
+			char[] cu = {(char) (0xd800 + (cp >> 10)), (char) (0xdc00 + (cp & 0x3ff))};
 			return LinkedAutomaton.makeString(new String(cu));
 		} else
 			return LinkedAutomaton.makeChar((char) cp);
 	}
 
-	private static Map<String,LinkedAutomaton> buildMap(String[] exps) {
-		Map<String,LinkedAutomaton> map = new HashMap<String,LinkedAutomaton>();
+	private static Map<String, LinkedAutomaton> buildMap(String[] exps) {
+		Map<String, LinkedAutomaton> map = new HashMap<String, LinkedAutomaton>();
 		int i = 0;
-		while (i + 1 < exps.length) 
+		while (i + 1 < exps.length)
 			put(map, exps[i++], new RegExp(exps[i++]).toAutomaton(map));
 		return map;
 	}
-	
-	private static void putWith(String[] exps, Map<String,LinkedAutomaton> use) {
+
+	private static void putWith(String[] exps, Map<String, LinkedAutomaton> use) {
 		int i = 0;
-		while (i + 1 < exps.length)  
-			put(automata, exps[i++], new RegExp(exps[i++]).toAutomaton(use));	
+		while (i + 1 < exps.length)
+			put(automata, exps[i++], new RegExp(exps[i++]).toAutomaton(use));
 	}
-	
-	private static void putFrom(String name, Map<String,LinkedAutomaton> from) {
+
+	private static void putFrom(String name, Map<String, LinkedAutomaton> from) {
 		automata.put(name, from.get(name));
 	}
-	
-	private static void put(Map<String,LinkedAutomaton> map, String name, LinkedAutomaton a) {
+
+	private static void put(Map<String, LinkedAutomaton> map, String name, LinkedAutomaton a) {
 		map.put(name, a);
 		System.out.println("  " + name + ": " + a.getNumberOfStates() + " states, " + a.getNumberOfTransitions() + " transitions");
 	}
-	
+
 	static LinkedAutomaton getWhitespaceAutomaton() {
 		return ws;
 	}
