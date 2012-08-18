@@ -304,10 +304,10 @@ public class RegExp {
 			boolean minimize) throws IllegalArgumentException {
 		boolean b = false;
 		if (allow_mutation)
-			b = SingletonAutomaton.setAllowMutate(true); // thread unsafe
+			b = LinkedAutomaton.setAllowMutate(true); // thread unsafe
 		SingletonAutomaton a = toAutomaton(automata, automaton_provider, minimize);
 		if (allow_mutation)
-			SingletonAutomaton.setAllowMutate(b);
+			LinkedAutomaton.setAllowMutate(b);
 		return a;
 	}
 		

@@ -203,7 +203,7 @@ public class RunAutomaton implements Serializable, Automaton {
 		a.determinize();
 		points = a.getStartPoints();
 		Set<State> states = a.getStates();
-		SingletonAutomaton.setStateNumbers(states);
+		LinkedAutomaton.setStateNumbers(states);
 		initial = a.initial.number;
 		size = states.size();
 		accept = new Object[size];

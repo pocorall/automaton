@@ -291,8 +291,8 @@ final public class BasicOperations {
 		}
 		if (a1 == a2)
 			return a1.cloneIfRequired();
-		Transition[][] transitions1 = SingletonAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] transitions2 = SingletonAutomaton.getSortedTransitions(a2.getStates());
+		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
+		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
 		SingletonAutomaton c = new SingletonAutomaton();
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
@@ -346,8 +346,8 @@ final public class BasicOperations {
 			return a2.run(a1.singleton) != null;
 		}
 		a2.determinize();
-		Transition[][] transitions1 = SingletonAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] transitions2 = SingletonAutomaton.getSortedTransitions(a2.getStates());
+		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
+		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashSet<StatePair> visited = new HashSet<StatePair>();
 		StatePair p = new StatePair(a1.initial, a2.initial);

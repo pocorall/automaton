@@ -53,8 +53,8 @@ final public class ShuffleOperations {
 	public static SingletonAutomaton shuffle(SingletonAutomaton a1, SingletonAutomaton a2) {
 		a1.determinize();
 		a2.determinize();
-		Transition[][] transitions1 = SingletonAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] transitions2 = SingletonAutomaton.getSortedTransitions(a2.getStates());
+		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
+		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
 		SingletonAutomaton c = new SingletonAutomaton();
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
@@ -126,8 +126,8 @@ final public class ShuffleOperations {
 		Transition[][][] ca_transitions = new Transition[ca.size()][][];
 		int i = 0;
 		for (SingletonAutomaton a1 : ca)
-			ca_transitions[i++] = SingletonAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] a_transitions = SingletonAutomaton.getSortedTransitions(a.getStates());
+			ca_transitions[i++] = LinkedAutomaton.getSortedTransitions(a1.getStates());
+		Transition[][] a_transitions = LinkedAutomaton.getSortedTransitions(a.getStates());
 		TransitionComparator tc = new TransitionComparator(false);
 		ShuffleConfiguration init = new ShuffleConfiguration(ca, a);
 		LinkedList<ShuffleConfiguration> pending = new LinkedList<ShuffleConfiguration>();

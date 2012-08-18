@@ -237,9 +237,9 @@ final public class Datatypes {
 	 */
 	public static void main(String[] args) {
 		long t = System.currentTimeMillis();
-		boolean b = SingletonAutomaton.setAllowMutate(true);
+		boolean b = LinkedAutomaton.setAllowMutate(true);
 		buildAll();
-		SingletonAutomaton.setAllowMutate(b);
+		LinkedAutomaton.setAllowMutate(b);
 		System.out.println("Storing automata...");
 		for (Map.Entry<String, SingletonAutomaton> e : automata.entrySet())
 			store(e.getKey(), e.getValue());
