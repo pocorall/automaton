@@ -257,6 +257,16 @@ abstract public class LinkedAutomaton implements Serializable, Cloneable, Automa
 			return clone();
 	}
 
+
+	/**
+	 * Sets initial state.
+	 *
+	 * @param s state
+	 */
+	public void setInitialState(State s) {
+		initial = s;
+	}
+
 	/**
 	 * Returns a clone of this automaton.
 	 */
@@ -392,6 +402,33 @@ abstract public class LinkedAutomaton implements Serializable, Cloneable, Automa
 				}
 		}
 		return visited;
+	}
+
+	/**
+	 * Returns <a href="http://www.research.att.com/sw/tools/graphviz/" target="_top">Graphviz Dot</a>
+	 * representation of this automaton.
+	 */
+	public String toDot() {
+		StringBuilder b = new StringBuilder("digraph LinkedAutomaton {\n");
+		b.append("  rankdir = LR;\n");
+		Set<State> states = getStates();
+		setStateNumbers(states);
+		for (State s : states) {
+			b.append("  ").append(s.number);
+			if (s.accept != null)
+				b.append(" [shape=doublecircle,label=\"\"];\n");
+			else
+				b.append(" [shape=circle,label=\"\"];\n");
+			if (s == initial) {
+				b.append("  initial [shape=plaintext,label=\"\"];\n");
+				b.append("  initial -> ").append(s.number).append("\n");
+			}
+			for (Transition t : s.transitions) {
+				b.append("  ").append(s.number);
+				t.appendDot(b);
+			}
+		}
+		return b.append("}\n").toString();
 	}
 
 	// statics /////////////////////////////////////////////////////////
