@@ -43,7 +43,7 @@ final public class SpecialOperations {
 	 * Reverses the language of the given (non-singleton) automaton while returning
 	 * the set of new initial states.
 	 */
-	public static Set<State> reverse(LinkedAutomaton a) {
+	public static Set<State> reverse(SingletonAutomaton a) {
 		// reverse all edges
 		HashMap<State, HashSet<Transition>> m = new HashMap<State, HashSet<Transition>>();
 		Set<State> states = a.getStates();
@@ -71,11 +71,11 @@ final public class SpecialOperations {
 	 * a left part being accepted by <code>a1</code> and a right part being accepted by
 	 * <code>a2</code>.
 	 */
-	public static LinkedAutomaton overlap(LinkedAutomaton a1, LinkedAutomaton a2) {
-		LinkedAutomaton b1 = a1.cloneExpanded();
+	public static SingletonAutomaton overlap(SingletonAutomaton a1, SingletonAutomaton a2) {
+		SingletonAutomaton b1 = a1.cloneExpanded();
 		b1.determinize();
 		acceptToAccept(b1);
-		LinkedAutomaton b2 = a2.cloneExpanded();
+		SingletonAutomaton b2 = a2.cloneExpanded();
 		reverse(b2);
 		b2.determinize();
 		acceptToAccept(b2);
@@ -84,7 +84,7 @@ final public class SpecialOperations {
 		return b1.intersection(b2).minus(BasicAutomata.makeEmptyString());
 	}
 
-	private static void acceptToAccept(LinkedAutomaton a) {
+	private static void acceptToAccept(SingletonAutomaton a) {
 		State s = new State();
 		for (State r : a.getAcceptStates())
 			s.addEpsilon(r);
@@ -97,8 +97,8 @@ final public class SpecialOperations {
 	 * in strings that are accepted by the given automaton.
 	 * Never modifies the input automaton.
 	 */
-	public static LinkedAutomaton singleChars(LinkedAutomaton a) {
-		LinkedAutomaton b = new LinkedAutomaton();
+	public static SingletonAutomaton singleChars(SingletonAutomaton a) {
+		SingletonAutomaton b = new SingletonAutomaton();
 		State s = new State();
 		b.initial = s;
 		State q = new State();
@@ -126,7 +126,7 @@ final public class SpecialOperations {
 	 * @param set set of characters to be trimmed
 	 * @param c   canonical trim character (assumed to be in <code>set</code>)
 	 */
-	public static LinkedAutomaton trim(LinkedAutomaton a, String set, char c) {
+	public static SingletonAutomaton trim(SingletonAutomaton a, String set, char c) {
 		a = a.cloneExpandedIfRequired();
 		State f = new State();
 		addSetTransitions(f, set, f);
@@ -169,7 +169,7 @@ final public class SpecialOperations {
 	 * @param set set of characters to be compressed
 	 * @param c   canonical compress character (assumed to be in <code>set</code>)
 	 */
-	public static LinkedAutomaton compress(LinkedAutomaton a, String set, char c) {
+	public static SingletonAutomaton compress(SingletonAutomaton a, String set, char c) {
 		a = a.cloneExpandedIfRequired();
 		for (State s : a.getStates()) {
 			State r = s.step(c);
@@ -198,7 +198,7 @@ final public class SpecialOperations {
 	 * @param map map from characters to sets of characters (where characters
 	 *            are <code>Character</code> objects)
 	 */
-	public static LinkedAutomaton subst(LinkedAutomaton a, Map<Character, Set<Character>> map) {
+	public static SingletonAutomaton subst(SingletonAutomaton a, Map<Character, Set<Character>> map) {
 		if (map.isEmpty())
 			return a.cloneIfRequired();
 		Set<Character> ckeys = new TreeSet<Character>(map.keySet());
@@ -277,7 +277,7 @@ final public class SpecialOperations {
 	 * @param s string
 	 * @return new automaton
 	 */
-	public static LinkedAutomaton subst(LinkedAutomaton a, char c, String s) {
+	public static SingletonAutomaton subst(SingletonAutomaton a, char c, String s) {
 		a = a.cloneExpandedIfRequired();
 		Set<StatePair> epsilons = new HashSet<StatePair>();
 		for (State p : a.getStates()) {
@@ -326,7 +326,7 @@ final public class SpecialOperations {
 	 * <code>dest</code> define the starting points of corresponding new
 	 * intervals.
 	 */
-	public static LinkedAutomaton homomorph(LinkedAutomaton a, char[] source, char[] dest) {
+	public static SingletonAutomaton homomorph(SingletonAutomaton a, char[] source, char[] dest) {
 		a = a.cloneExpandedIfRequired();
 		for (State s : a.getStates()) {
 			Set<Transition> st = s.transitions;
@@ -362,7 +362,7 @@ final public class SpecialOperations {
 	 * assumed that all other characters from <code>chars</code> are in the
 	 * interval uE000-uF8FF.
 	 */
-	public static LinkedAutomaton projectChars(LinkedAutomaton a, Set<Character> chars) {
+	public static SingletonAutomaton projectChars(SingletonAutomaton a, Set<Character> chars) {
 		Character[] c = chars.toArray(new Character[chars.size()]);
 		char[] cc = new char[c.length];
 		boolean normalchars = false;
@@ -426,7 +426,7 @@ final public class SpecialOperations {
 	/**
 	 * Returns true if the language of this automaton is finite.
 	 */
-	public static boolean isFinite(LinkedAutomaton a) {
+	public static boolean isFinite(SingletonAutomaton a) {
 		if (a.isSingleton())
 			return true;
 		return isFinite(a.initial, new HashSet<State>(), new HashSet<State>());
@@ -449,7 +449,7 @@ final public class SpecialOperations {
 	/**
 	 * Returns the set of accepted strings of the given length.
 	 */
-	public static Set<String> getStrings(LinkedAutomaton a, int length) {
+	public static Set<String> getStrings(SingletonAutomaton a, int length) {
 		HashSet<String> strings = new HashSet<String>();
 		if (a.isSingleton() && a.singleton.length() == length)
 			strings.add(a.singleton);
@@ -475,7 +475,7 @@ final public class SpecialOperations {
 	 * Returns the set of accepted strings, assuming this automaton has a finite
 	 * language. If the language is not finite, null is returned.
 	 */
-	public static Set<String> getFiniteStrings(LinkedAutomaton a) {
+	public static Set<String> getFiniteStrings(SingletonAutomaton a) {
 		HashSet<String> strings = new HashSet<String>();
 		if (a.isSingleton())
 			strings.add(a.singleton);
@@ -488,9 +488,9 @@ final public class SpecialOperations {
 	 * Returns the set of accepted strings, assuming that at most <code>limit</code>
 	 * strings are accepted. If more than <code>limit</code> strings are
 	 * accepted, null is returned. If <code>limit</code>&lt;0, then this
-	 * methods works like {@link #getFiniteStrings(LinkedAutomaton)}.
+	 * methods works like {@link #getFiniteStrings(SingletonAutomaton)}.
 	 */
-	public static Set<String> getFiniteStrings(LinkedAutomaton a, int limit) {
+	public static Set<String> getFiniteStrings(SingletonAutomaton a, int limit) {
 		HashSet<String> strings = new HashSet<String>();
 		if (a.isSingleton()) {
 			if (limit > 0)
@@ -533,7 +533,7 @@ final public class SpecialOperations {
 	 *
 	 * @return common prefix
 	 */
-	public static String getCommonPrefix(LinkedAutomaton a) {
+	public static String getCommonPrefix(SingletonAutomaton a) {
 		if (a.isSingleton())
 			return a.singleton;
 		StringBuilder b = new StringBuilder();
@@ -558,7 +558,7 @@ final public class SpecialOperations {
 	/**
 	 * Prefix closes the given automaton.
 	 */
-	public static void prefixClose(LinkedAutomaton a) {
+	public static void prefixClose(SingletonAutomaton a) {
 		for (State s : a.getStates())
 			s.setAccept(true);
 		a.clearHashCode();
@@ -572,7 +572,7 @@ final public class SpecialOperations {
 	 * @param a automaton
 	 * @return automaton
 	 */
-	public static LinkedAutomaton hexCases(LinkedAutomaton a) {
+	public static SingletonAutomaton hexCases(SingletonAutomaton a) {
 		Map<Character, Set<Character>> map = new HashMap<Character, Set<Character>>();
 		for (char c1 = 'a', c2 = 'A'; c1 <= 'f'; c1++, c2++) {
 			Set<Character> ws = new HashSet<Character>();
@@ -581,7 +581,7 @@ final public class SpecialOperations {
 			map.put(c1, ws);
 			map.put(c2, ws);
 		}
-		LinkedAutomaton ws = Datatypes.getWhitespaceAutomaton();
+		SingletonAutomaton ws = Datatypes.getWhitespaceAutomaton();
 		return ws.concatenate(a.subst(map)).concatenate(ws);
 	}
 
@@ -592,7 +592,7 @@ final public class SpecialOperations {
 	 * @param a automaton
 	 * @return automaton
 	 */
-	public static LinkedAutomaton replaceWhitespace(LinkedAutomaton a) {
+	public static SingletonAutomaton replaceWhitespace(SingletonAutomaton a) {
 		Map<Character, Set<Character>> map = new HashMap<Character, Set<Character>>();
 		Set<Character> ws = new HashSet<Character>();
 		ws.add(' ');

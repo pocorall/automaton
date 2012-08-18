@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Regular Expression extension to <code>LinkedAutomaton</code>.
+ * Regular Expression extension to <code>SingletonAutomaton</code>.
  * <p>
  * Regular expressions are built from the following abstract syntax:<p>
  * <table border=0>
@@ -220,68 +220,68 @@ public class RegExp {
 	}
 	
 	/** 
-	 * Constructs new <code>LinkedAutomaton</code> from this <code>RegExp</code>.
+	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
 	 * Same as <code>toAutomaton(null)</code> (empty automaton map).
 	 */
-	public LinkedAutomaton toAutomaton() {
+	public SingletonAutomaton toAutomaton() {
 		return toAutomatonAllowMutate(null, null, true);
 	}
 	
 	/** 
-	 * Constructs new <code>LinkedAutomaton</code> from this <code>RegExp</code>.
+	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
 	 * Same as <code>toAutomaton(null,minimize)</code> (empty automaton map).
 	 */
-	public LinkedAutomaton toAutomaton(boolean minimize) {
+	public SingletonAutomaton toAutomaton(boolean minimize) {
 		return toAutomatonAllowMutate(null, null, minimize);
 	}
 	
 	/** 
-	 * Constructs new <code>LinkedAutomaton</code> from this <code>RegExp</code>.
+	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
 	 * The constructed automaton is minimal and deterministic and has no 
 	 * transitions to dead states. 
 	 * @param automaton_provider provider of automata for named identifiers
 	 * @exception IllegalArgumentException if this regular expression uses
 	 *   a named identifier that is not available from the automaton provider
 	 */
-	public LinkedAutomaton toAutomaton(AutomatonProvider automaton_provider) throws IllegalArgumentException {
+	public SingletonAutomaton toAutomaton(AutomatonProvider automaton_provider) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(null, automaton_provider, true);
 	}
 		
 	/** 
-	 * Constructs new <code>LinkedAutomaton</code> from this <code>RegExp</code>.
+	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
 	 * The constructed automaton has no transitions to dead states. 
 	 * @param automaton_provider provider of automata for named identifiers
 	 * @param minimize if set, the automaton is minimized and determinized
 	 * @exception IllegalArgumentException if this regular expression uses
 	 *   a named identifier that is not available from the automaton provider
 	 */
-	public LinkedAutomaton toAutomaton(AutomatonProvider automaton_provider, boolean minimize) throws IllegalArgumentException {
+	public SingletonAutomaton toAutomaton(AutomatonProvider automaton_provider, boolean minimize) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(null, automaton_provider, minimize);
 	}
 		
 	/** 
-	 * Constructs new <code>LinkedAutomaton</code> from this <code>RegExp</code>.
+	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
 	 * The constructed automaton is minimal and deterministic and has no 
 	 * transitions to dead states. 
 	 * @param automata a map from automaton identifiers to automata 
-	 *   (of type <code>LinkedAutomaton</code>).
+	 *   (of type <code>SingletonAutomaton</code>).
 	 * @exception IllegalArgumentException if this regular expression uses
 	 *   a named identifier that does not occur in the automaton map
 	 */
-	public LinkedAutomaton toAutomaton(Map<String, LinkedAutomaton> automata) throws IllegalArgumentException {
+	public SingletonAutomaton toAutomaton(Map<String, SingletonAutomaton> automata) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(automata, null, true);
 	}
 	
 	/** 
-	 * Constructs new <code>LinkedAutomaton</code> from this <code>RegExp</code>.
+	 * Constructs new <code>SingletonAutomaton</code> from this <code>RegExp</code>.
 	 * The constructed automaton has no transitions to dead states. 
 	 * @param automata a map from automaton identifiers to automata 
-	 *   (of type <code>LinkedAutomaton</code>).
+	 *   (of type <code>SingletonAutomaton</code>).
 	 * @param minimize if set, the automaton is minimized and determinized
 	 * @exception IllegalArgumentException if this regular expression uses
 	 *   a named identifier that does not occur in the automaton map
 	 */
-	public LinkedAutomaton toAutomaton(Map<String, LinkedAutomaton> automata, boolean minimize) throws IllegalArgumentException {
+	public SingletonAutomaton toAutomaton(Map<String, SingletonAutomaton> automata, boolean minimize) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(automata, null, minimize);
 	}
 	
@@ -299,33 +299,33 @@ public class RegExp {
 		return b;
 	}
 	
-	private LinkedAutomaton toAutomatonAllowMutate(Map<String, LinkedAutomaton> automata,
+	private SingletonAutomaton toAutomatonAllowMutate(Map<String, SingletonAutomaton> automata,
 			AutomatonProvider automaton_provider,
 			boolean minimize) throws IllegalArgumentException {
 		boolean b = false;
 		if (allow_mutation)
-			b = LinkedAutomaton.setAllowMutate(true); // thread unsafe
-		LinkedAutomaton a = toAutomaton(automata, automaton_provider, minimize);
+			b = SingletonAutomaton.setAllowMutate(true); // thread unsafe
+		SingletonAutomaton a = toAutomaton(automata, automaton_provider, minimize);
 		if (allow_mutation)
-			LinkedAutomaton.setAllowMutate(b);
+			SingletonAutomaton.setAllowMutate(b);
 		return a;
 	}
 		
-	private LinkedAutomaton toAutomaton(Map<String, LinkedAutomaton> automata,
+	private SingletonAutomaton toAutomaton(Map<String, SingletonAutomaton> automata,
 			AutomatonProvider automaton_provider,
 			boolean minimize) throws IllegalArgumentException {
-		List<LinkedAutomaton> list;
-		LinkedAutomaton a = null;
+		List<SingletonAutomaton> list;
+		SingletonAutomaton a = null;
 		switch (kind) {
 		case REGEXP_UNION:
-			list = new ArrayList<LinkedAutomaton>();
+			list = new ArrayList<SingletonAutomaton>();
 			findLeaves(exp1, Kind.REGEXP_UNION, list, automata, automaton_provider, minimize);
 			findLeaves(exp2, Kind.REGEXP_UNION, list, automata, automaton_provider, minimize);
 			a = BasicOperations.union(list);
 			a.minimize();
 			break;
 		case REGEXP_CONCATENATION:
-			list = new ArrayList<LinkedAutomaton>();
+			list = new ArrayList<SingletonAutomaton>();
 			findLeaves(exp1, Kind.REGEXP_CONCATENATION, list, automata, automaton_provider, minimize);
 			findLeaves(exp2, Kind.REGEXP_CONCATENATION, list, automata, automaton_provider, minimize);
 			a = BasicOperations.concatenate(list);
@@ -374,7 +374,7 @@ public class RegExp {
 			a = BasicAutomata.makeAnyString();
 			break;
 		case REGEXP_AUTOMATON:
-			LinkedAutomaton aa = null;
+			SingletonAutomaton aa = null;
 			if (automata != null)
 				aa = automata.get(s);
 			if (aa == null && automaton_provider != null)
@@ -394,7 +394,7 @@ public class RegExp {
 		return a;
 	}
 
-	private void findLeaves(RegExp exp, Kind kind, List<LinkedAutomaton> list, Map<String, LinkedAutomaton> automata,
+	private void findLeaves(RegExp exp, Kind kind, List<SingletonAutomaton> list, Map<String, SingletonAutomaton> automata,
 			AutomatonProvider automaton_provider,
 			boolean minimize) {
 		if (exp.kind == kind) {

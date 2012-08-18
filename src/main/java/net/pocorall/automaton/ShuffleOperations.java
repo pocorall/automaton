@@ -50,12 +50,12 @@ final public class ShuffleOperations {
 	 * <dl><dt><b>Author:</b></dt><dd>Torben Ruby
 	 * &lt;<a href="mailto:ruby@daimi.au.dk">ruby@daimi.au.dk</a>&gt;</dd></dl>
 	 */
-	public static LinkedAutomaton shuffle(LinkedAutomaton a1, LinkedAutomaton a2) {
+	public static SingletonAutomaton shuffle(SingletonAutomaton a1, SingletonAutomaton a2) {
 		a1.determinize();
 		a2.determinize();
-		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
-		LinkedAutomaton c = new LinkedAutomaton();
+		Transition[][] transitions1 = SingletonAutomaton.getSortedTransitions(a1.getStates());
+		Transition[][] transitions2 = SingletonAutomaton.getSortedTransitions(a2.getStates());
+		SingletonAutomaton c = new SingletonAutomaton();
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
 		State s = new State();
@@ -108,11 +108,11 @@ final public class ShuffleOperations {
 	 * Complexity: proportional to the product of the numbers of states (if <code>a</code>
 	 * is already deterministic).
 	 */
-	public static String shuffleSubsetOf(Collection<LinkedAutomaton> ca, LinkedAutomaton a, Character suspend_shuffle, Character resume_shuffle) {
+	public static String shuffleSubsetOf(Collection<SingletonAutomaton> ca, SingletonAutomaton a, Character suspend_shuffle, Character resume_shuffle) {
 		if (ca.size() == 0)
 			return null;
 		if (ca.size() == 1) {
-			LinkedAutomaton a1 = ca.iterator().next();
+			SingletonAutomaton a1 = ca.iterator().next();
 			if (a1.isSingleton()) {
 				if (a.run(a1.singleton) != null)
 					return null;
@@ -125,9 +125,9 @@ final public class ShuffleOperations {
 		a.determinize();
 		Transition[][][] ca_transitions = new Transition[ca.size()][][];
 		int i = 0;
-		for (LinkedAutomaton a1 : ca)
-			ca_transitions[i++] = LinkedAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] a_transitions = LinkedAutomaton.getSortedTransitions(a.getStates());
+		for (SingletonAutomaton a1 : ca)
+			ca_transitions[i++] = SingletonAutomaton.getSortedTransitions(a1.getStates());
+		Transition[][] a_transitions = SingletonAutomaton.getSortedTransitions(a.getStates());
 		TransitionComparator tc = new TransitionComparator(false);
 		ShuffleConfiguration init = new ShuffleConfiguration(ca, a);
 		LinkedList<ShuffleConfiguration> pending = new LinkedList<ShuffleConfiguration>();
@@ -272,10 +272,10 @@ final public class ShuffleOperations {
 		private ShuffleConfiguration() {
 		}
 
-		ShuffleConfiguration(Collection<LinkedAutomaton> ca, LinkedAutomaton a) {
+		ShuffleConfiguration(Collection<SingletonAutomaton> ca, SingletonAutomaton a) {
 			ca_states = new State[ca.size()];
 			int i = 0;
-			for (LinkedAutomaton a1 : ca)
+			for (SingletonAutomaton a1 : ca)
 				ca_states[i++] = a1.getInitialState();
 			a_state = a.getInitialState();
 			computeHash();

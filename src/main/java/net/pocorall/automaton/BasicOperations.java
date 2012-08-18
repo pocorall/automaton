@@ -45,7 +45,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	static public LinkedAutomaton concatenate(LinkedAutomaton a1, LinkedAutomaton a2) {
+	static public SingletonAutomaton concatenate(SingletonAutomaton a1, SingletonAutomaton a2) {
 		if (a1.isSingleton() && a2.isSingleton())
 			return BasicAutomata.makeString(a1.singleton + a2.singleton);
 		if (a1.isEmpty() || a2.isEmpty())
@@ -74,42 +74,42 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in total number of states.
 	 */
-	static public LinkedAutomaton concatenate(List<LinkedAutomaton> l) {
+	static public SingletonAutomaton concatenate(List<SingletonAutomaton> l) {
 		if (l.isEmpty())
 			return BasicAutomata.makeEmptyString();
 		boolean all_singleton = true;
-		for (LinkedAutomaton a : l)
+		for (SingletonAutomaton a : l)
 			if (!a.isSingleton()) {
 				all_singleton = false;
 				break;
 			}
 		if (all_singleton) {
 			StringBuilder b = new StringBuilder();
-			for (LinkedAutomaton a : l)
+			for (SingletonAutomaton a : l)
 				b.append(a.singleton);
 			return BasicAutomata.makeString(b.toString());
 		} else {
-			for (LinkedAutomaton a : l)
+			for (SingletonAutomaton a : l)
 				if (a.isEmpty())
 					return BasicAutomata.makeEmpty();
 			Set<Integer> ids = new HashSet<Integer>();
-			for (LinkedAutomaton a : l)
+			for (SingletonAutomaton a : l)
 				ids.add(System.identityHashCode(a));
 			boolean has_aliases = ids.size() != l.size();
-			LinkedAutomaton b = l.get(0);
+			SingletonAutomaton b = l.get(0);
 			if (has_aliases)
 				b = b.cloneExpanded();
 			else
 				b = b.cloneExpandedIfRequired();
 			Set<State> ac = b.getAcceptStates();
 			boolean first = true;
-			for (LinkedAutomaton a : l)
+			for (SingletonAutomaton a : l)
 				if (first)
 					first = false;
 				else {
 					if (a.isEmptyString())
 						continue;
-					LinkedAutomaton aa = a;
+					SingletonAutomaton aa = a;
 					if (has_aliases)
 						aa = aa.cloneExpanded();
 					else
@@ -136,7 +136,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	static public LinkedAutomaton optional(LinkedAutomaton a) {
+	static public SingletonAutomaton optional(SingletonAutomaton a) {
 		a = a.cloneExpandedIfRequired();
 		State s = new State();
 		s.addEpsilon(a.initial);
@@ -155,7 +155,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	static public LinkedAutomaton repeat(LinkedAutomaton a) {
+	static public SingletonAutomaton repeat(SingletonAutomaton a) {
 		a = a.cloneExpanded();
 		State s = new State();
 		s.accept = true;
@@ -175,10 +175,10 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states and in <code>min</code>.
 	 */
-	static public LinkedAutomaton repeat(LinkedAutomaton a, int min) {
+	static public SingletonAutomaton repeat(SingletonAutomaton a, int min) {
 		if (min == 0)
 			return repeat(a);
-		List<LinkedAutomaton> as = new ArrayList<LinkedAutomaton>();
+		List<SingletonAutomaton> as = new ArrayList<SingletonAutomaton>();
 		while (min-- > 0)
 			as.add(a);
 		as.add(repeat(a));
@@ -193,26 +193,26 @@ final public class BasicOperations {
 	 * Complexity: linear in number of states and in <code>min</code> and
 	 * <code>max</code>.
 	 */
-	static public LinkedAutomaton repeat(LinkedAutomaton a, int min, int max) {
+	static public SingletonAutomaton repeat(SingletonAutomaton a, int min, int max) {
 		if (min > max)
 			return BasicAutomata.makeEmpty();
 		max -= min;
 		a.expandSingleton();
-		LinkedAutomaton b;
+		SingletonAutomaton b;
 		if (min == 0)
 			b = BasicAutomata.makeEmptyString();
 		else if (min == 1)
 			b = a.clone();
 		else {
-			List<LinkedAutomaton> as = new ArrayList<LinkedAutomaton>();
+			List<SingletonAutomaton> as = new ArrayList<SingletonAutomaton>();
 			while (min-- > 0)
 				as.add(a);
 			b = concatenate(as);
 		}
 		if (max > 0) {
-			LinkedAutomaton d = a.clone();
+			SingletonAutomaton d = a.clone();
 			while (--max > 0) {
-				LinkedAutomaton c = a.clone();
+				SingletonAutomaton c = a.clone();
 				for (State p : c.getAcceptStates())
 					p.addEpsilon(d.initial);
 				d = c;
@@ -232,7 +232,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states (if already deterministic).
 	 */
-	static public LinkedAutomaton complement(LinkedAutomaton a) {
+	static public SingletonAutomaton complement(SingletonAutomaton a) {
 		a = a.cloneExpandedIfRequired();
 		a.determinize();
 		a.totalize();
@@ -255,7 +255,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: quadratic in number of states (if already deterministic).
 	 */
-	static public LinkedAutomaton minus(LinkedAutomaton a1, LinkedAutomaton a2) {
+	static public SingletonAutomaton minus(SingletonAutomaton a1, SingletonAutomaton a2) {
 		if (a1.isEmpty() || a1 == a2)
 			return BasicAutomata.makeEmpty();
 		if (a2.isEmpty())
@@ -276,7 +276,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: quadratic in number of states.
 	 */
-	static public LinkedAutomaton intersection(LinkedAutomaton a1, LinkedAutomaton a2) {
+	static public SingletonAutomaton intersection(SingletonAutomaton a1, SingletonAutomaton a2) {
 		if (a1.isSingleton()) {
 			if (a2.run(a1.singleton) != null)
 				return a1.cloneIfRequired();
@@ -291,9 +291,9 @@ final public class BasicOperations {
 		}
 		if (a1 == a2)
 			return a1.cloneIfRequired();
-		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
-		LinkedAutomaton c = new LinkedAutomaton();
+		Transition[][] transitions1 = SingletonAutomaton.getSortedTransitions(a1.getStates());
+		Transition[][] transitions2 = SingletonAutomaton.getSortedTransitions(a2.getStates());
+		SingletonAutomaton c = new SingletonAutomaton();
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
 		StatePair p = new StatePair(c.initial, a1.initial, a2.initial);
@@ -337,7 +337,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: quadratic in number of states.
 	 */
-	public static boolean subsetOf(LinkedAutomaton a1, LinkedAutomaton a2) {
+	public static boolean subsetOf(SingletonAutomaton a1, SingletonAutomaton a2) {
 		if (a1 == a2)
 			return true;
 		if (a1.isSingleton()) {
@@ -346,8 +346,8 @@ final public class BasicOperations {
 			return a2.run(a1.singleton) != null;
 		}
 		a2.determinize();
-		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
-		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
+		Transition[][] transitions1 = SingletonAutomaton.getSortedTransitions(a1.getStates());
+		Transition[][] transitions2 = SingletonAutomaton.getSortedTransitions(a2.getStates());
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashSet<StatePair> visited = new HashSet<StatePair>();
 		StatePair p = new StatePair(a1.initial, a2.initial);
@@ -390,7 +390,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	public static LinkedAutomaton union(LinkedAutomaton a1, LinkedAutomaton a2) {
+	public static SingletonAutomaton union(SingletonAutomaton a1, SingletonAutomaton a2) {
 		if ((a1.isSingleton() && a2.isSingleton() && a1.singleton.equals(a2.singleton)) || a1 == a2)
 			return a1.cloneIfRequired();
 		if (a1 == a2) {
@@ -415,23 +415,23 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	public static LinkedAutomaton union(Collection<LinkedAutomaton> l) {
+	public static SingletonAutomaton union(Collection<SingletonAutomaton> l) {
 		Set<Integer> ids = new HashSet<Integer>();
-		for (LinkedAutomaton a : l)
+		for (SingletonAutomaton a : l)
 			ids.add(System.identityHashCode(a));
 		boolean has_aliases = ids.size() != l.size();
 		State s = new State();
-		for (LinkedAutomaton b : l) {
+		for (SingletonAutomaton b : l) {
 			if (b.isEmpty())
 				continue;
-			LinkedAutomaton bb = b;
+			SingletonAutomaton bb = b;
 			if (has_aliases)
 				bb = bb.cloneExpanded();
 			else
 				bb = bb.cloneExpandedIfRequired();
 			s.addEpsilon(bb.initial);
 		}
-		LinkedAutomaton a = new LinkedAutomaton();
+		SingletonAutomaton a = new SingletonAutomaton();
 		a.initial = s;
 		a.deterministic = false;
 		a.clearHashCode();
@@ -444,7 +444,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: exponential in number of states.
 	 */
-	public static void determinize(LinkedAutomaton a) {
+	public static void determinize(SingletonAutomaton a) {
 		if (a.deterministic || a.isSingleton())
 			return;
 		Set<State> initialset = new HashSet<State>();
@@ -455,7 +455,7 @@ final public class BasicOperations {
 	/**
 	 * Determinizes the given automaton using the given set of initial states.
 	 */
-	static void determinize(LinkedAutomaton a, Set<State> initialset) {
+	static void determinize(SingletonAutomaton a, Set<State> initialset) {
 		char[] points = a.getStartPoints();
 		// subset construction
 		Map<Set<State>, Set<State>> sets = new HashMap<Set<State>, Set<State>>();
@@ -506,7 +506,7 @@ final public class BasicOperations {
 	 * @param pairs collection of {@link StatePair} objects representing pairs of source/destination states
 	 *              where epsilon transitions should be added
 	 */
-	public static void addEpsilons(LinkedAutomaton a, Collection<StatePair> pairs) {
+	public static void addEpsilons(SingletonAutomaton a, Collection<StatePair> pairs) {
 		a.expandSingleton();
 		HashMap<State, HashSet<State>> forward = new HashMap<State, HashSet<State>>();
 		HashMap<State, HashSet<State>> back = new HashMap<State, HashSet<State>>();
@@ -565,7 +565,7 @@ final public class BasicOperations {
 	/**
 	 * Returns true if the given automaton accepts the empty string and nothing else.
 	 */
-	public static boolean isEmptyString(LinkedAutomaton a) {
+	public static boolean isEmptyString(SingletonAutomaton a) {
 		if (a.isSingleton())
 			return a.singleton.length() == 0;
 		else
@@ -575,7 +575,7 @@ final public class BasicOperations {
 	/**
 	 * Returns true if the given automaton accepts all strings.
 	 */
-	public static boolean isTotal(LinkedAutomaton a) {
+	public static boolean isTotal(SingletonAutomaton a) {
 		if (a.isSingleton())
 			return false;
 		if (a.initial.accept != null && a.initial.transitions.size() == 1) {
@@ -592,7 +592,7 @@ final public class BasicOperations {
 	 * @param accepted if true, look for accepted strings; otherwise, look for rejected strings
 	 * @return the string, null if none found
 	 */
-	public static String getShortestExample(LinkedAutomaton a, boolean accepted) {
+	public static String getShortestExample(SingletonAutomaton a, boolean accepted) {
 		if (a.isSingleton()) {
 			if (accepted)
 				return a.singleton;

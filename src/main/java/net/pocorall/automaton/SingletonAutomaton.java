@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
  */
-public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
+public class SingletonAutomaton implements Serializable, Cloneable, Automaton {
 
 	static final long serialVersionUID = 10001;
 
@@ -139,7 +139,7 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	 * @see State
 	 * @see Transition
 	 */
-	public LinkedAutomaton() {
+	public SingletonAutomaton() {
 		initial = new State();
 		deterministic = true;
 		singleton = null;
@@ -545,9 +545,9 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
-		if (!(obj instanceof LinkedAutomaton))
+		if (!(obj instanceof SingletonAutomaton))
 			return false;
-		LinkedAutomaton a = (LinkedAutomaton) obj;
+		SingletonAutomaton a = (SingletonAutomaton) obj;
 		if (isSingleton() && a.isSingleton())
 			return singleton.equals(a.singleton);
 		return hashCode() == a.hashCode() && subsetOf(a) && a.subsetOf(this);
@@ -608,7 +608,7 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	 * representation of this automaton.
 	 */
 	public String toDot() {
-		StringBuilder b = new StringBuilder("digraph LinkedAutomaton {\n");
+		StringBuilder b = new StringBuilder("digraph SingletonAutomaton {\n");
 		b.append("  rankdir = LR;\n");
 		Set<State> states = getStates();
 		setStateNumbers(states);
@@ -633,8 +633,8 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	/**
 	 * Returns a clone of this automaton, expands if singleton.
 	 */
-	LinkedAutomaton cloneExpanded() {
-		LinkedAutomaton a = clone();
+	SingletonAutomaton cloneExpanded() {
+		SingletonAutomaton a = clone();
 		a.expandSingleton();
 		return a;
 	}
@@ -642,7 +642,7 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	/**
 	 * Returns a clone of this automaton unless <code>allow_mutation</code> is set, expands if singleton.
 	 */
-	LinkedAutomaton cloneExpandedIfRequired() {
+	SingletonAutomaton cloneExpandedIfRequired() {
 		if (allow_mutation) {
 			expandSingleton();
 			return this;
@@ -654,9 +654,9 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	 * Returns a clone of this automaton.
 	 */
 	@Override
-	public LinkedAutomaton clone() {
+	public SingletonAutomaton clone() {
 		try {
-			LinkedAutomaton a = (LinkedAutomaton) super.clone();
+			SingletonAutomaton a = (SingletonAutomaton) super.clone();
 			if (!isSingleton()) {
 				HashMap<State, State> m = new HashMap<State, State>();
 				Set<State> states = getStates();
@@ -680,7 +680,7 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	/**
 	 * Returns a clone of this automaton, or this automaton itself if <code>allow_mutation</code> flag is set.
 	 */
-	LinkedAutomaton cloneIfRequired() {
+	SingletonAutomaton cloneIfRequired() {
 		if (allow_mutation)
 			return this;
 		else
@@ -688,38 +688,38 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	}
 
 	/**
-	 * Retrieves a serialized <code>LinkedAutomaton</code> located by a URL.
+	 * Retrieves a serialized <code>SingletonAutomaton</code> located by a URL.
 	 *
 	 * @param url URL of serialized automaton
 	 * @throws IOException            if input/output related exception occurs
 	 * @throws OptionalDataException  if the data is not a serialized object
 	 * @throws InvalidClassException  if the class serial number does not match
-	 * @throws ClassCastException     if the data is not a serialized <code>LinkedAutomaton</code>
+	 * @throws ClassCastException     if the data is not a serialized <code>SingletonAutomaton</code>
 	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
 	 */
-	public static LinkedAutomaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
+	public static SingletonAutomaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
 		ClassNotFoundException, InvalidClassException {
 		return load(url.openStream());
 	}
 
 	/**
-	 * Retrieves a serialized <code>LinkedAutomaton</code> from a stream.
+	 * Retrieves a serialized <code>SingletonAutomaton</code> from a stream.
 	 *
 	 * @param stream input stream with serialized automaton
 	 * @throws IOException            if input/output related exception occurs
 	 * @throws OptionalDataException  if the data is not a serialized object
 	 * @throws InvalidClassException  if the class serial number does not match
-	 * @throws ClassCastException     if the data is not a serialized <code>LinkedAutomaton</code>
+	 * @throws ClassCastException     if the data is not a serialized <code>SingletonAutomaton</code>
 	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
 	 */
-	public static LinkedAutomaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
+	public static SingletonAutomaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
 		ClassNotFoundException, InvalidClassException {
 		ObjectInputStream s = new ObjectInputStream(stream);
-		return (LinkedAutomaton) s.readObject();
+		return (SingletonAutomaton) s.readObject();
 	}
 
 	/**
-	 * Writes this <code>LinkedAutomaton</code> to the given stream.
+	 * Writes this <code>SingletonAutomaton</code> to the given stream.
 	 *
 	 * @param stream output stream for serialized automaton
 	 * @throws IOException if input/output related exception occurs
@@ -733,112 +733,112 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	/**
 	 * See {@link BasicAutomata#makeChar(char)}.
 	 */
-	public static LinkedAutomaton makeChar(char c) {
+	public static SingletonAutomaton makeChar(char c) {
 		return BasicAutomata.makeChar(c);
 	}
 
 	/**
 	 * See {@link BasicAutomata#makeCharRange(char, char)}.
 	 */
-	public static LinkedAutomaton makeCharRange(char min, char max) {
+	public static SingletonAutomaton makeCharRange(char min, char max) {
 		return BasicAutomata.makeCharRange(min, max);
 	}
 
 
 	/**
-	 * See {@link BasicOperations#concatenate(LinkedAutomaton, LinkedAutomaton)}.
+	 * See {@link BasicOperations#concatenate(SingletonAutomaton, SingletonAutomaton)}.
 	 */
-	public LinkedAutomaton concatenate(LinkedAutomaton a) {
+	public SingletonAutomaton concatenate(SingletonAutomaton a) {
 		return BasicOperations.concatenate(this, a);
 	}
 
 
 	/**
-	 * See {@link BasicOperations#optional(LinkedAutomaton)}.
+	 * See {@link BasicOperations#optional(SingletonAutomaton)}.
 	 */
-	public LinkedAutomaton optional() {
+	public SingletonAutomaton optional() {
 		return BasicOperations.optional(this);
 	}
 
 	/**
-	 * See {@link BasicOperations#repeat(LinkedAutomaton)}.
+	 * See {@link BasicOperations#repeat(SingletonAutomaton)}.
 	 */
-	public LinkedAutomaton repeat() {
+	public SingletonAutomaton repeat() {
 		return BasicOperations.repeat(this);
 	}
 
 	/**
-	 * See {@link BasicOperations#repeat(LinkedAutomaton, int)}.
+	 * See {@link BasicOperations#repeat(SingletonAutomaton, int)}.
 	 */
-	public LinkedAutomaton repeat(int min) {
+	public SingletonAutomaton repeat(int min) {
 		return BasicOperations.repeat(this, min);
 	}
 
 	/**
-	 * See {@link BasicOperations#repeat(LinkedAutomaton, int, int)}.
+	 * See {@link BasicOperations#repeat(SingletonAutomaton, int, int)}.
 	 */
-	public LinkedAutomaton repeat(int min, int max) {
+	public SingletonAutomaton repeat(int min, int max) {
 		return BasicOperations.repeat(this, min, max);
 	}
 
 	/**
-	 * See {@link BasicOperations#complement(LinkedAutomaton)}.
+	 * See {@link BasicOperations#complement(SingletonAutomaton)}.
 	 */
-	public LinkedAutomaton complement() {
+	public SingletonAutomaton complement() {
 		return BasicOperations.complement(this);
 	}
 
 	/**
-	 * See {@link BasicOperations#minus(LinkedAutomaton, LinkedAutomaton)}.
+	 * See {@link BasicOperations#minus(SingletonAutomaton, SingletonAutomaton)}.
 	 */
-	public LinkedAutomaton minus(LinkedAutomaton a) {
+	public SingletonAutomaton minus(SingletonAutomaton a) {
 		return BasicOperations.minus(this, a);
 	}
 
 	/**
-	 * See {@link BasicOperations#intersection(LinkedAutomaton, LinkedAutomaton)}.
+	 * See {@link BasicOperations#intersection(SingletonAutomaton, SingletonAutomaton)}.
 	 */
-	public LinkedAutomaton intersection(LinkedAutomaton a) {
+	public SingletonAutomaton intersection(SingletonAutomaton a) {
 		return BasicOperations.intersection(this, a);
 	}
 
 	/**
-	 * See {@link BasicOperations#subsetOf(LinkedAutomaton, LinkedAutomaton)}.
+	 * See {@link BasicOperations#subsetOf(SingletonAutomaton, SingletonAutomaton)}.
 	 */
-	public boolean subsetOf(LinkedAutomaton a) {
+	public boolean subsetOf(SingletonAutomaton a) {
 		return BasicOperations.subsetOf(this, a);
 	}
 
 	/**
-	 * See {@link BasicOperations#union(LinkedAutomaton, LinkedAutomaton)}.
+	 * See {@link BasicOperations#union(SingletonAutomaton, SingletonAutomaton)}.
 	 */
-	public LinkedAutomaton union(LinkedAutomaton a) {
+	public SingletonAutomaton union(SingletonAutomaton a) {
 		return BasicOperations.union(this, a);
 	}
 
 	/**
 	 * See {@link BasicOperations#union(Collection)}.
 	 */
-	static public LinkedAutomaton union(Collection<LinkedAutomaton> l) {
+	static public SingletonAutomaton union(Collection<SingletonAutomaton> l) {
 		return BasicOperations.union(l);
 	}
 
 	/**
-	 * See {@link BasicOperations#determinize(LinkedAutomaton)}.
+	 * See {@link BasicOperations#determinize(SingletonAutomaton)}.
 	 */
 	public void determinize() {
 		BasicOperations.determinize(this);
 	}
 
 	/**
-	 * See {@link BasicOperations#addEpsilons(LinkedAutomaton, Collection)}.
+	 * See {@link BasicOperations#addEpsilons(SingletonAutomaton, Collection)}.
 	 */
 	public void addEpsilons(Collection<StatePair> pairs) {
 		BasicOperations.addEpsilons(this, pairs);
 	}
 
 	/**
-	 * See {@link BasicOperations#isEmptyString(LinkedAutomaton)}.
+	 * See {@link BasicOperations#isEmptyString(SingletonAutomaton)}.
 	 */
 	public boolean isEmptyString() {
 		return BasicOperations.isEmptyString(this);
@@ -874,7 +874,7 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 			return p.accept;
 		} else {
 			Set<State> states = getStates();
-			LinkedAutomaton.setStateNumbers(states);
+			SingletonAutomaton.setStateNumbers(states);
 			LinkedList<State> pp = new LinkedList<State>();
 			LinkedList<State> pp_other = new LinkedList<State>();
 			BitSet bb = new BitSet(states.size());
@@ -913,15 +913,15 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	/**
 	 * Minimizes (and determinizes if not already deterministic) the given automaton.
 	 *
-	 * @see LinkedAutomaton#setMinimization(int)
+	 * @see SingletonAutomaton#setMinimization(int)
 	 */
-	public LinkedAutomaton minimize() {
+	public SingletonAutomaton minimize() {
 		if (!isSingleton()) {
-			switch (LinkedAutomaton.minimization) {
-				case LinkedAutomaton.MINIMIZE_HUFFMAN:
+			switch (SingletonAutomaton.minimization) {
+				case SingletonAutomaton.MINIMIZE_HUFFMAN:
 					MinimizationOperations.minimizeHuffman(this);
 					break;
-				case LinkedAutomaton.MINIMIZE_BRZOZOWSKI:
+				case SingletonAutomaton.MINIMIZE_BRZOZOWSKI:
 					MinimizationOperations.minimizeBrzozowski(this);
 					break;
 				default:
@@ -933,9 +933,9 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	}
 
 	/**
-	 * See {@link SpecialOperations#subst(LinkedAutomaton, Map)}.
+	 * See {@link SpecialOperations#subst(SingletonAutomaton, Map)}.
 	 */
-	public LinkedAutomaton subst(Map<Character, Set<Character>> map) {
+	public SingletonAutomaton subst(Map<Character, Set<Character>> map) {
 		return SpecialOperations.subst(this, map);
 	}
 }

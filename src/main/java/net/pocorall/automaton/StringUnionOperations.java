@@ -281,7 +281,7 @@ final public class StringUnionOperations {
 	 * added to this automaton (the input must be sorted).
 	 */
 	public void add(Object acceptObj, CharSequence current) {
-		assert register != null : "LinkedAutomaton already built.";
+		assert register != null : "SingletonAutomaton already built.";
 		assert current.length() > 0 : "Input sequences must not be empty.";
 		assert previous == null || LEXICOGRAPHIC_ORDER.compare(previous, current) <= 0 :
 			"Input must be sorted: " + previous + " >= " + current;

@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 public class SpecialOperationsTest {
 	@Test
 	public void testReverse() throws Exception {
-		LinkedAutomaton automaton = makeCharRange('b', 'd');
+		SingletonAutomaton automaton = makeCharRange('b', 'd');
 		reverse(automaton);
 		assertEquals(Boolean.TRUE, automaton.run("b"));
 		assertEquals(Boolean.FALSE, automaton.run("aa"));
@@ -33,7 +33,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testSingleChars() throws Exception {
-		LinkedAutomaton automaton = singleChars(makeString("bad dream"));
+		SingletonAutomaton automaton = singleChars(makeString("bad dream"));
 		assertEquals(Boolean.TRUE, automaton.run("b"));
 		assertEquals(Boolean.FALSE, automaton.run("aa"));
 		assertFalse(automaton.isSingleton());
@@ -42,7 +42,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testTrim() throws Exception {
-		LinkedAutomaton automaton = trim(makeString("to_be"), "- ", '_');
+		SingletonAutomaton automaton = trim(makeString("to_be"), "- ", '_');
 		assertEquals(Boolean.TRUE, automaton.run("to be"));
 		assertEquals(Boolean.TRUE, automaton.run("  to-be  "));
 		assertEquals(Boolean.FALSE, automaton.run("two be"));
@@ -52,7 +52,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testCompress() throws Exception {
-		LinkedAutomaton automaton = compress(makeString("hello * world"), "new", '*');
+		SingletonAutomaton automaton = compress(makeString("hello * world"), "new", '*');
 		assertEquals(Boolean.TRUE, automaton.run("hello * world"));
 		assertEquals(Boolean.TRUE, automaton.run("hello new world"));
 		assertEquals(Boolean.FALSE, automaton.run("hello NEW world"));
@@ -62,7 +62,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testSubst() throws Exception {
-		LinkedAutomaton automaton = subst(makeString("hello * world"), '*', "new");
+		SingletonAutomaton automaton = subst(makeString("hello * world"), '*', "new");
 		assertEquals(Boolean.FALSE, automaton.run("hello * world"));
 		assertEquals(Boolean.TRUE, automaton.run("hello new world"));
 		assertEquals(Boolean.FALSE, automaton.run("hello NEW world"));
@@ -107,14 +107,14 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testPrefixClose() throws Exception {
-		LinkedAutomaton automaton = makeStringUnion("hello * world", "abc", "defg", "def");
+		SingletonAutomaton automaton = makeStringUnion("hello * world", "abc", "defg", "def");
 		prefixClose(automaton);
 		assertEquals(Boolean.TRUE, automaton.run("hell"));
 	}
 
 	@Test
 	public void testHexCases() throws Exception {
-		LinkedAutomaton automaton = makeString("hello * world");
+		SingletonAutomaton automaton = makeString("hello * world");
 		automaton = hexCases(automaton);
 		assertEquals(Boolean.TRUE, automaton.run("hello * world"));
 		assertEquals(Boolean.TRUE, automaton.run("hEllo * worlD"));
@@ -123,7 +123,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testReplaceWhitespace() throws Exception {
-		LinkedAutomaton automaton = makeString("hello * world");
+		SingletonAutomaton automaton = makeString("hello * world");
 		automaton = hexCases(automaton);
 		automaton = replaceWhitespace(automaton);
 		assertEquals(Boolean.TRUE, automaton.run("hello\n*\tworld"));

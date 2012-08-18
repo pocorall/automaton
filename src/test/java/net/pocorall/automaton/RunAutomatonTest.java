@@ -16,10 +16,10 @@ public class RunAutomatonTest {
 			return builder.complete();
 		}
 
-		public static LinkedAutomaton makeStringUnion(String... strings) {
+		public static SingletonAutomaton makeStringUnion(String... strings) {
 			if (strings.length == 0)
 				return BasicAutomata.makeEmpty();
-			LinkedAutomaton a = new LinkedAutomaton();
+			SingletonAutomaton a = new SingletonAutomaton();
 			a.setInitialState(build(strings));
 			a.setDeterministic(true);
 			a.reduce();
@@ -30,7 +30,7 @@ public class RunAutomatonTest {
 
 	@Test
 	public void testSplit() {
-		LinkedAutomaton a = AutomatonUtil.makeStringUnion("a", "ab", "hi", "there!");
+		SingletonAutomaton a = AutomatonUtil.makeStringUnion("a", "ab", "hi", "there!");
 		System.out.println(a.toString());
 		AutomatonMatcher matcher = new RunAutomaton(a).newMatcher("wiesaamfijabiemfeiaymfqi");
 		Object aObj = matcher.find();

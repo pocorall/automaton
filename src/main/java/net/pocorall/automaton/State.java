@@ -33,7 +33,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * <tt>LinkedAutomaton</tt> state.
+ * <tt>SingletonAutomaton</tt> state.
  *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
  */
@@ -156,7 +156,7 @@ public class State implements Serializable, Comparable<State> {
 
 	/**
 	 * Returns string describing this state. Normally invoked via
-	 * {@link LinkedAutomaton#toString()}.
+	 * {@link SingletonAutomaton#toString()}.
 	 */
 	@Override
 	public String toString() {
