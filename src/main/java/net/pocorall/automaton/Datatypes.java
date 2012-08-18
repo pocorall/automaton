@@ -651,18 +651,18 @@ final public class Datatypes {
 		Map<String, LinkedAutomaton> m = buildMap(xsdmisc);
 		putWith(xsdexps, m);
 
-		put(m, "UNSIGNEDLONG", LinkedAutomaton.makeMaxInteger("18446744073709551615"));
-		put(m, "UNSIGNEDINT", LinkedAutomaton.makeMaxInteger("4294967295"));
-		put(m, "UNSIGNEDSHORT", LinkedAutomaton.makeMaxInteger("65535"));
-		put(m, "UNSIGNEDBYTE", LinkedAutomaton.makeMaxInteger("255"));
-		put(m, "LONG", LinkedAutomaton.makeMaxInteger("9223372036854775807"));
-		put(m, "LONG_NEG", LinkedAutomaton.makeMaxInteger("9223372036854775808"));
-		put(m, "INT", LinkedAutomaton.makeMaxInteger("2147483647"));
-		put(m, "INT_NEG", LinkedAutomaton.makeMaxInteger("2147483648"));
-		put(m, "SHORT", LinkedAutomaton.makeMaxInteger("32767"));
-		put(m, "SHORT_NEG", LinkedAutomaton.makeMaxInteger("32768"));
-		put(m, "BYTE", LinkedAutomaton.makeMaxInteger("127"));
-		put(m, "BYTE_NEG", LinkedAutomaton.makeMaxInteger("128"));
+		put(m, "UNSIGNEDLONG", BasicAutomata.makeMaxInteger("18446744073709551615"));
+		put(m, "UNSIGNEDINT", BasicAutomata.makeMaxInteger("4294967295"));
+		put(m, "UNSIGNEDSHORT", BasicAutomata.makeMaxInteger("65535"));
+		put(m, "UNSIGNEDBYTE", BasicAutomata.makeMaxInteger("255"));
+		put(m, "LONG", BasicAutomata.makeMaxInteger("9223372036854775807"));
+		put(m, "LONG_NEG", BasicAutomata.makeMaxInteger("9223372036854775808"));
+		put(m, "INT", BasicAutomata.makeMaxInteger("2147483647"));
+		put(m, "INT_NEG", BasicAutomata.makeMaxInteger("2147483648"));
+		put(m, "SHORT", BasicAutomata.makeMaxInteger("32767"));
+		put(m, "SHORT_NEG", BasicAutomata.makeMaxInteger("32768"));
+		put(m, "BYTE", BasicAutomata.makeMaxInteger("127"));
+		put(m, "BYTE_NEG", BasicAutomata.makeMaxInteger("128"));
 
 		Map<String, LinkedAutomaton> u = new HashMap<String, LinkedAutomaton>();
 		u.putAll(t);

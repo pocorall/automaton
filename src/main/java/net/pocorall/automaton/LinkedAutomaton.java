@@ -744,21 +744,6 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 		return BasicAutomata.makeCharRange(min, max);
 	}
 
-	/**
-	 * See {@link BasicAutomata#makeString(String)}.
-	 */
-	public static LinkedAutomaton makeString(String s) {
-		return BasicAutomata.makeString(s);
-	}
-
-
-	/**
-	 * See {@link BasicAutomata#makeMaxInteger(String)}.
-	 */
-	public static LinkedAutomaton makeMaxInteger(String n) {
-		return BasicAutomata.makeMaxInteger(n);
-	}
-
 
 	/**
 	 * See {@link BasicOperations#concatenate(LinkedAutomaton, LinkedAutomaton)}.

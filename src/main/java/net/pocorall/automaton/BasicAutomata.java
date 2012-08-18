@@ -394,7 +394,7 @@ final public class BasicAutomata {
 		else
 			s = LinkedAutomaton.makeChar('+').optional();
 		LinkedAutomaton ws = Datatypes.getWhitespaceAutomaton();
-		return (ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(LinkedAutomaton.makeString(b.toString()))).concatenate(ws)).minimize();
+		return (ws.concatenate(s.concatenate(LinkedAutomaton.makeChar('0').repeat()).concatenate(BasicAutomata.makeString(b.toString()))).concatenate(ws)).minimize();
 	}
 
 	/**
