@@ -247,6 +247,95 @@ abstract public class LinkedAutomaton implements Serializable, Cloneable, Automa
 			hash_code = 1;
 	}
 
+	/**
+	 * Returns a clone of this automaton, or this automaton itself if <code>allow_mutation</code> flag is set.
+	 */
+	LinkedAutomaton cloneIfRequired() {
+		if (allow_mutation)
+			return this;
+		else
+			return clone();
+	}
+
+	/**
+	 * Returns a clone of this automaton.
+	 */
+	@Override
+	public LinkedAutomaton clone() {
+		try {
+			LinkedAutomaton a = (LinkedAutomaton) super.clone();
+			HashMap<State, State> m = new HashMap<State, State>();
+			Set<State> states = getStates();
+			for (State s : states)
+				m.put(s, new State());
+			for (State s : states) {
+				State p = m.get(s);
+				p.accept = s.accept;
+				if (s == initial)
+					a.initial = p;
+				for (Transition t : s.transitions)
+					p.transitions.add(new Transition(t.min, t.max, m.get(t.to)));
+			}
+			return a;
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Returns true if the given string is accepted by the automaton.
+	 * <p/>
+	 * Complexity: linear in the length of the string.
+	 * <p/>
+	 * <b>Note:</b> for full performance, use the {@link RunAutomaton} class.
+	 */
+	public Object run(String s) {
+		if (deterministic) {
+			State p = initial;
+			for (int i = 0; i < s.length(); i++) {
+				State q = p.step(s.charAt(i));
+				if (q == null)
+					return false;
+				p = q;
+			}
+			return p.accept;
+		} else {
+			Set<State> states = getStates();
+			setStateNumbers(states);
+			LinkedList<State> pp = new LinkedList<State>();
+			LinkedList<State> pp_other = new LinkedList<State>();
+			BitSet bb = new BitSet(states.size());
+			BitSet bb_other = new BitSet(states.size());
+			pp.add(initial);
+			ArrayList<State> dest = new ArrayList<State>();
+			Object accept = initial.accept;
+			for (int i = 0; i < s.length(); i++) {
+				char c = s.charAt(i);
+				accept = false;
+				pp_other.clear();
+				bb_other.clear();
+				for (State p : pp) {
+					dest.clear();
+					p.step(c, dest);
+					for (State q : dest) {
+						if (q.accept != null)
+							accept = q.accept;
+						if (!bb_other.get(q.number)) {
+							bb_other.set(q.number);
+							pp_other.add(q);
+						}
+					}
+				}
+				LinkedList<State> tp = pp;
+				pp = pp_other;
+				pp_other = tp;
+				BitSet tb = bb;
+				bb = bb_other;
+				bb_other = tb;
+			}
+			return accept;
+		}
+	}
 
 	/**
 	 * Returns the number of states in this automaton.
