@@ -118,7 +118,7 @@ public class State implements Serializable, Comparable<State> {
 	/**
 	 * Performs lookup in transitions, allowing nondeterminism.
 	 *
-	 * @param c	character to look up
+	 * @param c    character to look up
 	 * @param dest collection where destination states are stored
 	 * @see #step(char)
 	 */

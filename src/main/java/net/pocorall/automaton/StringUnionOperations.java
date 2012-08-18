@@ -194,7 +194,6 @@ final public class StringUnionOperations {
 			charStates[charStates.length - 1] = charState;
 		}
 
-
 		public net.pocorall.automaton.State toState() {
 			return convert(this, new IdentityHashMap<CharState, net.pocorall.automaton.State>());
 		}
@@ -269,6 +268,12 @@ final public class StringUnionOperations {
 	 * Previous sequence added to the automaton in {@link #add(Object, CharSequence)}.
 	 */
 	private StringBuilder previous;
+
+	public void addAll(Object acceptObj, CharSequence... sequences) {
+		for (CharSequence sequence : sequences) {
+			add(acceptObj, sequence);
+		}
+	}
 
 	/**
 	 * Add another character sequence to this automaton. The sequence must be

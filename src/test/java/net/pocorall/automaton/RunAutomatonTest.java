@@ -2,17 +2,15 @@ package net.pocorall.automaton;
 
 import org.junit.Test;
 
-import java.util.IdentityHashMap;
-
 import static org.junit.Assert.assertEquals;
 
 public class RunAutomatonTest {
 	static public class AutomatonUtil {
-		public static State build(Object... input) {
+		public static State build(String... input) {
 			final StringUnionOperations builder = new StringUnionOperations();
 
-			for (Object i : input) {
-				builder.add(i, (CharSequence) i);
+			for (String i : input) {
+				builder.add(i, i);
 			}
 
 			return builder.complete();
@@ -32,7 +30,7 @@ public class RunAutomatonTest {
 
 	@Test
 	public void testSplit() {
-		LinkedAutomaton a = AutomatonUtil.makeStringUnion("a", "hi", "ab", "there!");
+		LinkedAutomaton a = AutomatonUtil.makeStringUnion("a", "ab", "hi", "there!");
 		AutomatonMatcher matcher = new RunAutomaton(a).newMatcher("wiesaamfijabiemfeiaymfqi");
 		Object aObj = matcher.find();
 		assertEquals("a", matcher.group());
