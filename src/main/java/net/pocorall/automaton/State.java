@@ -95,7 +95,7 @@ public class State implements Serializable, Comparable<State> {
 	/**
 	 * Returns acceptance status.
 	 *
-	 * @return true is this is an accept state
+	 * @return not null if this is an accept state
 	 */
 	public Object isAccept() {
 		return accept;

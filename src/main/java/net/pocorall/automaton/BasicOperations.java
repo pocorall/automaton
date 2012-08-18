@@ -48,7 +48,7 @@ final public class BasicOperations {
 	static public LinkedAutomaton concatenate(LinkedAutomaton a1, LinkedAutomaton a2) {
 		if (a1.isSingleton() && a2.isSingleton())
 			return BasicAutomata.makeString(a1.singleton + a2.singleton);
-		if (isEmpty(a1) || isEmpty(a2))
+		if (a1.isEmpty() || a2.isEmpty())
 			return BasicAutomata.makeEmpty();
 		boolean deterministic = a1.isSingleton() && a2.isDeterministic();
 		if (a1 == a2) {
@@ -570,15 +570,6 @@ final public class BasicOperations {
 			return a.singleton.length() == 0;
 		else
 			return a.initial.accept != null && a.initial.transitions.isEmpty();
-	}
-
-	/**
-	 * Returns true if the given automaton accepts no strings.
-	 */
-	public static boolean isEmpty(LinkedAutomaton a) {
-		if (a.isSingleton())
-			return false;
-		return a.initial.accept == null && a.initial.transitions.isEmpty();
 	}
 
 	/**

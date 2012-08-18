@@ -691,10 +691,10 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	 * Retrieves a serialized <code>LinkedAutomaton</code> located by a URL.
 	 *
 	 * @param url URL of serialized automaton
-	 * @throws IOException			if input/output related exception occurs
+	 * @throws IOException            if input/output related exception occurs
 	 * @throws OptionalDataException  if the data is not a serialized object
 	 * @throws InvalidClassException  if the class serial number does not match
-	 * @throws ClassCastException	 if the data is not a serialized <code>LinkedAutomaton</code>
+	 * @throws ClassCastException     if the data is not a serialized <code>LinkedAutomaton</code>
 	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
 	 */
 	public static LinkedAutomaton load(URL url) throws IOException, OptionalDataException, ClassCastException,
@@ -706,10 +706,10 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	 * Retrieves a serialized <code>LinkedAutomaton</code> from a stream.
 	 *
 	 * @param stream input stream with serialized automaton
-	 * @throws IOException			if input/output related exception occurs
+	 * @throws IOException            if input/output related exception occurs
 	 * @throws OptionalDataException  if the data is not a serialized object
 	 * @throws InvalidClassException  if the class serial number does not match
-	 * @throws ClassCastException	 if the data is not a serialized <code>LinkedAutomaton</code>
+	 * @throws ClassCastException     if the data is not a serialized <code>LinkedAutomaton</code>
 	 * @throws ClassNotFoundException if the class of the serialized object cannot be found
 	 */
 	public static LinkedAutomaton load(InputStream stream) throws IOException, OptionalDataException, ClassCastException,
@@ -955,10 +955,12 @@ public class LinkedAutomaton implements Serializable, Cloneable, Automaton {
 	}
 
 	/**
-	 * See {@link BasicOperations#isEmpty(LinkedAutomaton)}.
+	 * Returns true if the given automaton accepts no strings.
 	 */
 	public boolean isEmpty() {
-		return BasicOperations.isEmpty(this);
+		if (isSingleton())
+			return false;
+		return initial.accept == null && initial.transitions.isEmpty();
 	}
 
 	/**
