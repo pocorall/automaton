@@ -33,7 +33,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import static net.pocorall.automaton.SingletonAutomaton.*;
+import static net.pocorall.automaton.DefaultAutomaton.*;
 import static net.pocorall.automaton.BasicOperations.*;
 import static net.pocorall.automaton.BasicAutomataFactory.*;
 
@@ -43,9 +43,9 @@ import static net.pocorall.automaton.BasicAutomataFactory.*;
  */
 final public class Datatypes {
 
-	private static final Map<String, SingletonAutomaton> automata;
+	private static final Map<String, DefaultAutomaton> automata;
 
-	private static final SingletonAutomaton ws;
+	private static final DefaultAutomaton ws;
 
 	private static final Set<String> unicodeblock_names;
 
@@ -224,7 +224,7 @@ final public class Datatypes {
 	};
 
 	static {
-		automata = new HashMap<String, SingletonAutomaton>();
+		automata = new HashMap<String, DefaultAutomaton>();
 		ws = makeCharSet(" \t\n\r").repeat().minimize();
 		unicodeblock_names = new HashSet<String>(Arrays.asList(unicodeblock_names_array));
 		unicodecategory_names = new HashSet<String>(Arrays.asList(unicodecategory_names_array));
@@ -245,7 +245,7 @@ final public class Datatypes {
 		buildAll();
 		setAllowMutate(b);
 		System.out.println("Storing automata...");
-		for (Map.Entry<String, SingletonAutomaton> e : automata.entrySet())
+		for (Map.Entry<String, DefaultAutomaton> e : automata.entrySet())
 			store(e.getKey(), e.getValue());
 		System.out.println("Time for building automata: " + (System.currentTimeMillis() - t) + "ms");
 	}
@@ -426,8 +426,8 @@ final public class Datatypes {
 	 * @param name name of automaton
 	 * @return automaton
 	 */
-	public static SingletonAutomaton get(String name) {
-		SingletonAutomaton a = automata.get(name);
+	public static DefaultAutomaton get(String name) {
+		DefaultAutomaton a = automata.get(name);
 		if (a == null) {
 			a = load(name);
 			automata.put(name, a);
@@ -471,10 +471,10 @@ final public class Datatypes {
 		return true;
 	}
 
-	private static SingletonAutomaton load(String name) {
+	private static DefaultAutomaton load(String name) {
 		try {
 			URL url = Datatypes.class.getClassLoader().getResource(name + ".aut");
-			return (SingletonAutomaton) new ObjectInputStream(url.openStream()).readObject();
+			return (DefaultAutomaton) new ObjectInputStream(url.openStream()).readObject();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -484,7 +484,7 @@ final public class Datatypes {
 		}
 	}
 
-	private static void store(String name, SingletonAutomaton a) {
+	private static void store(String name, DefaultAutomaton a) {
 		String dir = System.getProperty("dk.brics.automaton.datatypes");
 		if (dir == null)
 			dir = "build";
@@ -553,7 +553,7 @@ final public class Datatypes {
 		};
 
 		System.out.println("Building XML automata...");
-		Map<String, SingletonAutomaton> t = buildMap(xmlexps);
+		Map<String, DefaultAutomaton> t = buildMap(xmlexps);
 		putFrom("NCName", t);
 		putFrom("QName", t);
 		putFrom("Char", t);
@@ -655,7 +655,7 @@ final public class Datatypes {
 			"positiveInteger", "<_>([1-9]<d>*)<_>",
 		};
 		System.out.println("Building XML Schema automata...");
-		Map<String, SingletonAutomaton> m = buildMap(xsdmisc);
+		Map<String, DefaultAutomaton> m = buildMap(xsdmisc);
 		putWith(xsdexps, m);
 
 		put(m, "UNSIGNEDLONG", makeMaxInteger("18446744073709551615"));
@@ -671,7 +671,7 @@ final public class Datatypes {
 		put(m, "BYTE", makeMaxInteger("127"));
 		put(m, "BYTE_NEG", makeMaxInteger("128"));
 
-		Map<String, SingletonAutomaton> u = new HashMap<String, SingletonAutomaton>();
+		Map<String, DefaultAutomaton> u = new HashMap<String, DefaultAutomaton>();
 		u.putAll(t);
 		u.putAll(m);
 		String[] xsdexps2 = {
@@ -831,10 +831,10 @@ final public class Datatypes {
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		List<SingletonAutomaton> assigned = new ArrayList<SingletonAutomaton>();
+		List<DefaultAutomaton> assigned = new ArrayList<DefaultAutomaton>();
 		for (Map.Entry<String, Set<Integer>> me : categories.entrySet()) {
-			List<SingletonAutomaton> la1 = new ArrayList<SingletonAutomaton>();
-			List<SingletonAutomaton> la2 = new ArrayList<SingletonAutomaton>();
+			List<DefaultAutomaton> la1 = new ArrayList<DefaultAutomaton>();
+			List<DefaultAutomaton> la2 = new ArrayList<DefaultAutomaton>();
 			for (Integer cp : me.getValue()) {
 				la1.add(makeCodePoint(cp));
 				if (la1.size() == 50) {
@@ -843,16 +843,16 @@ final public class Datatypes {
 				}
 			}
 			la2.add(union(la1));
-			SingletonAutomaton a = (union(la2)).minimize();
+			DefaultAutomaton a = (union(la2)).minimize();
 			put(automata, me.getKey(), a);
 			assigned.add(a);
 		}
-		SingletonAutomaton cn = (automata.get("Char").clone().intersection(union(assigned).complement())).minimize();
+		DefaultAutomaton cn = (automata.get("Char").clone().intersection(union(assigned).complement())).minimize();
 		put(automata, "Cn", cn);
 		put(automata, "C", automata.get("C").clone().union(cn));
 	}
 
-	private static SingletonAutomaton makeCodePoint(int cp) {
+	private static DefaultAutomaton makeCodePoint(int cp) {
 		if (cp >= 0x10000) {
 			cp -= 0x10000;
 			char[] cu = {(char) (0xd800 + (cp >> 10)), (char) (0xdc00 + (cp & 0x3ff))};
@@ -861,30 +861,30 @@ final public class Datatypes {
 			return makeChar((char) cp);
 	}
 
-	private static Map<String, SingletonAutomaton> buildMap(String[] exps) {
-		Map<String, SingletonAutomaton> map = new HashMap<String, SingletonAutomaton>();
+	private static Map<String, DefaultAutomaton> buildMap(String[] exps) {
+		Map<String, DefaultAutomaton> map = new HashMap<String, DefaultAutomaton>();
 		int i = 0;
 		while (i + 1 < exps.length)
 			put(map, exps[i++], new RegExp(exps[i++]).toAutomaton(map));
 		return map;
 	}
 
-	private static void putWith(String[] exps, Map<String, SingletonAutomaton> use) {
+	private static void putWith(String[] exps, Map<String, DefaultAutomaton> use) {
 		int i = 0;
 		while (i + 1 < exps.length)
 			put(automata, exps[i++], new RegExp(exps[i++]).toAutomaton(use));
 	}
 
-	private static void putFrom(String name, Map<String, SingletonAutomaton> from) {
+	private static void putFrom(String name, Map<String, DefaultAutomaton> from) {
 		automata.put(name, from.get(name));
 	}
 
-	private static void put(Map<String, SingletonAutomaton> map, String name, SingletonAutomaton a) {
+	private static void put(Map<String, DefaultAutomaton> map, String name, DefaultAutomaton a) {
 		map.put(name, a);
 		System.out.println("  " + name + ": " + a.getNumberOfStates() + " states, " + a.getNumberOfTransitions() + " transitions");
 	}
 
-	static SingletonAutomaton getWhitespaceAutomaton() {
+	static DefaultAutomaton getWhitespaceAutomaton() {
 		return ws;
 	}
 }

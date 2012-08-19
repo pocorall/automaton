@@ -49,8 +49,8 @@ final public class BasicAutomataFactory {
 	/**
 	 * Returns a new (deterministic) automaton with the empty language.
 	 */
-	public static SingletonAutomaton makeEmpty() {
-		SingletonAutomaton a = new SingletonAutomaton();
+	public static DefaultAutomaton makeEmpty() {
+		DefaultAutomaton a = new DefaultAutomaton();
 		State s = new State();
 		a.initial = s;
 		a.deterministic = true;
@@ -60,8 +60,8 @@ final public class BasicAutomataFactory {
 	/**
 	 * Returns a new (deterministic) automaton that accepts only the empty string.
 	 */
-	public static SingletonAutomaton makeEmptyString() {
-		SingletonAutomaton a = new SingletonAutomaton();
+	public static DefaultAutomaton makeEmptyString() {
+		DefaultAutomaton a = new DefaultAutomaton();
 		a.singleton = "";
 		a.deterministic = true;
 		return a;
@@ -70,8 +70,8 @@ final public class BasicAutomataFactory {
 	/**
 	 * Returns a new (deterministic) automaton that accepts all strings.
 	 */
-	public static SingletonAutomaton makeAnyString() {
-		SingletonAutomaton a = new SingletonAutomaton();
+	public static DefaultAutomaton makeAnyString() {
+		DefaultAutomaton a = new DefaultAutomaton();
 		State s = new State();
 		a.initial = s;
 		s.accept = true;
@@ -83,15 +83,15 @@ final public class BasicAutomataFactory {
 	/**
 	 * Returns a new (deterministic) automaton that accepts any single character.
 	 */
-	public static SingletonAutomaton makeAnyChar() {
+	public static DefaultAutomaton makeAnyChar() {
 		return makeCharRange(Character.MIN_VALUE, Character.MAX_VALUE);
 	}
 
 	/**
 	 * Returns a new (deterministic) automaton that accepts a single character of the given value.
 	 */
-	public static SingletonAutomaton makeChar(char c) {
-		SingletonAutomaton a = new SingletonAutomaton();
+	public static DefaultAutomaton makeChar(char c) {
+		DefaultAutomaton a = new DefaultAutomaton();
 		a.singleton = Character.toString(c);
 		a.deterministic = true;
 		return a;
@@ -101,10 +101,10 @@ final public class BasicAutomataFactory {
 	 * Returns a new (deterministic) automaton that accepts a single char
 	 * whose value is in the given interval (including both end points).
 	 */
-	public static SingletonAutomaton makeCharRange(char min, char max) {
+	public static DefaultAutomaton makeCharRange(char min, char max) {
 		if (min == max)
 			return makeChar(min);
-		SingletonAutomaton a = new SingletonAutomaton();
+		DefaultAutomaton a = new DefaultAutomaton();
 		State s1 = new State();
 		State s2 = new State();
 		a.initial = s1;
@@ -118,10 +118,10 @@ final public class BasicAutomataFactory {
 	/**
 	 * Returns a new (deterministic) automaton that accepts a single character in the given set.
 	 */
-	public static SingletonAutomaton makeCharSet(String set) {
+	public static DefaultAutomaton makeCharSet(String set) {
 		if (set.length() == 1)
 			return makeChar(set.charAt(0));
-		SingletonAutomaton a = new SingletonAutomaton();
+		DefaultAutomaton a = new DefaultAutomaton();
 		State s1 = new State();
 		State s2 = new State();
 		a.initial = s1;
@@ -220,8 +220,8 @@ final public class BasicAutomataFactory {
 	 * @throws IllegalArgumentException if min>max or if numbers in the interval cannot be expressed
 	 *                                  with the given fixed number of digits
 	 */
-	public static SingletonAutomaton makeInterval(int min, int max, int digits) throws IllegalArgumentException {
-		SingletonAutomaton a = new SingletonAutomaton();
+	public static DefaultAutomaton makeInterval(int min, int max, int digits) throws IllegalArgumentException {
+		DefaultAutomaton a = new DefaultAutomaton();
 		String x = Integer.toString(min);
 		String y = Integer.toString(max);
 		if (min > max || (digits > 0 && y.length() > digits))
@@ -260,8 +260,8 @@ final public class BasicAutomataFactory {
 	/**
 	 * Returns a new (deterministic) automaton that accepts the single given string.
 	 */
-	public static SingletonAutomaton makeString(String s) {
-		SingletonAutomaton a = new SingletonAutomaton();
+	public static DefaultAutomaton makeString(String s) {
+		DefaultAutomaton a = new DefaultAutomaton();
 		a.singleton = s;
 		a.deterministic = true;
 		return a;
@@ -274,11 +274,11 @@ final public class BasicAutomataFactory {
 	 *
 	 * @see StringUnionOperations
 	 */
-	public static SingletonAutomaton makeStringUnion(CharSequence... strings) {
+	public static DefaultAutomaton makeStringUnion(CharSequence... strings) {
 		if (strings.length == 0)
 			return makeEmpty();
 		Arrays.sort(strings, StringUnionOperations.LEXICOGRAPHIC_ORDER);
-		SingletonAutomaton a = new SingletonAutomaton();
+		DefaultAutomaton a = new DefaultAutomaton();
 		a.setInitialState(StringUnionOperations.build(strings));
 		a.setDeterministic(true);
 		a.reduce();
@@ -292,7 +292,7 @@ final public class BasicAutomataFactory {
 	 *
 	 * @param n string representation of maximum value
 	 */
-	public static SingletonAutomaton makeMaxInteger(String n) {
+	public static DefaultAutomaton makeMaxInteger(String n) {
 		int i = 0;
 		while (i < n.length() && n.charAt(i) == '0')
 			i++;
@@ -325,7 +325,7 @@ final public class BasicAutomataFactory {
 	 *
 	 * @param n string representation of minimum value
 	 */
-	public static SingletonAutomaton makeMinInteger(String n) {
+	public static DefaultAutomaton makeMinInteger(String n) {
 		int i = 0;
 		while (i + 1 < n.length() && n.charAt(i) == '0')
 			i++;
@@ -355,7 +355,7 @@ final public class BasicAutomataFactory {
 	 *
 	 * @param i max number of necessary digits
 	 */
-	public static SingletonAutomaton makeTotalDigits(int i) {
+	public static DefaultAutomaton makeTotalDigits(int i) {
 		return ((new RegExp("[ \t\n\r]*[-+]?0*([0-9]{0," + i + "}|((([0-9]\\.*){0," + i + "})&@\\.@)0*)[ \t\n\r]*")).toAutomaton()).minimize();
 	}
 
@@ -366,7 +366,7 @@ final public class BasicAutomataFactory {
 	 *
 	 * @param i max number of necessary fraction digits
 	 */
-	public static SingletonAutomaton makeFractionDigits(int i) {
+	public static DefaultAutomaton makeFractionDigits(int i) {
 		return ((new RegExp("[ \t\n\r]*[-+]?[0-9]+(\\.[0-9]{0," + i + "}0*)?[ \t\n\r]*")).toAutomaton()).minimize();
 	}
 
@@ -376,7 +376,7 @@ final public class BasicAutomataFactory {
 	 *
 	 * @param value string representation of integer
 	 */
-	public static SingletonAutomaton makeIntegerValue(String value) {
+	public static DefaultAutomaton makeIntegerValue(String value) {
 		boolean minus = false;
 		int i = 0;
 		while (i < value.length()) {
@@ -391,12 +391,12 @@ final public class BasicAutomataFactory {
 		b.append(value.substring(i));
 		if (b.length() == 0)
 			b.append("0");
-		SingletonAutomaton s;
+		DefaultAutomaton s;
 		if (minus)
 			s = makeChar('-');
 		else
 			s = makeChar('+').optional();
-		SingletonAutomaton ws = Datatypes.getWhitespaceAutomaton();
+		DefaultAutomaton ws = Datatypes.getWhitespaceAutomaton();
 		return (ws.concatenate(s.concatenate(makeChar('0').repeat()).concatenate(BasicAutomataFactory.makeString(b.toString()))).concatenate(ws)).minimize();
 	}
 
@@ -406,7 +406,7 @@ final public class BasicAutomataFactory {
 	 *
 	 * @param value string representation of decimal number
 	 */
-	public static SingletonAutomaton makeDecimalValue(String value) {
+	public static DefaultAutomaton makeDecimalValue(String value) {
 		boolean minus = false;
 		int i = 0;
 		while (i < value.length()) {
@@ -435,25 +435,25 @@ final public class BasicAutomataFactory {
 		}
 		if (b1.length() == 0)
 			b1.append("0");
-		SingletonAutomaton s;
+		DefaultAutomaton s;
 		if (minus)
 			s = makeChar('-');
 		else
 			s = makeChar('+').optional();
-		SingletonAutomaton d;
+		DefaultAutomaton d;
 		if (b2.length() == 0)
 			d = makeChar('.').concatenate(BasicAutomataFactory.makeChar('0').repeat(1)).optional();
 		else
 			d = makeChar('.').concatenate(BasicAutomataFactory.makeString(b2.toString())).concatenate(BasicAutomataFactory.makeChar('0').repeat());
-		SingletonAutomaton ws = Datatypes.getWhitespaceAutomaton();
+		DefaultAutomaton ws = Datatypes.getWhitespaceAutomaton();
 		return (ws.concatenate(s.concatenate(BasicAutomataFactory.makeChar('0').repeat()).concatenate(BasicAutomataFactory.makeString(b1.toString())).concatenate(d)).concatenate(ws)).minimize();
 	}
 
 	/**
 	 * Constructs deterministic automaton that matches strings that contain the given substring.
 	 */
-	public static SingletonAutomaton makeStringMatcher(String s) {
-		SingletonAutomaton a = new SingletonAutomaton();
+	public static DefaultAutomaton makeStringMatcher(String s) {
+		DefaultAutomaton a = new DefaultAutomaton();
 		State[] states = new State[s.length() + 1];
 		states[0] = a.initial;
 		for (int i = 0; i < s.length(); i++)

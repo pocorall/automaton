@@ -48,7 +48,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	static public SingletonAutomaton concatenate(SingletonAutomaton a1, SingletonAutomaton a2) {
+	static public DefaultAutomaton concatenate(DefaultAutomaton a1, DefaultAutomaton a2) {
 		if (a1.isSingleton() && a2.isSingleton())
 			return makeString(a1.singleton + a2.singleton);
 		if (a1.isEmpty() || a2.isEmpty())
@@ -77,42 +77,42 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in total number of states.
 	 */
-	static public SingletonAutomaton concatenate(List<SingletonAutomaton> l) {
+	static public DefaultAutomaton concatenate(List<DefaultAutomaton> l) {
 		if (l.isEmpty())
 			return makeEmptyString();
 		boolean all_singleton = true;
-		for (SingletonAutomaton a : l)
+		for (DefaultAutomaton a : l)
 			if (!a.isSingleton()) {
 				all_singleton = false;
 				break;
 			}
 		if (all_singleton) {
 			StringBuilder b = new StringBuilder();
-			for (SingletonAutomaton a : l)
+			for (DefaultAutomaton a : l)
 				b.append(a.singleton);
 			return makeString(b.toString());
 		} else {
-			for (SingletonAutomaton a : l)
+			for (DefaultAutomaton a : l)
 				if (a.isEmpty())
 					return makeEmpty();
 			Set<Integer> ids = new HashSet<Integer>();
-			for (SingletonAutomaton a : l)
+			for (DefaultAutomaton a : l)
 				ids.add(System.identityHashCode(a));
 			boolean has_aliases = ids.size() != l.size();
-			SingletonAutomaton b = l.get(0);
+			DefaultAutomaton b = l.get(0);
 			if (has_aliases)
 				b = b.cloneExpanded();
 			else
 				b = b.cloneExpandedIfRequired();
 			Set<State> ac = b.getAcceptStates();
 			boolean first = true;
-			for (SingletonAutomaton a : l)
+			for (DefaultAutomaton a : l)
 				if (first)
 					first = false;
 				else {
 					if (a.isEmptyString())
 						continue;
-					SingletonAutomaton aa = a;
+					DefaultAutomaton aa = a;
 					if (has_aliases)
 						aa = aa.cloneExpanded();
 					else
@@ -141,7 +141,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	static public SingletonAutomaton repeat(SingletonAutomaton a) {
+	static public DefaultAutomaton repeat(DefaultAutomaton a) {
 		a = a.cloneExpanded();
 		State s = new State();
 		s.accept = true;
@@ -161,10 +161,10 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states and in <code>min</code>.
 	 */
-	static public SingletonAutomaton repeat(SingletonAutomaton a, int min) {
+	static public DefaultAutomaton repeat(DefaultAutomaton a, int min) {
 		if (min == 0)
 			return repeat(a);
-		List<SingletonAutomaton> as = new ArrayList<SingletonAutomaton>();
+		List<DefaultAutomaton> as = new ArrayList<DefaultAutomaton>();
 		while (min-- > 0)
 			as.add(a);
 		as.add(repeat(a));
@@ -179,26 +179,26 @@ final public class BasicOperations {
 	 * Complexity: linear in number of states and in <code>min</code> and
 	 * <code>max</code>.
 	 */
-	static public SingletonAutomaton repeat(SingletonAutomaton a, int min, int max) {
+	static public DefaultAutomaton repeat(DefaultAutomaton a, int min, int max) {
 		if (min > max)
 			return makeEmpty();
 		max -= min;
 		a.expandSingleton();
-		SingletonAutomaton b;
+		DefaultAutomaton b;
 		if (min == 0)
 			b = makeEmptyString();
 		else if (min == 1)
 			b = a.clone();
 		else {
-			List<SingletonAutomaton> as = new ArrayList<SingletonAutomaton>();
+			List<DefaultAutomaton> as = new ArrayList<DefaultAutomaton>();
 			while (min-- > 0)
 				as.add(a);
 			b = concatenate(as);
 		}
 		if (max > 0) {
-			SingletonAutomaton d = a.clone();
+			DefaultAutomaton d = a.clone();
 			while (--max > 0) {
-				SingletonAutomaton c = a.clone();
+				DefaultAutomaton c = a.clone();
 				for (State p : c.getAcceptStates())
 					p.addEpsilon(d.initial);
 				d = c;
@@ -218,7 +218,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states (if already deterministic).
 	 */
-	static public SingletonAutomaton complement(SingletonAutomaton a) {
+	static public DefaultAutomaton complement(DefaultAutomaton a) {
 		a = a.cloneExpandedIfRequired();
 		BasicOperations.determinize(a);
 		a.totalize();
@@ -241,7 +241,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: quadratic in number of states (if already deterministic).
 	 */
-	static public SingletonAutomaton minus(SingletonAutomaton a1, SingletonAutomaton a2) {
+	static public DefaultAutomaton minus(DefaultAutomaton a1, DefaultAutomaton a2) {
 		if (a1.isEmpty() || a1 == a2)
 			return makeEmpty();
 		if (a2.isEmpty())
@@ -262,7 +262,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: quadratic in number of states.
 	 */
-	static public SingletonAutomaton intersection(SingletonAutomaton a1, SingletonAutomaton a2) {
+	static public DefaultAutomaton intersection(DefaultAutomaton a1, DefaultAutomaton a2) {
 		if (a1.isSingleton()) {
 			if (a2.run(a1.singleton) != null)
 				return a1.cloneIfRequired();
@@ -279,7 +279,7 @@ final public class BasicOperations {
 			return a1.cloneIfRequired();
 		Transition[][] transitions1 = getSortedTransitions(a1.getStates());
 		Transition[][] transitions2 = getSortedTransitions(a2.getStates());
-		SingletonAutomaton c = new SingletonAutomaton();
+		DefaultAutomaton c = new DefaultAutomaton();
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
 		StatePair p = new StatePair(c.initial, a1.initial, a2.initial);
@@ -323,7 +323,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: quadratic in number of states.
 	 */
-	public static boolean subsetOf(SingletonAutomaton a1, SingletonAutomaton a2) {
+	public static boolean subsetOf(DefaultAutomaton a1, DefaultAutomaton a2) {
 		if (a1 == a2)
 			return true;
 		if (a1.isSingleton()) {
@@ -377,7 +377,7 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	public static SingletonAutomaton union(SingletonAutomaton a1, SingletonAutomaton a2) {
+	public static DefaultAutomaton union(DefaultAutomaton a1, DefaultAutomaton a2) {
 		if ((a1.isSingleton() && a2.isSingleton() && a1.singleton.equals(a2.singleton)) || a1 == a2)
 			return a1.cloneIfRequired();
 		if (a1 == a2) {
@@ -402,23 +402,23 @@ final public class BasicOperations {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	public static SingletonAutomaton union(Collection<SingletonAutomaton> l) {
+	public static DefaultAutomaton union(Collection<DefaultAutomaton> l) {
 		Set<Integer> ids = new HashSet<Integer>();
-		for (SingletonAutomaton a : l)
+		for (DefaultAutomaton a : l)
 			ids.add(System.identityHashCode(a));
 		boolean has_aliases = ids.size() != l.size();
 		State s = new State();
-		for (SingletonAutomaton b : l) {
+		for (DefaultAutomaton b : l) {
 			if (b.isEmpty())
 				continue;
-			SingletonAutomaton bb = b;
+			DefaultAutomaton bb = b;
 			if (has_aliases)
 				bb = bb.cloneExpanded();
 			else
 				bb = bb.cloneExpandedIfRequired();
 			s.addEpsilon(bb.initial);
 		}
-		SingletonAutomaton a = new SingletonAutomaton();
+		DefaultAutomaton a = new DefaultAutomaton();
 		a.initial = s;
 		a.deterministic = false;
 		a.clearHashCode();
@@ -552,7 +552,7 @@ final public class BasicOperations {
 	/**
 	 * Returns true if the given automaton accepts the empty string and nothing else.
 	 */
-	public static boolean isEmptyString(SingletonAutomaton a) {
+	public static boolean isEmptyString(DefaultAutomaton a) {
 		if (a.isSingleton())
 			return a.singleton.length() == 0;
 		else
@@ -562,7 +562,7 @@ final public class BasicOperations {
 	/**
 	 * Returns true if the given automaton accepts all strings.
 	 */
-	public static boolean isTotal(SingletonAutomaton a) {
+	public static boolean isTotal(DefaultAutomaton a) {
 		if (a.isSingleton())
 			return false;
 		if (a.initial.accept != null && a.initial.transitions.size() == 1) {
@@ -579,7 +579,7 @@ final public class BasicOperations {
 	 * @param accepted if true, look for accepted strings; otherwise, look for rejected strings
 	 * @return the string, null if none found
 	 */
-	public static String getShortestExample(SingletonAutomaton a, boolean accepted) {
+	public static String getShortestExample(DefaultAutomaton a, boolean accepted) {
 		if (a.isSingleton()) {
 			if (accepted)
 				return a.singleton;

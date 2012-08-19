@@ -6,17 +6,10 @@ import static net.pocorall.automaton.BasicAutomataFactory.*;
 import static net.pocorall.automaton.SpecialOperations.*;
 import static org.junit.Assert.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: onsquare
- * Date: 12. 8. 19
- * Time: 오전 1:43
- * To change this template use File | Settings | File Templates.
- */
 public class SpecialOperationsTest {
 	@Test
 	public void testReverse() throws Exception {
-		SingletonAutomaton automaton = makeCharRange('b', 'd');
+		DefaultAutomaton automaton = makeCharRange('b', 'd');
 		reverse(automaton);
 		assertEquals(Boolean.TRUE, automaton.run("b"));
 		assertEquals(Boolean.FALSE, automaton.run("aa"));
@@ -31,7 +24,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testSingleChars() throws Exception {
-		SingletonAutomaton automaton = singleChars(makeString("bad dream"));
+		DefaultAutomaton automaton = singleChars(makeString("bad dream"));
 		assertEquals(Boolean.TRUE, automaton.run("b"));
 		assertEquals(Boolean.FALSE, automaton.run("aa"));
 		assertFalse(automaton.isSingleton());
@@ -40,7 +33,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testTrim() throws Exception {
-		SingletonAutomaton automaton = trim(makeString("to_be"), "- ", '_');
+		DefaultAutomaton automaton = trim(makeString("to_be"), "- ", '_');
 		assertEquals(Boolean.TRUE, automaton.run("to be"));
 		assertEquals(Boolean.TRUE, automaton.run("  to-be  "));
 		assertEquals(Boolean.FALSE, automaton.run("two be"));
@@ -50,7 +43,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testCompress() throws Exception {
-		SingletonAutomaton automaton = compress(makeString("hello * world"), "new", '*');
+		DefaultAutomaton automaton = compress(makeString("hello * world"), "new", '*');
 		assertEquals(Boolean.TRUE, automaton.run("hello * world"));
 		assertEquals(Boolean.TRUE, automaton.run("hello new world"));
 		assertEquals(Boolean.FALSE, automaton.run("hello NEW world"));
@@ -60,7 +53,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testSubst() throws Exception {
-		SingletonAutomaton automaton = subst(makeString("hello * world"), '*', "new");
+		DefaultAutomaton automaton = subst(makeString("hello * world"), '*', "new");
 		assertEquals(Boolean.FALSE, automaton.run("hello * world"));
 		assertEquals(Boolean.TRUE, automaton.run("hello new world"));
 		assertEquals(Boolean.FALSE, automaton.run("hello NEW world"));
@@ -105,14 +98,14 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testPrefixClose() throws Exception {
-		SingletonAutomaton automaton = makeStringUnion("hello * world", "abc", "defg", "def");
+		DefaultAutomaton automaton = makeStringUnion("hello * world", "abc", "defg", "def");
 		prefixClose(automaton);
 		assertEquals(Boolean.TRUE, automaton.run("hell"));
 	}
 
 	@Test
 	public void testHexCases() throws Exception {
-		SingletonAutomaton automaton = makeString("hello * world");
+		DefaultAutomaton automaton = makeString("hello * world");
 		automaton = hexCases(automaton);
 		assertEquals(Boolean.TRUE, automaton.run("hello * world"));
 		assertEquals(Boolean.TRUE, automaton.run("hEllo * worlD"));
@@ -121,7 +114,7 @@ public class SpecialOperationsTest {
 
 	@Test
 	public void testReplaceWhitespace() throws Exception {
-		SingletonAutomaton automaton = makeString("hello * world");
+		DefaultAutomaton automaton = makeString("hello * world");
 		automaton = hexCases(automaton);
 		automaton = replaceWhitespace(automaton);
 		assertEquals(Boolean.TRUE, automaton.run("hello\n*\tworld"));

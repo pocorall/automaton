@@ -139,11 +139,11 @@ public class RunAutomaton implements Serializable, Automaton {
 
 	/**
 	 * Constructs a new <code>RunAutomaton</code> from a deterministic
-	 * <code>SingletonAutomaton</code>. Same as <code>RunAutomaton(a, true)</code>.
+	 * <code>DefaultAutomaton</code>. Same as <code>RunAutomaton(a, true)</code>.
 	 *
 	 * @param a an automaton
 	 */
-	public RunAutomaton(SingletonAutomaton a) {
+	public RunAutomaton(DefaultAutomaton a) {
 		this(a, true);
 	}
 
@@ -192,14 +192,14 @@ public class RunAutomaton implements Serializable, Automaton {
 
 	/**
 	 * Constructs a new <code>RunAutomaton</code> from a deterministic
-	 * <code>SingletonAutomaton</code>. If the given automaton is not deterministic,
+	 * <code>DefaultAutomaton</code>. If the given automaton is not deterministic,
 	 * it is determinized first.
 	 *
 	 * @param a        an automaton
 	 * @param tableize if true, a transition table is created which makes the <code>run</code>
 	 *                 method faster in return of a higher memory usage
 	 */
-	public RunAutomaton(SingletonAutomaton a, boolean tableize) {
+	public RunAutomaton(DefaultAutomaton a, boolean tableize) {
 		BasicOperations.determinize(a);
 		points = a.getStartPoints();
 		Set<State> states = a.getStates();
@@ -226,7 +226,7 @@ public class RunAutomaton implements Serializable, Automaton {
 	/**
 	 * Returns the state obtained by reading the given char from the given
 	 * state. Returns -1 if not obtaining any such state. (If the original
-	 * <code>SingletonAutomaton</code> had no dead states, -1 is returned here if and
+	 * <code>DefaultAutomaton</code> had no dead states, -1 is returned here if and
 	 * only if a dead state is entered in an equivalent automaton with a total
 	 * transition function.)
 	 */

@@ -30,7 +30,7 @@
 package net.pocorall.automaton;
 
 /**
- * SingletonAutomaton provider based on {@link Datatypes}.
+ * DefaultAutomaton provider based on {@link Datatypes}.
  */
 public class DatatypesAutomatonProvider implements AutomatonProvider {
 	
@@ -57,7 +57,7 @@ public class DatatypesAutomatonProvider implements AutomatonProvider {
 		this.enable_xml = enable_xml;
 	}
 	
-	public SingletonAutomaton getAutomaton(String name) {
+	public DefaultAutomaton getAutomaton(String name) {
 		if ((enable_unicodeblocks && Datatypes.isUnicodeBlockName(name))
 				|| (enable_unicodecategories && Datatypes.isUnicodeCategoryName(name))
 				|| (enable_xml && Datatypes.isXMLName(name)))

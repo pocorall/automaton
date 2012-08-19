@@ -32,7 +32,7 @@ package net.pocorall.automaton;
 import java.io.Serializable;
 
 /** 
- * <tt>SingletonAutomaton</tt> transition.
+ * <tt>DefaultAutomaton</tt> transition.
  * <p>
  * A transition, which belongs to a source state, consists of a Unicode character interval
  * and a destination state.
@@ -151,7 +151,7 @@ public class Transition implements Serializable, Cloneable {
 	
 	/** 
 	 * Returns a string describing this state. Normally invoked via 
-	 * {@link SingletonAutomaton#toString()}.
+	 * {@link DefaultAutomaton#toString()}.
 	 */
 	@Override
 	public String toString() {

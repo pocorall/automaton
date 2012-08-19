@@ -29,8 +29,6 @@
 
 package net.pocorall.automaton;
 
-import java.io.*;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -54,7 +52,7 @@ import java.util.*;
  *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
  */
-public class SingletonAutomaton extends LinkedAutomaton {
+public class DefaultAutomaton extends LinkedAutomaton {
 
 	static final long serialVersionUID = 10001;
 
@@ -73,7 +71,7 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	 * @see State
 	 * @see Transition
 	 */
-	public SingletonAutomaton() {
+	public DefaultAutomaton() {
 		super();
 		singleton = null;
 	}
@@ -206,9 +204,9 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
-		if (!(obj instanceof SingletonAutomaton))
+		if (!(obj instanceof DefaultAutomaton))
 			return false;
-		SingletonAutomaton a = (SingletonAutomaton) obj;
+		DefaultAutomaton a = (DefaultAutomaton) obj;
 		if (isSingleton() && a.isSingleton())
 			return singleton.equals(a.singleton);
 		return hashCode() == a.hashCode() && subsetOf(a) && a.subsetOf(this);
@@ -252,8 +250,8 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	/**
 	 * Returns a clone of this automaton, expands if singleton.
 	 */
-	SingletonAutomaton cloneExpanded() {
-		SingletonAutomaton a = clone();
+	DefaultAutomaton cloneExpanded() {
+		DefaultAutomaton a = clone();
 		a.expandSingleton();
 		return a;
 	}
@@ -261,7 +259,7 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	/**
 	 * Returns a clone of this automaton unless <code>allow_mutation</code> is set, expands if singleton.
 	 */
-	SingletonAutomaton cloneExpandedIfRequired() {
+	DefaultAutomaton cloneExpandedIfRequired() {
 		if (allow_mutation) {
 			expandSingleton();
 			return this;
@@ -273,14 +271,14 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	 * Returns a clone of this automaton.
 	 */
 	@Override
-	public SingletonAutomaton clone() {
-		return (SingletonAutomaton) super.clone();
+	public DefaultAutomaton clone() {
+		return (DefaultAutomaton) super.clone();
 	}
 
 	/**
 	 * Returns a clone of this automaton, or this automaton itself if <code>allow_mutation</code> flag is set.
 	 */
-	SingletonAutomaton cloneIfRequired() {
+	DefaultAutomaton cloneIfRequired() {
 		if (allow_mutation)
 			return this;
 		else
@@ -289,9 +287,9 @@ public class SingletonAutomaton extends LinkedAutomaton {
 
 
 	/**
-	 * See {@link BasicOperations#concatenate(SingletonAutomaton, SingletonAutomaton)}.
+	 * See {@link BasicOperations#concatenate(DefaultAutomaton, DefaultAutomaton)}.
 	 */
-	public SingletonAutomaton concatenate(SingletonAutomaton a) {
+	public DefaultAutomaton concatenate(DefaultAutomaton a) {
 		return BasicOperations.concatenate(this, a);
 	}
 
@@ -302,8 +300,8 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	 * <p/>
 	 * Complexity: linear in number of states.
 	 */
-	public SingletonAutomaton optional() {
-		SingletonAutomaton a = cloneExpandedIfRequired();
+	public DefaultAutomaton optional() {
+		DefaultAutomaton a = cloneExpandedIfRequired();
 		State s = new State();
 		s.addEpsilon(a.initial);
 		s.accept = true;
@@ -315,65 +313,65 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	}
 
 	/**
-	 * See {@link BasicOperations#repeat(SingletonAutomaton)}.
+	 * See {@link BasicOperations#repeat(DefaultAutomaton)}.
 	 */
-	public SingletonAutomaton repeat() {
+	public DefaultAutomaton repeat() {
 		return BasicOperations.repeat(this);
 	}
 
 	/**
-	 * See {@link BasicOperations#repeat(SingletonAutomaton, int)}.
+	 * See {@link BasicOperations#repeat(DefaultAutomaton, int)}.
 	 */
-	public SingletonAutomaton repeat(int min) {
+	public DefaultAutomaton repeat(int min) {
 		return BasicOperations.repeat(this, min);
 	}
 
 	/**
-	 * See {@link BasicOperations#repeat(SingletonAutomaton, int, int)}.
+	 * See {@link BasicOperations#repeat(DefaultAutomaton, int, int)}.
 	 */
-	public SingletonAutomaton repeat(int min, int max) {
+	public DefaultAutomaton repeat(int min, int max) {
 		return BasicOperations.repeat(this, min, max);
 	}
 
 	/**
-	 * See {@link BasicOperations#complement(SingletonAutomaton)}.
+	 * See {@link BasicOperations#complement(DefaultAutomaton)}.
 	 */
-	public SingletonAutomaton complement() {
+	public DefaultAutomaton complement() {
 		return BasicOperations.complement(this);
 	}
 
 	/**
-	 * See {@link BasicOperations#minus(SingletonAutomaton, SingletonAutomaton)}.
+	 * See {@link BasicOperations#minus(DefaultAutomaton, DefaultAutomaton)}.
 	 */
-	public SingletonAutomaton minus(SingletonAutomaton a) {
+	public DefaultAutomaton minus(DefaultAutomaton a) {
 		return BasicOperations.minus(this, a);
 	}
 
 	/**
-	 * See {@link BasicOperations#intersection(SingletonAutomaton, SingletonAutomaton)}.
+	 * See {@link BasicOperations#intersection(DefaultAutomaton, DefaultAutomaton)}.
 	 */
-	public SingletonAutomaton intersection(SingletonAutomaton a) {
+	public DefaultAutomaton intersection(DefaultAutomaton a) {
 		return BasicOperations.intersection(this, a);
 	}
 
 	/**
-	 * See {@link BasicOperations#subsetOf(SingletonAutomaton, SingletonAutomaton)}.
+	 * See {@link BasicOperations#subsetOf(DefaultAutomaton, DefaultAutomaton)}.
 	 */
-	public boolean subsetOf(SingletonAutomaton a) {
+	public boolean subsetOf(DefaultAutomaton a) {
 		return BasicOperations.subsetOf(this, a);
 	}
 
 	/**
-	 * See {@link BasicOperations#union(SingletonAutomaton, SingletonAutomaton)}.
+	 * See {@link BasicOperations#union(DefaultAutomaton, DefaultAutomaton)}.
 	 */
 	@Deprecated
-	public SingletonAutomaton union(SingletonAutomaton a) {
+	public DefaultAutomaton union(DefaultAutomaton a) {
 		return BasicOperations.union(this, a);
 	}
 
 
 	/**
-	 * See {@link BasicOperations#isEmptyString(SingletonAutomaton)}.
+	 * See {@link BasicOperations#isEmptyString(DefaultAutomaton)}.
 	 */
 	@Deprecated
 	public boolean isEmptyString() {
@@ -407,7 +405,7 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	 *
 	 * @see LinkedAutomaton#setMinimization(int)
 	 */
-	public SingletonAutomaton minimize() {
+	public DefaultAutomaton minimize() {
 		if (!isSingleton()) {
 			super.minimize();
 		}
@@ -416,9 +414,9 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	}
 
 	/**
-	 * See {@link SpecialOperations#subst(SingletonAutomaton, Map)}.
+	 * See {@link SpecialOperations#subst(DefaultAutomaton, Map)}.
 	 */
-	public SingletonAutomaton subst(Map<Character, Set<Character>> map) {
+	public DefaultAutomaton subst(Map<Character, Set<Character>> map) {
 		return SpecialOperations.subst(this, map);
 	}
 }

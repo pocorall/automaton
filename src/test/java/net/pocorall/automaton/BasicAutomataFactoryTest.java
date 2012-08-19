@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class BasicAutomataFactoryTest {
 	@Test
 	public void testMakeEmpty() throws Exception {
-		SingletonAutomaton automaton = makeEmpty();
+		DefaultAutomaton automaton = makeEmpty();
 		assertTrue(automaton.isDeterministic());
 		assertFalse(automaton.isSingleton());
 		assertTrue(automaton.isEmpty());
@@ -25,7 +25,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeEmptyString() throws Exception {
-		SingletonAutomaton automaton = makeEmptyString();
+		DefaultAutomaton automaton = makeEmptyString();
 		assertTrue(automaton.isDeterministic());
 		assertTrue(automaton.isSingleton());
 		assertFalse(automaton.isEmpty());
@@ -33,7 +33,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeAnyString() throws Exception {
-		SingletonAutomaton automaton = makeAnyString();
+		DefaultAutomaton automaton = makeAnyString();
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.TRUE, automaton.run("Any string can be accepted"));
 		assertEquals(Boolean.TRUE, automaton.run("Anything!"));
@@ -43,7 +43,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeAnyChar() throws Exception {
-		SingletonAutomaton automaton = makeAnyChar();
+		DefaultAutomaton automaton = makeAnyChar();
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.TRUE, automaton.run("a"));
 		assertEquals(Boolean.FALSE, automaton.run("Not a string"));
@@ -53,7 +53,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeChar() throws Exception {
-		SingletonAutomaton automaton = makeChar('t');
+		DefaultAutomaton automaton = makeChar('t');
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.FALSE, automaton.run("a"));
 		assertEquals(Boolean.TRUE, automaton.run("t"));
@@ -64,7 +64,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeCharRange() throws Exception {
-		SingletonAutomaton automaton = makeCharRange('b', 'd');
+		DefaultAutomaton automaton = makeCharRange('b', 'd');
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.FALSE, automaton.run("a"));
 		assertEquals(Boolean.TRUE, automaton.run("c"));
@@ -75,7 +75,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeCharSet() throws Exception {
-		SingletonAutomaton automaton = makeCharSet("bd");
+		DefaultAutomaton automaton = makeCharSet("bd");
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.FALSE, automaton.run("c"));
 		assertEquals(Boolean.TRUE, automaton.run("b"));
@@ -86,7 +86,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeInterval() throws Exception {
-		SingletonAutomaton automaton = makeInterval(3, 534, 5);
+		DefaultAutomaton automaton = makeInterval(3, 534, 5);
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.FALSE, automaton.run("999"));
 		assertEquals(Boolean.FALSE, automaton.run("00001"));
@@ -99,7 +99,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeString() throws Exception {
-		SingletonAutomaton automaton = makeString("exactly the same");
+		DefaultAutomaton automaton = makeString("exactly the same");
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.FALSE, automaton.run("000101"));
 		assertEquals(Boolean.TRUE, automaton.run("exactly the same"));
@@ -110,7 +110,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeStringUnion() throws Exception {
-		SingletonAutomaton automaton = makeStringUnion("to be", "not to be");
+		DefaultAutomaton automaton = makeStringUnion("to be", "not to be");
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.FALSE, automaton.run("To be"));
 		assertEquals(Boolean.TRUE, automaton.run("not to be"));
@@ -121,7 +121,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeMaxInteger() throws Exception {
-		SingletonAutomaton automaton = makeMaxInteger("386");
+		DefaultAutomaton automaton = makeMaxInteger("386");
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.FALSE, automaton.run("-4"));
 		assertEquals(Boolean.TRUE, automaton.run("2"));
@@ -135,7 +135,7 @@ public class BasicAutomataFactoryTest {
 	@Test
 	@Ignore
 	public void testMakeMinInteger() throws Exception {
-		SingletonAutomaton automaton = makeMinInteger("386");
+		DefaultAutomaton automaton = makeMinInteger("386");
 		System.out.println(automaton.toString());
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.FALSE, automaton.run("-4"));
@@ -147,7 +147,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeTotalDigits() throws Exception {
-		SingletonAutomaton automaton = makeTotalDigits(3);
+		DefaultAutomaton automaton = makeTotalDigits(3);
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.TRUE, automaton.run(" -4"));
 		assertEquals(Boolean.FALSE, automaton.run("2e3"));
@@ -160,7 +160,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeFractionDigits() throws Exception {
-		SingletonAutomaton automaton = makeFractionDigits(3);
+		DefaultAutomaton automaton = makeFractionDigits(3);
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.TRUE, automaton.run(" -4.3"));
 		assertEquals(Boolean.FALSE, automaton.run("2.1292"));
@@ -173,7 +173,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeIntegerValue() throws Exception {
-		SingletonAutomaton automaton = makeIntegerValue("342");
+		DefaultAutomaton automaton = makeIntegerValue("342");
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.TRUE, automaton.run(" 00342 "));
 		assertEquals(Boolean.FALSE, automaton.run("0+342"));
@@ -184,7 +184,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeDecimalValue() throws Exception {
-		SingletonAutomaton automaton = makeDecimalValue("342.02");
+		DefaultAutomaton automaton = makeDecimalValue("342.02");
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.TRUE, automaton.run(" 00342.0200 "));
 		assertEquals(Boolean.FALSE, automaton.run("+342.002"));
@@ -195,7 +195,7 @@ public class BasicAutomataFactoryTest {
 
 	@Test
 	public void testMakeStringMatcher() throws Exception {
-		SingletonAutomaton automaton = makeStringMatcher("to be");
+		DefaultAutomaton automaton = makeStringMatcher("to be");
 		assertTrue(automaton.isDeterministic());
 		assertEquals(Boolean.TRUE, automaton.run("To be or not to be"));
 		assertNull(automaton.run("Two bees or three bees"));

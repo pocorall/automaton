@@ -32,7 +32,7 @@ package net.pocorall.automaton;
 import java.io.IOException;
 
 /**
- * SingletonAutomaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
+ * DefaultAutomaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
  */
 public interface AutomatonProvider {
 	
@@ -42,5 +42,5 @@ public interface AutomatonProvider {
 	 * @return automaton
 	 * @throws IOException if errors occur
 	 */
-	public SingletonAutomaton getAutomaton(String name) throws IOException;
+	public DefaultAutomaton getAutomaton(String name) throws IOException;
 }

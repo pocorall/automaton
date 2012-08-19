@@ -50,13 +50,13 @@ final public class ShuffleOperations {
 	 * <dl><dt><b>Author:</b></dt><dd>Torben Ruby
 	 * &lt;<a href="mailto:ruby@daimi.au.dk">ruby@daimi.au.dk</a>&gt;</dd></dl>
 	 */
-	public static SingletonAutomaton shuffle(SingletonAutomaton a1, SingletonAutomaton a2) {
+	public static DefaultAutomaton shuffle(DefaultAutomaton a1, DefaultAutomaton a2) {
 		BasicOperations.determinize(a1);
 		BasicOperations.determinize(a2);
 
 		Transition[][] transitions1 = LinkedAutomaton.getSortedTransitions(a1.getStates());
 		Transition[][] transitions2 = LinkedAutomaton.getSortedTransitions(a2.getStates());
-		SingletonAutomaton c = new SingletonAutomaton();
+		DefaultAutomaton c = new DefaultAutomaton();
 		LinkedList<StatePair> worklist = new LinkedList<StatePair>();
 		HashMap<StatePair, StatePair> newstates = new HashMap<StatePair, StatePair>();
 		State s = new State();
@@ -109,11 +109,11 @@ final public class ShuffleOperations {
 	 * Complexity: proportional to the product of the numbers of states (if <code>a</code>
 	 * is already deterministic).
 	 */
-	public static String shuffleSubsetOf(Collection<SingletonAutomaton> ca, SingletonAutomaton a, Character suspend_shuffle, Character resume_shuffle) {
+	public static String shuffleSubsetOf(Collection<DefaultAutomaton> ca, DefaultAutomaton a, Character suspend_shuffle, Character resume_shuffle) {
 		if (ca.size() == 0)
 			return null;
 		if (ca.size() == 1) {
-			SingletonAutomaton a1 = ca.iterator().next();
+			DefaultAutomaton a1 = ca.iterator().next();
 			if (a1.isSingleton()) {
 				if (a.run(a1.singleton) != null)
 					return null;
@@ -126,7 +126,7 @@ final public class ShuffleOperations {
 		BasicOperations.determinize(a);
 		Transition[][][] ca_transitions = new Transition[ca.size()][][];
 		int i = 0;
-		for (SingletonAutomaton a1 : ca)
+		for (DefaultAutomaton a1 : ca)
 			ca_transitions[i++] = LinkedAutomaton.getSortedTransitions(a1.getStates());
 		Transition[][] a_transitions = LinkedAutomaton.getSortedTransitions(a.getStates());
 		TransitionComparator tc = new TransitionComparator(false);
@@ -273,10 +273,10 @@ final public class ShuffleOperations {
 		private ShuffleConfiguration() {
 		}
 
-		ShuffleConfiguration(Collection<SingletonAutomaton> ca, SingletonAutomaton a) {
+		ShuffleConfiguration(Collection<DefaultAutomaton> ca, DefaultAutomaton a) {
 			ca_states = new State[ca.size()];
 			int i = 0;
-			for (SingletonAutomaton a1 : ca)
+			for (DefaultAutomaton a1 : ca)
 				ca_states[i++] = a1.getInitialState();
 			a_state = a.getInitialState();
 			computeHash();
