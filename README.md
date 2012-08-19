@@ -5,6 +5,8 @@ With pocorall.automaton, you can do:
 
 For a quick glance, check out our [test cases](https://github.com/pocorall/automaton/tree/master/src/test/java/net/pocorall/automaton) and [javadocs](http://pocorall.github.com/automaton/docs/api/).
 
+### [Download latest version(2.0)](https://github.com/pocorall/automaton/raw/master/mvn-repo/net/pocorall/automaton/2.0/automaton-2.0.jar) or [include maven artifact](#maven-artifact)
+
 The pocorall.automaton library is forked from <a href="http://www.brics.dk/automaton" target="_blank">dk.brics.automaton</a>. We extended the original code as following ways:
 
 * [Allows state object](#state-object)
