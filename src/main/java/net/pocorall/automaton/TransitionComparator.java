@@ -1,7 +1,7 @@
 /*
  * dk.brics.automaton
  * 
- * Copyright (c) 2001-2011 Anders Moeller
+ * Copyright (c) 2001-2012 Anders Moeller
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,13 @@ class TransitionComparator implements Comparator<Transition>, Serializable {
 	static final long serialVersionUID = 10001;
 
 	boolean to_first;
-	
+
 	TransitionComparator(boolean to_first) {
 		this.to_first = to_first;
 	}
-	
-	/** 
-	 * Compares by (min, reverse max, to) or (to, min, reverse max). 
+
+	/**
+	 * Compares by (min, reverse max, to) or (to, min, reverse max).
 	 */
 	public int compare(Transition t1, Transition t2) {
 		if (to_first) {

@@ -1,7 +1,7 @@
 /*
  * dk.brics.automaton
  * 
- * Copyright (c) 2001-2011 Anders Moeller
+ * Copyright (c) 2001-2012 Anders Moeller and Sung-Ho Lee
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -51,6 +51,7 @@ import java.util.*;
  * representation invariants that are assumed by the built-in automata operations.
  *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
+ * @author Sung-Ho Lee
  */
 public class DefaultAutomaton extends LinkedAutomaton {
 
