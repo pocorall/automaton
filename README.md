@@ -18,8 +18,26 @@ The pocorall.automaton library is forked from <a href="http://www.brics.dk/autom
 
 ### Maven artifact
 
-.. to be written..
+Include these repository and dependency descriptions into your pom.
 
+```
+<repositories>
+	<repository>
+		<id>automaton-github</id>
+		<url>https://raw.github.com/pocorall/automaton/master/mvn-repo</url>
+	</repository>
+</repositories>
+```
+
+```
+<dependencies>
+	<dependency>
+		<groupId>net.pocorall</groupId>
+		<artifactId>automaton</artifactId>
+		<version>2.0</version>
+	</dependency>
+<dependencies>
+```
 
 ### License
 
