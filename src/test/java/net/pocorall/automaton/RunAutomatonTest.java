@@ -32,7 +32,7 @@ public class RunAutomatonTest {
 	public void testSplit() {
 		DefaultAutomaton a = AutomatonUtil.makeStringUnion("a", "ab", "hi", "there!");
 		System.out.println(a.toString());
-		AutomatonMatcher matcher = new RunAutomaton(a).newMatcher("wiesaamfijabiemfeiaymfqi");
+		RunAutomatonMatcher matcher = new RunAutomaton(a).newMatcher("wiesaamfijabiemfeiaymfqi");
 		Object aObj = matcher.find();
 		assertEquals("a", matcher.group());
 		assertEquals("a", aObj);

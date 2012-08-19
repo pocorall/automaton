@@ -281,8 +281,8 @@ public class RunAutomaton implements Serializable, Automaton {
 	 * @param s the CharSequence to search
 	 * @return A new automaton matcher for the given input
 	 */
-	public AutomatonMatcher newMatcher(CharSequence s) {
-		return new AutomatonMatcher(s, this);
+	public RunAutomatonMatcher newMatcher(CharSequence s) {
+		return new RunAutomatonMatcher(s, this);
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class RunAutomaton implements Serializable, Automaton {
 	 * @param endOffset   the ending offset of the given character sequence
 	 * @return A new automaton matcher for the given input
 	 */
-	public AutomatonMatcher newMatcher(CharSequence s, int startOffset, int endOffset) {
-		return new AutomatonMatcher(s.subSequence(startOffset, endOffset), this);
+	public RunAutomatonMatcher newMatcher(CharSequence s, int startOffset, int endOffset) {
+		return new RunAutomatonMatcher(s.subSequence(startOffset, endOffset), this);
 	}
 }
