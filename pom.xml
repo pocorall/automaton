@@ -3,6 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.pocorall</groupId>
 	<artifactId>automaton</artifactId>
+	<name>pocorall.automaton</name>
 	<description>A DFA/NFA library that is fast and easy to use</description>
 	<url>https://github.com/pocorall/automaton</url>
 	<packaging>jar</packaging>
@@ -58,7 +59,9 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
+	<scm>
+		<url>git@github.com:pocorall/automaton.git</url>
+	</scm>
 	<developers>
 		<developer>
 			<name>Sung-Ho Lee</name>
@@ -69,4 +72,10 @@
 			<email>amoeller@cs.au.dk</email>
 		</developer>
 	</developers>
+	<licenses>
+		<license>
+			<name>BSD License</name>
+			<url>http://opensource.org/licenses/BSD-3-Clause</url>
+		</license>
+	</licenses>
 </project>
