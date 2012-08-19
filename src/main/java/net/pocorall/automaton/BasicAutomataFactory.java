@@ -397,7 +397,7 @@ final public class BasicAutomataFactory {
 		else
 			s = makeChar('+').optional();
 		DefaultAutomaton ws = Datatypes.getWhitespaceAutomaton();
-		return (ws.concatenate(s.concatenate(makeChar('0').repeat()).concatenate(BasicAutomataFactory.makeString(b.toString()))).concatenate(ws)).minimize();
+		return (ws.concatenate(s.concatenate(makeChar('0').repeat()).concatenate(makeString(b.toString()))).concatenate(ws)).minimize();
 	}
 
 	/**
@@ -442,11 +442,11 @@ final public class BasicAutomataFactory {
 			s = makeChar('+').optional();
 		DefaultAutomaton d;
 		if (b2.length() == 0)
-			d = makeChar('.').concatenate(BasicAutomataFactory.makeChar('0').repeat(1)).optional();
+			d = makeChar('.').concatenate(makeChar('0').repeat(1)).optional();
 		else
-			d = makeChar('.').concatenate(BasicAutomataFactory.makeString(b2.toString())).concatenate(BasicAutomataFactory.makeChar('0').repeat());
+			d = makeChar('.').concatenate(makeString(b2.toString())).concatenate(makeChar('0').repeat());
 		DefaultAutomaton ws = Datatypes.getWhitespaceAutomaton();
-		return (ws.concatenate(s.concatenate(BasicAutomataFactory.makeChar('0').repeat()).concatenate(BasicAutomataFactory.makeString(b1.toString())).concatenate(d)).concatenate(ws)).minimize();
+		return (ws.concatenate(s.concatenate(makeChar('0').repeat()).concatenate(makeString(b1.toString())).concatenate(d)).concatenate(ws)).minimize();
 	}
 
 	/**

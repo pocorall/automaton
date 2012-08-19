@@ -36,23 +36,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static net.pocorall.automaton.BasicOperations.*;
+
 /**
  * Regular Expression extension to <code>DefaultAutomaton</code>.
- * <p>
+ * <p/>
  * Regular expressions are built from the following abstract syntax:<p>
  * <table border=0>
  * <tr><td><i>regexp</i></td><td>::=</td><td><i>unionexp</i></td><td></td><td></td></tr>
  * <tr><td></td><td>|</td><td></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>unionexp</i></td><td>::=</td><td><i>interexp</i>&nbsp;<tt><b>|</b></tt>&nbsp;<i>unionexp</i></td><td>(union)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>interexp</i></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>interexp</i></td><td>::=</td><td><i>concatexp</i>&nbsp;<tt><b>&amp;</b></tt>&nbsp;<i>interexp</i></td><td>(intersection)</td><td><small>[OPTIONAL]</small></td></tr>
  * <tr><td></td><td>|</td><td><i>concatexp</i></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>concatexp</i></td><td>::=</td><td><i>repeatexp</i>&nbsp;<i>concatexp</i></td><td>(concatenation)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>repeatexp</i></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>repeatexp</i></td><td>::=</td><td><i>repeatexp</i>&nbsp;<tt><b>?</b></tt></td><td>(zero or one occurrence)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>repeatexp</i>&nbsp;<tt><b>*</b></tt></td><td>(zero or more occurrences)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>repeatexp</i>&nbsp;<tt><b>+</b></tt></td><td>(one or more occurrences)</td><td></td></tr>
@@ -60,20 +62,20 @@ import java.util.Set;
  * <tr><td></td><td>|</td><td><i>repeatexp</i>&nbsp;<tt><b>{</b><i>n</i><b>,}</b></tt></td><td>(<tt><i>n</i></tt> or more occurrences)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>repeatexp</i>&nbsp;<tt><b>{</b><i>n</i><b>,</b><i>m</i><b>}</b></tt></td><td>(<tt><i>n</i></tt> to <tt><i>m</i></tt> occurrences, including both)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>complexp</i></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>complexp</i></td><td>::=</td><td><tt><b>~</b></tt>&nbsp;<i>complexp</i></td><td>(complement)</td><td><small>[OPTIONAL]</small></td></tr>
  * <tr><td></td><td>|</td><td><i>charclassexp</i></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>charclassexp</i></td><td>::=</td><td><tt><b>[</b></tt>&nbsp;<i>charclasses</i>&nbsp;<tt><b>]</b></tt></td><td>(character class)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><tt><b>[^</b></tt>&nbsp;<i>charclasses</i>&nbsp;<tt><b>]</b></tt></td><td>(negated character class)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>simpleexp</i></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>charclasses</i></td><td>::=</td><td><i>charclass</i>&nbsp;<i>charclasses</i></td><td></td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>charclass</i></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>charclass</i></td><td>::=</td><td><i>charexp</i>&nbsp;<tt><b>-</b></tt>&nbsp;<i>charexp</i></td><td>(character range, including end-points)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><i>charexp</i></td><td></td><td></td></tr>
- *
+ * <p/>
  * <tr><td><i>simpleexp</i></td><td>::=</td><td><i>charexp</i></td><td></td><td></td></tr>
  * <tr><td></td><td>|</td><td><tt><b>.</b></tt></td><td>(any single character)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><tt><b>#</b></tt></td><td>(the empty language)</td><td><small>[OPTIONAL]</small></td></tr>
@@ -83,11 +85,11 @@ import java.util.Set;
  * <tr><td></td><td>|</td><td><tt><b>(</b></tt>&nbsp;<i>unionexp</i>&nbsp;<tt><b>)</b></tt></td><td>(precedence override)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><tt><b>&lt;</b></tt>&nbsp;&lt;identifier&gt;&nbsp;<tt><b>&gt;</b></tt></td><td>(named automaton)</td><td><small>[OPTIONAL]</small></td></tr>
  * <tr><td></td><td>|</td><td><tt><b>&lt;</b><i>n</i>-<i>m</i><b>&gt;</b></tt></td><td>(numerical interval)</td><td><small>[OPTIONAL]</small></td></tr>
- *
+ * <p/>
  * <tr><td><i>charexp</i></td><td>::=</td><td>&lt;Unicode character&gt;</td><td>(a single non-reserved character)</td><td></td></tr>
  * <tr><td></td><td>|</td><td><tt><b>\</b></tt>&nbsp;&lt;Unicode character&gt;&nbsp;</td><td>(a single character)</td><td></td></tr>
  * </table>
- * <p>
+ * <p/>
  * The productions marked <small>[OPTIONAL]</small> are only allowed
  * if specified by the syntax flags passed to the <code>RegExp</code>
  * constructor.  The reserved characters used in the (enabled) syntax
@@ -101,8 +103,9 @@ import java.util.Set;
  * points, and if <tt><i>n</i></tt> and <tt><i>m</i></tt> have the
  * same number of digits, then the conforming strings must have that
  * length (i.e. prefixed by 0's).
+ *
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
- * */
+ */
 public class RegExp {
 
 	enum Kind {
@@ -177,13 +180,15 @@ public class RegExp {
 	int flags;
 	int pos;
 
-	RegExp() {}
+	RegExp() {
+	}
 
 	/**
 	 * Constructs new <code>RegExp</code> from a string.
 	 * Same as <code>RegExp(s, ALL)</code>.
+	 *
 	 * @param s regexp string
-	 * @exception IllegalArgumentException if an error occured while parsing the regular expression
+	 * @throws IllegalArgumentException if an error occured while parsing the regular expression
 	 */
 	public RegExp(String s) throws IllegalArgumentException {
 		this(s, ALL);
@@ -191,9 +196,10 @@ public class RegExp {
 
 	/**
 	 * Constructs new <code>RegExp</code> from a string.
-	 * @param s regexp string
+	 *
+	 * @param s            regexp string
 	 * @param syntax_flags boolean 'or' of optional syntax constructs to be enabled
-	 * @exception IllegalArgumentException if an error occured while parsing the regular expression
+	 * @throws IllegalArgumentException if an error occured while parsing the regular expression
 	 */
 	public RegExp(String s, int syntax_flags) throws IllegalArgumentException {
 		b = s;
@@ -239,9 +245,10 @@ public class RegExp {
 	 * Constructs new <code>DefaultAutomaton</code> from this <code>RegExp</code>.
 	 * The constructed automaton is minimal and deterministic and has no
 	 * transitions to dead states.
+	 *
 	 * @param automaton_provider provider of automata for named identifiers
-	 * @exception IllegalArgumentException if this regular expression uses
-	 *   a named identifier that is not available from the automaton provider
+	 * @throws IllegalArgumentException if this regular expression uses
+	 *                                  a named identifier that is not available from the automaton provider
 	 */
 	public DefaultAutomaton toAutomaton(AutomatonProvider automaton_provider) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(null, automaton_provider, true);
@@ -250,10 +257,11 @@ public class RegExp {
 	/**
 	 * Constructs new <code>DefaultAutomaton</code> from this <code>RegExp</code>.
 	 * The constructed automaton has no transitions to dead states.
+	 *
 	 * @param automaton_provider provider of automata for named identifiers
-	 * @param minimize if set, the automaton is minimized and determinized
-	 * @exception IllegalArgumentException if this regular expression uses
-	 *   a named identifier that is not available from the automaton provider
+	 * @param minimize           if set, the automaton is minimized and determinized
+	 * @throws IllegalArgumentException if this regular expression uses
+	 *                                  a named identifier that is not available from the automaton provider
 	 */
 	public DefaultAutomaton toAutomaton(AutomatonProvider automaton_provider, boolean minimize) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(null, automaton_provider, minimize);
@@ -263,10 +271,11 @@ public class RegExp {
 	 * Constructs new <code>DefaultAutomaton</code> from this <code>RegExp</code>.
 	 * The constructed automaton is minimal and deterministic and has no
 	 * transitions to dead states.
+	 *
 	 * @param automata a map from automaton identifiers to automata
-	 *   (of type <code>DefaultAutomaton</code>).
-	 * @exception IllegalArgumentException if this regular expression uses
-	 *   a named identifier that does not occur in the automaton map
+	 *                 (of type <code>DefaultAutomaton</code>).
+	 * @throws IllegalArgumentException if this regular expression uses
+	 *                                  a named identifier that does not occur in the automaton map
 	 */
 	public DefaultAutomaton toAutomaton(Map<String, DefaultAutomaton> automata) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(automata, null, true);
@@ -275,11 +284,12 @@ public class RegExp {
 	/**
 	 * Constructs new <code>DefaultAutomaton</code> from this <code>RegExp</code>.
 	 * The constructed automaton has no transitions to dead states.
+	 *
 	 * @param automata a map from automaton identifiers to automata
-	 *   (of type <code>DefaultAutomaton</code>).
+	 *                 (of type <code>DefaultAutomaton</code>).
 	 * @param minimize if set, the automaton is minimized and determinized
-	 * @exception IllegalArgumentException if this regular expression uses
-	 *   a named identifier that does not occur in the automaton map
+	 * @throws IllegalArgumentException if this regular expression uses
+	 *                                  a named identifier that does not occur in the automaton map
 	 */
 	public DefaultAutomaton toAutomaton(Map<String, DefaultAutomaton> automata, boolean minimize) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(automata, null, minimize);
@@ -290,6 +300,7 @@ public class RegExp {
 	 * If this flag is set, then automata construction uses mutable automata,
 	 * which is slightly faster but not thread safe.
 	 * By default, the flag is not set.
+	 *
 	 * @param flag if true, the flag is set
 	 * @return previous value of the flag
 	 */
@@ -300,8 +311,8 @@ public class RegExp {
 	}
 
 	private DefaultAutomaton toAutomatonAllowMutate(Map<String, DefaultAutomaton> automata,
-			AutomatonProvider automaton_provider,
-			boolean minimize) throws IllegalArgumentException {
+													AutomatonProvider automaton_provider,
+													boolean minimize) throws IllegalArgumentException {
 		boolean b = false;
 		if (allow_mutation)
 			b = LinkedAutomaton.setAllowMutate(true); // thread unsafe
@@ -312,91 +323,91 @@ public class RegExp {
 	}
 
 	private DefaultAutomaton toAutomaton(Map<String, DefaultAutomaton> automata,
-			AutomatonProvider automaton_provider,
-			boolean minimize) throws IllegalArgumentException {
+										 AutomatonProvider automaton_provider,
+										 boolean minimize) throws IllegalArgumentException {
 		List<DefaultAutomaton> list;
 		DefaultAutomaton a = null;
 		switch (kind) {
-		case REGEXP_UNION:
-			list = new ArrayList<DefaultAutomaton>();
-			findLeaves(exp1, Kind.REGEXP_UNION, list, automata, automaton_provider, minimize);
-			findLeaves(exp2, Kind.REGEXP_UNION, list, automata, automaton_provider, minimize);
-			a = BasicOperations.union(list);
-			a.minimize();
-			break;
-		case REGEXP_CONCATENATION:
-			list = new ArrayList<DefaultAutomaton>();
-			findLeaves(exp1, Kind.REGEXP_CONCATENATION, list, automata, automaton_provider, minimize);
-			findLeaves(exp2, Kind.REGEXP_CONCATENATION, list, automata, automaton_provider, minimize);
-			a = BasicOperations.concatenate(list);
-			a.minimize();
-			break;
-		case REGEXP_INTERSECTION:
-			a = exp1.toAutomaton(automata, automaton_provider, minimize).intersection(exp2.toAutomaton(automata, automaton_provider, minimize));
-			a.minimize();
-			break;
-		case REGEXP_OPTIONAL:
-			a = exp1.toAutomaton(automata, automaton_provider, minimize).optional();
-			a.minimize();
-			break;
-		case REGEXP_REPEAT:
-			a = exp1.toAutomaton(automata, automaton_provider, minimize).repeat();
-			a.minimize();
-			break;
-		case REGEXP_REPEAT_MIN:
-			a = exp1.toAutomaton(automata, automaton_provider, minimize).repeat(min);
-			a.minimize();
-			break;
-		case REGEXP_REPEAT_MINMAX:
-			a = exp1.toAutomaton(automata, automaton_provider, minimize).repeat(min, max);
-			a.minimize();
-			break;
-		case REGEXP_COMPLEMENT:
-			a = exp1.toAutomaton(automata, automaton_provider, minimize).complement();
-			a.minimize();
-			break;
-		case REGEXP_CHAR:
-			a = BasicAutomataFactory.makeChar(c);
-			break;
-		case REGEXP_CHAR_RANGE:
-			a = BasicAutomataFactory.makeCharRange(from, to);
-			break;
-		case REGEXP_ANYCHAR:
-			a = BasicAutomataFactory.makeAnyChar();
-			break;
-		case REGEXP_EMPTY:
-			a = BasicAutomataFactory.makeEmpty();
-			break;
-		case REGEXP_STRING:
-			a = BasicAutomataFactory.makeString(s);
-			break;
-		case REGEXP_ANYSTRING:
-			a = BasicAutomataFactory.makeAnyString();
-			break;
-		case REGEXP_AUTOMATON:
-			DefaultAutomaton aa = null;
-			if (automata != null)
-				aa = automata.get(s);
-			if (aa == null && automaton_provider != null)
-				try {
-					aa = automaton_provider.getAutomaton(s);
-				} catch (IOException e) {
-					throw new IllegalArgumentException(e);
-				}
-			if (aa == null)
-				throw new IllegalArgumentException("'" + s + "' not found");
-			a = aa.clone(); // always clone here (ignore allow_mutate)
-			break;
-		case REGEXP_INTERVAL:
-			a = BasicAutomataFactory.makeInterval(min, max, digits);
-			break;
+			case REGEXP_UNION:
+				list = new ArrayList<DefaultAutomaton>();
+				findLeaves(exp1, Kind.REGEXP_UNION, list, automata, automaton_provider, minimize);
+				findLeaves(exp2, Kind.REGEXP_UNION, list, automata, automaton_provider, minimize);
+				a = BasicOperations.union(list);
+				a.minimize();
+				break;
+			case REGEXP_CONCATENATION:
+				list = new ArrayList<DefaultAutomaton>();
+				findLeaves(exp1, Kind.REGEXP_CONCATENATION, list, automata, automaton_provider, minimize);
+				findLeaves(exp2, Kind.REGEXP_CONCATENATION, list, automata, automaton_provider, minimize);
+				a = BasicOperations.concatenate(list);
+				a.minimize();
+				break;
+			case REGEXP_INTERSECTION:
+				a = exp1.toAutomaton(automata, automaton_provider, minimize).intersection(exp2.toAutomaton(automata, automaton_provider, minimize));
+				a.minimize();
+				break;
+			case REGEXP_OPTIONAL:
+				a = exp1.toAutomaton(automata, automaton_provider, minimize).optional();
+				a.minimize();
+				break;
+			case REGEXP_REPEAT:
+				a = exp1.toAutomaton(automata, automaton_provider, minimize).repeat();
+				a.minimize();
+				break;
+			case REGEXP_REPEAT_MIN:
+				a = repeat(exp1.toAutomaton(automata, automaton_provider, minimize), min);
+				a.minimize();
+				break;
+			case REGEXP_REPEAT_MINMAX:
+				a = repeat(exp1.toAutomaton(automata, automaton_provider, minimize), min, max);
+				a.minimize();
+				break;
+			case REGEXP_COMPLEMENT:
+				a = exp1.toAutomaton(automata, automaton_provider, minimize).complement();
+				a.minimize();
+				break;
+			case REGEXP_CHAR:
+				a = BasicAutomataFactory.makeChar(c);
+				break;
+			case REGEXP_CHAR_RANGE:
+				a = BasicAutomataFactory.makeCharRange(from, to);
+				break;
+			case REGEXP_ANYCHAR:
+				a = BasicAutomataFactory.makeAnyChar();
+				break;
+			case REGEXP_EMPTY:
+				a = BasicAutomataFactory.makeEmpty();
+				break;
+			case REGEXP_STRING:
+				a = BasicAutomataFactory.makeString(s);
+				break;
+			case REGEXP_ANYSTRING:
+				a = BasicAutomataFactory.makeAnyString();
+				break;
+			case REGEXP_AUTOMATON:
+				DefaultAutomaton aa = null;
+				if (automata != null)
+					aa = automata.get(s);
+				if (aa == null && automaton_provider != null)
+					try {
+						aa = automaton_provider.getAutomaton(s);
+					} catch (IOException e) {
+						throw new IllegalArgumentException(e);
+					}
+				if (aa == null)
+					throw new IllegalArgumentException("'" + s + "' not found");
+				a = aa.clone(); // always clone here (ignore allow_mutate)
+				break;
+			case REGEXP_INTERVAL:
+				a = BasicAutomataFactory.makeInterval(min, max, digits);
+				break;
 		}
 		return a;
 	}
 
 	private void findLeaves(RegExp exp, Kind kind, List<DefaultAutomaton> list, Map<String, DefaultAutomaton> automata,
-			AutomatonProvider automaton_provider,
-			boolean minimize) {
+							AutomatonProvider automaton_provider,
+							boolean minimize) {
 		if (exp.kind == kind) {
 			findLeaves(exp.exp1, kind, list, automata, automaton_provider, minimize);
 			findLeaves(exp.exp2, kind, list, automata, automaton_provider, minimize);
@@ -414,83 +425,83 @@ public class RegExp {
 
 	StringBuilder toStringBuilder(StringBuilder b) {
 		switch (kind) {
-		case REGEXP_UNION:
-			b.append("(");
-			exp1.toStringBuilder(b);
-			b.append("|");
-			exp2.toStringBuilder(b);
-			b.append(")");
-			break;
-		case REGEXP_CONCATENATION:
-			exp1.toStringBuilder(b);
-			exp2.toStringBuilder(b);
-			break;
-		case REGEXP_INTERSECTION:
-			b.append("(");
-			exp1.toStringBuilder(b);
-			b.append("&");
-			exp2.toStringBuilder(b);
-			b.append(")");
-			break;
-		case REGEXP_OPTIONAL:
-			b.append("(");
-			exp1.toStringBuilder(b);
-			b.append(")?");
-			break;
-		case REGEXP_REPEAT:
-			b.append("(");
-			exp1.toStringBuilder(b);
-			b.append(")*");
-			break;
-		case REGEXP_REPEAT_MIN:
-			b.append("(");
-			exp1.toStringBuilder(b);
-			b.append("){").append(min).append(",}");
-			break;
-		case REGEXP_REPEAT_MINMAX:
-			b.append("(");
-			exp1.toStringBuilder(b);
-			b.append("){").append(min).append(",").append(max).append("}");
-			break;
-		case REGEXP_COMPLEMENT:
-			b.append("~(");
-			exp1.toStringBuilder(b);
-			b.append(")");
-			break;
-		case REGEXP_CHAR:
-			b.append("\\").append(c);
-			break;
-		case REGEXP_CHAR_RANGE:
-			b.append("[\\").append(from).append("-\\").append(to).append("]");
-			break;
-		case REGEXP_ANYCHAR:
-			b.append(".");
-			break;
-		case REGEXP_EMPTY:
-			b.append("#");
-			break;
-		case REGEXP_STRING:
-			b.append("\"").append(s).append("\"");
-			break;
-		case REGEXP_ANYSTRING:
-			b.append("@");
-			break;
-		case REGEXP_AUTOMATON:
-			b.append("<").append(s).append(">");
-			break;
-		case REGEXP_INTERVAL:
-			String s1 = Integer.toString(min);
-			String s2 = Integer.toString(max);
-			b.append("<");
-			if (digits > 0)
-				for (int i = s1.length(); i < digits; i++)
-					b.append('0');
-			b.append(s1).append("-");
-			if (digits > 0)
-				for (int i = s2.length(); i < digits; i++)
-					b.append('0');
-			b.append(s2).append(">");
-			break;
+			case REGEXP_UNION:
+				b.append("(");
+				exp1.toStringBuilder(b);
+				b.append("|");
+				exp2.toStringBuilder(b);
+				b.append(")");
+				break;
+			case REGEXP_CONCATENATION:
+				exp1.toStringBuilder(b);
+				exp2.toStringBuilder(b);
+				break;
+			case REGEXP_INTERSECTION:
+				b.append("(");
+				exp1.toStringBuilder(b);
+				b.append("&");
+				exp2.toStringBuilder(b);
+				b.append(")");
+				break;
+			case REGEXP_OPTIONAL:
+				b.append("(");
+				exp1.toStringBuilder(b);
+				b.append(")?");
+				break;
+			case REGEXP_REPEAT:
+				b.append("(");
+				exp1.toStringBuilder(b);
+				b.append(")*");
+				break;
+			case REGEXP_REPEAT_MIN:
+				b.append("(");
+				exp1.toStringBuilder(b);
+				b.append("){").append(min).append(",}");
+				break;
+			case REGEXP_REPEAT_MINMAX:
+				b.append("(");
+				exp1.toStringBuilder(b);
+				b.append("){").append(min).append(",").append(max).append("}");
+				break;
+			case REGEXP_COMPLEMENT:
+				b.append("~(");
+				exp1.toStringBuilder(b);
+				b.append(")");
+				break;
+			case REGEXP_CHAR:
+				b.append("\\").append(c);
+				break;
+			case REGEXP_CHAR_RANGE:
+				b.append("[\\").append(from).append("-\\").append(to).append("]");
+				break;
+			case REGEXP_ANYCHAR:
+				b.append(".");
+				break;
+			case REGEXP_EMPTY:
+				b.append("#");
+				break;
+			case REGEXP_STRING:
+				b.append("\"").append(s).append("\"");
+				break;
+			case REGEXP_ANYSTRING:
+				b.append("@");
+				break;
+			case REGEXP_AUTOMATON:
+				b.append("<").append(s).append(">");
+				break;
+			case REGEXP_INTERVAL:
+				String s1 = Integer.toString(min);
+				String s2 = Integer.toString(max);
+				b.append("<");
+				if (digits > 0)
+					for (int i = s1.length(); i < digits; i++)
+						b.append('0');
+				b.append(s1).append("-");
+				if (digits > 0)
+					for (int i = s2.length(); i < digits; i++)
+						b.append('0');
+				b.append(s2).append(">");
+				break;
 		}
 		return b;
 	}
@@ -506,23 +517,23 @@ public class RegExp {
 
 	void getIdentifiers(Set<String> set) {
 		switch (kind) {
-		case REGEXP_UNION:
-		case REGEXP_CONCATENATION:
-		case REGEXP_INTERSECTION:
-			exp1.getIdentifiers(set);
-			exp2.getIdentifiers(set);
-			break;
-		case REGEXP_OPTIONAL:
-		case REGEXP_REPEAT:
-		case REGEXP_REPEAT_MIN:
-		case REGEXP_REPEAT_MINMAX:
-		case REGEXP_COMPLEMENT:
-			exp1.getIdentifiers(set);
-			break;
-		case REGEXP_AUTOMATON:
-			set.add(s);
-			break;
-		default:
+			case REGEXP_UNION:
+			case REGEXP_CONCATENATION:
+			case REGEXP_INTERSECTION:
+				exp1.getIdentifiers(set);
+				exp2.getIdentifiers(set);
+				break;
+			case REGEXP_OPTIONAL:
+			case REGEXP_REPEAT:
+			case REGEXP_REPEAT_MIN:
+			case REGEXP_REPEAT_MINMAX:
+			case REGEXP_COMPLEMENT:
+				exp1.getIdentifiers(set);
+				break;
+			case REGEXP_AUTOMATON:
+				set.add(s);
+				break;
+			default:
 		}
 	}
 
@@ -546,8 +557,8 @@ public class RegExp {
 			r.exp1 = exp1.exp1;
 			r.exp2 = makeString(exp1.exp2, exp2);
 		} else if ((exp1.kind == Kind.REGEXP_CHAR || exp1.kind == Kind.REGEXP_STRING) &&
-				   exp2.kind == Kind.REGEXP_CONCATENATION &&
-				   (exp2.exp1.kind == Kind.REGEXP_CHAR || exp2.exp1.kind == Kind.REGEXP_STRING)) {
+			exp2.kind == Kind.REGEXP_CONCATENATION &&
+			(exp2.exp1.kind == Kind.REGEXP_CHAR || exp2.exp1.kind == Kind.REGEXP_STRING)) {
 			r.exp1 = makeString(exp1, exp2.exp1);
 			r.exp2 = exp2.exp2;
 		} else {
@@ -790,9 +801,9 @@ public class RegExp {
 		char c = parseCharExp();
 		if (match('-'))
 			if (peek("]"))
-                return makeUnion(makeChar(c), makeChar('-'));
-            else
-                return makeCharRange(c, parseCharExp());
+				return makeUnion(makeChar(c), makeChar('-'));
+			else
+				return makeCharRange(c, parseCharExp());
 		else
 			return makeChar(c);
 	}

@@ -321,20 +321,6 @@ public class DefaultAutomaton extends LinkedAutomaton {
 	}
 
 	/**
-	 * See {@link BasicOperations#repeat(DefaultAutomaton, int)}.
-	 */
-	public DefaultAutomaton repeat(int min) {
-		return BasicOperations.repeat(this, min);
-	}
-
-	/**
-	 * See {@link BasicOperations#repeat(DefaultAutomaton, int, int)}.
-	 */
-	public DefaultAutomaton repeat(int min, int max) {
-		return BasicOperations.repeat(this, min, max);
-	}
-
-	/**
 	 * See {@link BasicOperations#complement(DefaultAutomaton)}.
 	 */
 	public DefaultAutomaton complement() {
