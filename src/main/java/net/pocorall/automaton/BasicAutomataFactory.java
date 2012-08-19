@@ -442,7 +442,7 @@ final public class BasicAutomataFactory {
 			s = makeChar('+').optional();
 		DefaultAutomaton d;
 		if (b2.length() == 0)
-			d = makeChar('.').concatenate(makeChar('0').repeat(1)).optional();
+			d = makeChar('.').concatenate(repeat(makeChar('0'), 1)).optional();
 		else
 			d = makeChar('.').concatenate(makeString(b2.toString())).concatenate(makeChar('0').repeat());
 		DefaultAutomaton ws = Datatypes.getWhitespaceAutomaton();
