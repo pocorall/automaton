@@ -16,7 +16,15 @@ The pocorall.automaton library is forked from <a href="http://www.brics.dk/autom
 
 ### State object
 
-.. to be written..
+For each state, conventional state machine has a boolean property that specifies it is acceptable or not. However, in many contexts, we need to bound an object which describes extra informations about that state. In this library, a state object is received for every matching:
+
+```
+AutomatonMatcher matcher = ...;
+Object stateObj = matcher.find();
+```
+
+The find() method returns null when no matches are found.
+
 
 ### Maven artifact
 
@@ -44,3 +52,9 @@ Include these repository and dependency descriptions into your pom.
 ### License
 
 Both pocorall.automaton and original code(dk.brics.automaton) are available under BSD license.
+
+### Contributors
+
+This library is maintained by Sung-Ho Lee
+
+Original code is developed by Anders Møller at Aarhus University, with contributions, suggestions and bug reports from Alexandar Bakic, Jodi Moran, Brandon Lee, David Lutterkort, John Gibson, Alex Meyer, Daniel Lowe, Harald Zauner, Dawid Weiss, Robert Muir, Hans-Martin Adorf, Dale Richardson, Yannick Versley, and Gustaf Lundh. 
