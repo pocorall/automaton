@@ -16,7 +16,7 @@ The pocorall.automaton library is forked from <a href="http://www.brics.dk/autom
 
 ### State object
 
-For each state, conventional state machine has a boolean property that specifies it is acceptable or not. However, in many contexts, we need to bound an object which describes extra informations about that state. In this library, a state object is received for every matching:
+In conventional state machine, each state has a boolean property that specifies whether it is acceptable or not. However, in many contexts, we need to bound an object which describes extra informations about the state. In this library, a state object is received for every matching:
 
 ```
 AutomatonMatcher matcher = ...;
