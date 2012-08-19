@@ -18,7 +18,7 @@ public class RunAutomatonTest {
 
 		public static SingletonAutomaton makeStringUnion(String... strings) {
 			if (strings.length == 0)
-				return BasicAutomata.makeEmpty();
+				return BasicAutomataFactory.makeEmpty();
 			SingletonAutomaton a = new SingletonAutomaton();
 			a.setInitialState(build(strings));
 			a.setDeterministic(true);

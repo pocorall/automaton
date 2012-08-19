@@ -35,7 +35,7 @@ import java.util.*;
 
 import static net.pocorall.automaton.SingletonAutomaton.*;
 import static net.pocorall.automaton.BasicOperations.*;
-import static net.pocorall.automaton.BasicAutomata.*;
+import static net.pocorall.automaton.BasicAutomataFactory.*;
 
 /**
  * Basic automata for representing common datatypes

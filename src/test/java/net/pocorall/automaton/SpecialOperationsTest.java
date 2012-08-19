@@ -2,9 +2,7 @@ package net.pocorall.automaton;
 
 import org.junit.Test;
 
-import static net.pocorall.automaton.BasicAutomata.*;
-import static net.pocorall.automaton.BasicAutomata.makeCharRange;
-import static net.pocorall.automaton.BasicAutomata.makeStringUnion;
+import static net.pocorall.automaton.BasicAutomataFactory.*;
 import static net.pocorall.automaton.SpecialOperations.*;
 import static org.junit.Assert.*;
 

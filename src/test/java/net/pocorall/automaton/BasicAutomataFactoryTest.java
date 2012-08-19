@@ -3,7 +3,7 @@ package net.pocorall.automaton;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static net.pocorall.automaton.BasicAutomata.*;
+import static net.pocorall.automaton.BasicAutomataFactory.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
  * Time: 오전 12:58
  * To change this template use File | Settings | File Templates.
  */
-public class BasicAutomataTest {
+public class BasicAutomataFactoryTest {
 	@Test
 	public void testMakeEmpty() throws Exception {
 		SingletonAutomaton automaton = makeEmpty();

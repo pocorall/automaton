@@ -31,7 +31,7 @@ package net.pocorall.automaton;
 
 import java.util.*;
 
-import static net.pocorall.automaton.BasicAutomata.*;
+import static net.pocorall.automaton.BasicAutomataFactory.*;
 import static net.pocorall.automaton.LinkedAutomaton.*;
 
 /**

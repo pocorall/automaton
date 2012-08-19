@@ -83,7 +83,7 @@ final public class SpecialOperations {
 		acceptToAccept(b2);
 		reverse(b2);
 		BasicOperations.determinize(b2);
-		return b1.intersection(b2).minus(BasicAutomata.makeEmptyString());
+		return b1.intersection(b2).minus(BasicAutomataFactory.makeEmptyString());
 	}
 
 	private static void acceptToAccept(SingletonAutomaton a) {
@@ -378,7 +378,7 @@ final public class SpecialOperations {
 			for (int i = 0; i < a.singleton.length(); i++) {
 				char sc = a.singleton.charAt(i);
 				if (!(normalchars && (sc <= '\udfff' || sc >= '\uf900') || Arrays.binarySearch(cc, sc) >= 0))
-					return BasicAutomata.makeEmpty();
+					return BasicAutomataFactory.makeEmpty();
 			}
 			return a.cloneIfRequired();
 		} else {
