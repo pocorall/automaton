@@ -287,13 +287,6 @@ public class SingletonAutomaton extends LinkedAutomaton {
 			return clone();
 	}
 
-	/**
-	 * See {@link BasicAutomata#makeChar(char)}.
-	 */
-	public static SingletonAutomaton makeChar(char c) {
-		return BasicAutomata.makeChar(c);
-	}
-
 
 	/**
 	 * See {@link BasicOperations#concatenate(SingletonAutomaton, SingletonAutomaton)}.
@@ -373,27 +366,16 @@ public class SingletonAutomaton extends LinkedAutomaton {
 	/**
 	 * See {@link BasicOperations#union(SingletonAutomaton, SingletonAutomaton)}.
 	 */
+	@Deprecated
 	public SingletonAutomaton union(SingletonAutomaton a) {
 		return BasicOperations.union(this, a);
 	}
 
-	/**
-	 * See {@link BasicOperations#union(Collection)}.
-	 */
-	static public SingletonAutomaton union(Collection<SingletonAutomaton> l) {
-		return BasicOperations.union(l);
-	}
-
-	/**
-	 * See {@link BasicOperations#addEpsilons(SingletonAutomaton, Collection)}.
-	 */
-	public void addEpsilons(Collection<StatePair> pairs) {
-		BasicOperations.addEpsilons(this, pairs);
-	}
 
 	/**
 	 * See {@link BasicOperations#isEmptyString(SingletonAutomaton)}.
 	 */
+	@Deprecated
 	public boolean isEmptyString() {
 		return BasicOperations.isEmptyString(this);
 	}

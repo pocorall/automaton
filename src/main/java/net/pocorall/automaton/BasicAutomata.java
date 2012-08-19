@@ -37,6 +37,7 @@ import java.util.Set;
 
 import static net.pocorall.automaton.BasicOperations.*;
 
+
 /**
  * Construction of basic automata.
  */
@@ -392,11 +393,11 @@ final public class BasicAutomata {
 			b.append("0");
 		SingletonAutomaton s;
 		if (minus)
-			s = SingletonAutomaton.makeChar('-');
+			s = makeChar('-');
 		else
-			s = SingletonAutomaton.makeChar('+').optional();
+			s = makeChar('+').optional();
 		SingletonAutomaton ws = Datatypes.getWhitespaceAutomaton();
-		return (ws.concatenate(s.concatenate(SingletonAutomaton.makeChar('0').repeat()).concatenate(BasicAutomata.makeString(b.toString()))).concatenate(ws)).minimize();
+		return (ws.concatenate(s.concatenate(makeChar('0').repeat()).concatenate(BasicAutomata.makeString(b.toString()))).concatenate(ws)).minimize();
 	}
 
 	/**
@@ -436,14 +437,14 @@ final public class BasicAutomata {
 			b1.append("0");
 		SingletonAutomaton s;
 		if (minus)
-			s = SingletonAutomaton.makeChar('-');
+			s = makeChar('-');
 		else
-			s = SingletonAutomaton.makeChar('+').optional();
+			s = makeChar('+').optional();
 		SingletonAutomaton d;
 		if (b2.length() == 0)
-			d = SingletonAutomaton.makeChar('.').concatenate(BasicAutomata.makeChar('0').repeat(1)).optional();
+			d = makeChar('.').concatenate(BasicAutomata.makeChar('0').repeat(1)).optional();
 		else
-			d = SingletonAutomaton.makeChar('.').concatenate(BasicAutomata.makeString(b2.toString())).concatenate(BasicAutomata.makeChar('0').repeat());
+			d = makeChar('.').concatenate(BasicAutomata.makeString(b2.toString())).concatenate(BasicAutomata.makeChar('0').repeat());
 		SingletonAutomaton ws = Datatypes.getWhitespaceAutomaton();
 		return (ws.concatenate(s.concatenate(BasicAutomata.makeChar('0').repeat()).concatenate(BasicAutomata.makeString(b1.toString())).concatenate(d)).concatenate(ws)).minimize();
 	}

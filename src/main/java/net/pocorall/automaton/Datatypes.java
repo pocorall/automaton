@@ -33,7 +33,8 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import static net.pocorall.automaton.LinkedAutomaton.*;
+import static net.pocorall.automaton.SingletonAutomaton.*;
+import static net.pocorall.automaton.BasicOperations.*;
 import static net.pocorall.automaton.BasicAutomata.*;
 
 /**
@@ -612,7 +613,7 @@ final public class Datatypes {
 		};
 		System.out.println("Building URI automaton...");
 		putFrom("URI", buildMap(uriexps));
-		put(automata, "anyname", (SingletonAutomaton.makeChar('{').concatenate(automata.get("URI").clone()).concatenate(SingletonAutomaton.makeChar('}')).optional().concatenate(automata.get("NCName").clone())).minimize());
+		put(automata, "anyname", (makeChar('{').concatenate(automata.get("URI").clone()).concatenate(makeChar('}')).optional().concatenate(automata.get("NCName").clone())).minimize());
 
 		put(automata, "noap", new RegExp("~(@[@%]@)").toAutomaton());
 
@@ -779,24 +780,24 @@ final public class Datatypes {
 		put(automata, "HalfwidthandFullwidthForms", makeCharRange('\uFF00', '\uFFEF'));
 		put(automata, "Specials", makeCharRange('\uFFF0', '\uFFFD'));
 
-		put(automata, "OldItalic", SingletonAutomaton.makeChar('\ud800').concatenate(makeCharRange('\udf00', '\udf2f')));
-		put(automata, "Gothic", SingletonAutomaton.makeChar('\ud800').concatenate(makeCharRange('\udf30', '\udf4f')));
-		put(automata, "Deseret", SingletonAutomaton.makeChar('\ud801').concatenate(makeCharRange('\udc00', '\udc4f')));
-		put(automata, "ByzantineMusicalSymbols", SingletonAutomaton.makeChar('\ud834').concatenate(makeCharRange('\udc00', '\udcff')));
-		put(automata, "MusicalSymbols", SingletonAutomaton.makeChar('\ud834').concatenate(makeCharRange('\udd00', '\uddff')));
-		put(automata, "MathematicalAlphanumericSymbols", SingletonAutomaton.makeChar('\ud835').concatenate(makeCharRange('\udc00', '\udfff')));
+		put(automata, "OldItalic", makeChar('\ud800').concatenate(makeCharRange('\udf00', '\udf2f')));
+		put(automata, "Gothic", makeChar('\ud800').concatenate(makeCharRange('\udf30', '\udf4f')));
+		put(automata, "Deseret", makeChar('\ud801').concatenate(makeCharRange('\udc00', '\udc4f')));
+		put(automata, "ByzantineMusicalSymbols", makeChar('\ud834').concatenate(makeCharRange('\udc00', '\udcff')));
+		put(automata, "MusicalSymbols", makeChar('\ud834').concatenate(makeCharRange('\udd00', '\uddff')));
+		put(automata, "MathematicalAlphanumericSymbols", makeChar('\ud835').concatenate(makeCharRange('\udc00', '\udfff')));
 
 		put(automata, "CJKUnifiedIdeographsExtensionB", makeCharRange('\ud840', '\ud868').concatenate(makeCharRange('\udc00', '\udfff'))
-			.union(SingletonAutomaton.makeChar('\ud869').concatenate(makeCharRange('\udc00', '\uded6'))));
+			.union(makeChar('\ud869').concatenate(makeCharRange('\udc00', '\uded6'))));
 
-		put(automata, "CJKCompatibilityIdeographsSupplement", SingletonAutomaton.makeChar('\ud87e').concatenate(makeCharRange('\udc00', '\ude1f')));
-		put(automata, "Tags", SingletonAutomaton.makeChar('\udb40').concatenate(makeCharRange('\udc00', '\udc7f')));
+		put(automata, "CJKCompatibilityIdeographsSupplement", makeChar('\ud87e').concatenate(makeCharRange('\udc00', '\ude1f')));
+		put(automata, "Tags", makeChar('\udb40').concatenate(makeCharRange('\udc00', '\udc7f')));
 
 		put(automata, "PrivateUse", makeCharRange('\uE000', '\uF8FF')
 			.union(makeCharRange('\udb80', '\udbbe').concatenate(makeCharRange('\udc00', '\udfff'))
-				.union(SingletonAutomaton.makeChar('\udbbf').concatenate(makeCharRange('\udc00', '\udffd'))))
+				.union(makeChar('\udbbf').concatenate(makeCharRange('\udc00', '\udffd'))))
 			.union(makeCharRange('\udbc0', '\udbfe').concatenate(makeCharRange('\udc00', '\udfff'))
-				.union(SingletonAutomaton.makeChar('\udbff').concatenate(makeCharRange('\udc00', '\udffd')))));
+				.union(makeChar('\udbff').concatenate(makeCharRange('\udc00', '\udffd')))));
 
 		System.out.println("Building Unicode category automata...");
 		Map<String, Set<Integer>> categories = new HashMap<String, Set<Integer>>();
@@ -837,16 +838,16 @@ final public class Datatypes {
 			for (Integer cp : me.getValue()) {
 				la1.add(makeCodePoint(cp));
 				if (la1.size() == 50) {
-					la2.add((SingletonAutomaton.union(la1)).minimize());
+					la2.add((union(la1)).minimize());
 					la1.clear();
 				}
 			}
-			la2.add(SingletonAutomaton.union(la1));
-			SingletonAutomaton a = (SingletonAutomaton.union(la2)).minimize();
+			la2.add(union(la1));
+			SingletonAutomaton a = (union(la2)).minimize();
 			put(automata, me.getKey(), a);
 			assigned.add(a);
 		}
-		SingletonAutomaton cn = (automata.get("Char").clone().intersection(SingletonAutomaton.union(assigned).complement())).minimize();
+		SingletonAutomaton cn = (automata.get("Char").clone().intersection(union(assigned).complement())).minimize();
 		put(automata, "Cn", cn);
 		put(automata, "C", automata.get("C").clone().union(cn));
 	}
