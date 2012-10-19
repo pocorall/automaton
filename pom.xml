@@ -73,6 +73,7 @@
 		<developer>
 			<name>Sung-Ho Lee</name>
 			<email>pocorall@gmail.com</email>
+			<timezone>+9</timezone>
 		</developer>
 		<developer>
 			<name>Anders Moeller</name>

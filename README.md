@@ -51,7 +51,7 @@ Include these repository and dependency descriptions into your pom.
 
 ### License
 
-Both pocorall.automaton and original code(dk.brics.automaton) are available under BSD license.
+Both pocorall.automaton and the original code(dk.brics.automaton) are available under BSD license.
 
 ### Contributors
 
