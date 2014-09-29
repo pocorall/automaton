@@ -2,45 +2,43 @@ package net.pocorall.automaton;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 
 public class RunAutomatonTest {
-	static public class AutomatonUtil {
-		public static State build(String... input) {
-			final StringUnionOperations builder = new StringUnionOperations();
+	static public class PatternMatcher {
+        private final StringUnionOperations builder = new StringUnionOperations();
 
-			for (String i : input) {
-				builder.add(i, i);
-			}
+        public PatternMatcher add(String key, Object value) {
+            builder.add(value, key);
+            return this;
+        }
 
-			return builder.complete();
-		}
-
-		public static DefaultAutomaton makeStringUnion(String... strings) {
-			if (strings.length == 0)
-				return BasicAutomataFactory.makeEmpty();
-			DefaultAutomaton a = new DefaultAutomaton();
-			a.setInitialState(build(strings));
-			a.setDeterministic(true);
-			a.reduce();
-			a.recomputeHashCode();
-			return a;
-		}
+        public RunAutomaton build() {
+            DefaultAutomaton a = new DefaultAutomaton();
+            a.setInitialState(builder.complete());
+            a.setDeterministic(true);
+            a.reduce();
+            a.recomputeHashCode();
+            return new RunAutomaton(a);
+        }
 	}
 
 	@Test
 	public void testSplit() {
-		DefaultAutomaton a = AutomatonUtil.makeStringUnion("a", "ab", "hi", "there!");
-		System.out.println(a.toString());
-		RunAutomatonMatcher matcher = new RunAutomaton(a).newMatcher("wiesaamfijabiemfeiaymfqi");
-		Object aObj = matcher.find();
-		assertEquals("a", matcher.group());
-		assertEquals("a", aObj);
-		assertEquals("wies", matcher.token());
-		while (aObj != null) {
-			System.out.println(matcher.token() + "::" + matcher.group() + "::" + aObj);
-			aObj = matcher.find();
-		}
-		System.out.println(matcher.token());
+        RunAutomaton patterns = new PatternMatcher().add("a", new Date()).add("ab", 32).add("hi", "smile").add("there!", 3.141592).build();
+        System.out.println(patterns.toString());
+        String[] texts = new String[] {"wiesaamfijabiemfeiaymfqthere!i", "irmvoejrijaijrigmmrigjhiiej"};
+
+        for(String text: texts) {
+            RunAutomatonMatcher matcher = patterns.newMatcher(text);
+            Object aObj = matcher.find();
+            while (aObj != null) {
+                System.out.println(matcher.token() + "::" + matcher.group() + "::" + aObj);
+                aObj = matcher.find();
+            }
+            System.out.println(matcher.token());
+        }
 	}
 }
